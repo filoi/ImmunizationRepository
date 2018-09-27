@@ -1,0 +1,60 @@
+<script type="text/javascript">
+    
+    $(document).ready(function(){
+        $('#myjquerymenu').find('#report').addClass("selected");
+        pageName = 'AreaOfWorkReport';
+        
+        selectionTreeSelection.setListenerFunction( getOrgUnitId ); 
+        selectionTreeSelection.setMultipleSelectionAllowed( true );
+        selectionTree.buildSelectionTree();
+      
+    });
+
+    function getOrgUnitId(orgUnits)
+    { 
+        $("#orgUnitId").val(orgUnits);      
+    }
+
+	/*
+    function generateHTMLreport()
+    { 
+        document.countryFileForm.method = "post";
+        document.countryFileForm.action = "mcv2IntroAndPieResult.action";
+    }
+    */
+    
+</script>
+
+<br/>
+
+
+<div style="font-size:16px; width:93%; margin:auto;" class="ui-widget-header ui-corner-all"><b>$i18n.getString( "mcv2_intro_and_pie" )</b></div>
+
+<form id="countryFileForm" name="countryFileForm" method="get" action="mcv2IntroAndPieResult.action">
+
+    <select id="selectedDataElementsValidator" name="selectedDataElementsValidator" multiple="multiple" style="display:none;"></select>
+    <select id="values" name="values" multiple="multiple" style="display:none;"></select>     
+    <select id="comments" name="comments" multiple="multiple" style="display:none;"></select> 
+    <input type="hidden" name="orgUnitId" id="orgUnitId"/>
+    
+    <div id="reportFilterDiv" >
+        <table style="width:90%;margin:auto;" cellpadding="4" cellspacing="2">
+            <tr>
+                <td width="60%">
+                    $i18n.getString( "select_country" )<br />
+                    <div id="orgUnitTreeContainer" class="ui-widget-content ui-corner-all" style="height: 266px; width: 375px; overflow:auto;">                        
+                        <div id="selectionTree" ></div>                     
+                    </div>
+                 </td>
+                 <td width="40%">&nbsp;</td>
+            </tr>           
+            <tr>
+                <td>
+                    <input type="submit" value="$i18n.getString( 'get_report' )" id="submit"/>               
+                </td>
+                <td>&nbsp;</td>
+            </tr>
+         </table>
+    </div>
+    <br/><br/>
+</form>

@@ -1,0 +1,922 @@
+<book>
+<chapter>
+<title>IVB</title>
+<section id="IVBdescription">
+<title>Description</title>
+<para>The Expanded Programme on Immunization unit within the Immunization, Vaccines, and Biologicals (IVB) Department of the World Health Organization (WHO), developed an integrated data management system that allows users to manage, access, and share critical immunization information. By strengthening information exchange and facilitating discussion, it enables cooperation among partners to ensure countries receive improved support, and can help to maximum success in the introduction and sustained implementation of new vaccines. It has the potential to create a culture of ongoing discussion and analysis, leading to more timely action in response to countries’ most immediate needs.</para>
+</section>
+</chapter>
+<chapter>
+<title>Dashboard</title>
+<section id="Homepagedescription">
+<title><emphasis role="bold">Description</emphasis></title>
+<para>Once the Homepage is open, the user will see a list of flags of countries grouped by region. There is an option to search by country name or by country grouping (e.g. GAVI eligible, income status). As the user starts entering the name, all the possible search results by the name will be displayed. For the country dashboard to open, the user needs to click on the particular country.The user can navigate to a regional dashboard, by clicking on the “Region Name” on the Homepage. E.g. If the user wants to navigate to the regional dashboard of Africa Central, then the user needs to click on ‘AFR Central’ on the homepage.</para>
+<itemizedlist>
+<listitem>
+<title><emphasis role="bold">Search By Country Names</emphasis></title>
+<para>The user can directly navigate to a particular country by searching by the country name. As the user starts entering the name, all the possible search results by the name will be displayed. The user will have to click on the particular country and that country dashboard will open.</para>
+</listitem>
+<listitem>
+<title><emphasis role="bold">Filter by Country Groups (eg. Low Income Countries)</emphasis></title>
+<para>There are some countries which belong to a particular group. There are filters available for these groups on the home page. The user can click on a particular filter which will display all the countries by region belonging to that particular group.</para>
+</listitem>
+<listitem>
+<title><emphasis role="bold">Navigating to Country Dashboard</emphasis></title>
+<para>User can navigate to a particular country dashboard by either searching by the country name (explained in the section ‘Search by country names’, or clicking on the country flag.)</para>
+</listitem>
+<listitem>
+<title><emphasis role="bold">Navigating to Regional Dashboard</emphasis></title>
+<para>User can navigate to a regional dashboard, by clicking on the Region Name on the Homepage. Eg. If the user wants to navigate to the regional dashboard of Africa Central, then the user needs to click on ‘AFR Central’ on the homepage.</para>
+</listitem>
+</itemizedlist>
+</section>
+<section id="CountryDashboard">
+<title>Country Dashboard</title>
+<itemizedlist>
+<listitem>
+<title><emphasis role="bold">Description</emphasis></title>
+<para> The country dashboard starts with a general section which gives an overview of the country with details such astheirIncome Status, GAVI Eligibility Status, DTP3 coverage, among others. The second section has the information by Area of work with their corresponding key flag. Also displayed are the value, comment and the source name for that particular key flag. There is also a “Help” function, which will provide more information about the Key Flag, how it is calculated and other important information about the key flag. If the key flag has a value which triggers the flag, then it will be marked by a red star. All the areas, for which the flags are red, will be displayed on the top.The data entry screen for a particular area of work, can be opened by simply clicking on the particular Area of Work or the Key flag.</para>
+</listitem>
+<listitem>
+<title><emphasis role="bold">Navigating to the Data Entry Screen</emphasis></title>
+<para> The data entry screen for a particular area of work, can be opened by simply clicking on the particular Area of Work or the Key flag.</para>
+</listitem>
+</itemizedlist>
+</section>
+<section id="RegionalDashboard">
+<title>Regional Dashboard</title>
+<itemizedlist>
+<listitem>
+<title><emphasis role="bold">Description</emphasis></title>
+<para> The regional dashboard contains a list of all the area of work in the rows and the list of countries belonging to the region in the columns. If, for a particular area of work and a country the flag is not triggered, then white coloured star is displayed. If the flag is triggered, then a red star will be displayed. The value, comment and source of a particular area of work and country will be displayed on the top by simply hover the mouse over the particular star symbol. The filters of groups of countries are also available here. Among the region if a user wants to see only a particular group of countries, then the user needs to click on the required filter.The user can go to data entry screen of a particular area of work for a country simply clicking on the required star symbol. The user will be taken to the corresponding data entry screen.</para>
+</listitem>
+<listitem>
+<title><emphasis role="bold">Navigating to the Data Entry Screen</emphasis></title>
+<para> The user can go to data entry screen of a particular area of work for a country simply clicking on the required star symbol. The user will be taken to the corresponding data entry screen.</para>
+</listitem>
+</itemizedlist>
+</section>
+<section id="UserDashboard">
+<title>User Dashboard</title>
+<itemizedlist>
+<listitem>
+<title><emphasis role="bold">Description</emphasis></title>
+<para> User Dashboards are intended to provide quick access to individual users to the data which has been stored in DHIS2. Dashboards consist of several sections, some of which provide links to reports or mapview which have already been defined. Other sections of the dashboard allow users to add charts which have been defined and made available through the charting module. </para>
+</listitem>
+<listitem>
+<title><emphasis role="bold">Navigating to the Data Entry Screen</emphasis></title>
+<para> </para>
+</listitem>
+</itemizedlist>
+</section>
+</chapter>
+<chapter>
+<title>Data Entry</title>
+<section id="DataEntryByCountry">
+<title>Data Entry By Country</title>
+<itemizedlist>
+<listitem>
+<title><emphasis role="bold">Description</emphasis></title>
+<para>The data entry screen, consists of list of Area of Work on the left panel, and the right panel consists of the following:</para>
+<orderedlist>
+<listitem>
+<para><emphasis role="bold">Status:</emphasis></para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Type:</emphasis> Whether the data element is for public, private or semi public viewing</para>
+</listitem>
+<listitem>
+<para></para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Data Element:</emphasis>The specific question or indicator </para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Value:</emphasis> The data stored for the data element</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Comment:</emphasis> Extra Information regarding the value if any</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Last Entry:</emphasis> The last user who has made the changes (with date)</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Tools:</emphasis> Opens the Toolbox which has the details of History, TA and Discussion</para>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<title><emphasis role="bold">Copy Feature</emphasis></title>
+<para>To resubmit the current value and comment- If there are no changes to the current value and comment, then the user can resubmit the same value and comment by clicking on the Copy Icon</para>
+</listitem>
+<listitem>
+<title><emphasis role="bold">Tool Box Feature</emphasis></title>
+<para>The Toolbox has three tabs for the following three features:</para>
+<orderedlist>
+<listitem>
+<para><emphasis role="bold">History:</emphasis> Contains the list of all the values, comments, period and the last entry user for the particular data element.Also, there is an option for the admin to delete, edit and hide any of the history values for that particular data element.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Technical Assistance:</emphasis> User can ask for technical assistance related to a particular data element by going to the Technical Assistance Tab. At the bottom of the Toolbox page, there is a text box to write the request and click on Add Request.Similar options of Removing, Editing and Hiding the Technical assistance will be provided for the admin. Similarly, comments can be provided on offers for technical assistance under each particular area.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Discussion:</emphasis> The discussion tabs allows users to have discussion regarding a particular data element. Users can post their views in the text box provided at the bottom of the tab, and click on “Add Discussion”. The admin has the option of closing the Discussion when the value has been finalized. It is discouraged to enter highly sensitive information in the Repository.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Disable Conflict:</emphasis> A data element is flagged as “conflict” when two or more users have entered conflicting information. Theadministrator can disable conflict by checking on the conflict option in the tool box, and this is usually done after the responsible person has taken action and come up with the latest update for this “conflict”.</para>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<para>The data element which is the cause for triggering the flag will be marked by red in the data entry screen.Upon entering the values and the comments, the user needs to click on Save button to save the data.</para>
+</listitem>
+</itemizedlist>
+</section>
+<section id="DataEntryByRegion">
+<title>Custom Data Entry</title>
+<itemizedlist>
+<listitem>
+<title><emphasis role="bold">Description</emphasis></title>
+<para>Custom data entry enables the user to enter data for multiple countries and multible data elements by selecting the countries and the data elements for which data entry has to be done from country selection tree and the available data element list.</para>
+</listitem>
+<listitem>
+<title><emphasis role="bold">Copy Feature</emphasis></title>
+<para>After making the selection user have option to download the spreadsheet so that user can enter data in spreadsheet and later on same can be uploaded.</para>
+</listitem>
+<listitem>
+<title><emphasis role="bold">Tool Box Feature</emphasis></title>
+<para>There is an option to download a csv file so that the data can later be imported.</para>
+</listitem>
+</itemizedlist>
+</section>
+<section id="DownloadspreadsheetforOfflineEntry">
+<title>Download Spreadsheet for Offline Entry</title>
+<para>For the offline data entry, the user can generate the spreadsheet for data elements he/she has the authority to edit for a particular countries or group of countries or for a particular area of work. A blank template will be generated for the particular quarter, with the only the data elements the user is responsible for, and the chosen countries and areas of work in an excel template. The user can fill the data into the excel worksheet and upload the data separately.</para>
+</section>
+<section id="UploadOfflineData">
+<title>Upload Offline Data</title>
+<para>The user has the options to upload data that was entered offline. Browse to Data-> Upload Offline Data to open the page. The user needs to select the file format. One option is the CSV file and the other is the EXCEL format. The user needs to choose the particular format and browse the file. Then the user should click on Upload Data button to save the data. The EXCEL format can be downloaded as shown in the previous section. A sample of a CSV file can be seen in the Resources Section</para>
+</section>
+<section id="ResolveConflict">
+<title>Resolve Conflict</title>
+<para>The user have the option to resolve conflict and save the correct value amongst the history. User can get the list of all values which are in history and then from that list user can select the correct value.</para>
+</section>
+</chapter>
+<chapter>
+<title>Reports</title>
+<section id="CountryFileReport">
+<title>Country File Report</title>
+<para>This report gives the preview and print out of the dashboard and data entry values for a country. The following are the parameters for selection:</para>
+<orderedlist>
+<listitem>
+<para><emphasis role="bold">Select the Country:</emphasis> From the list of countries  select the country</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Select Area of Work:</emphasis> Select single or multiple area of work</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Key Flag Only:</emphasis> If only the Key Flag values needs to displayed and not all the data elements, then select this option</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Show source:</emphasis>The report will have a default to show the source and date of information. If you do not want the source to show in a particular report, you can select this by clicking on this box. </para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Show status and type:</emphasis> Show the status and type of the data elements</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Show all Data Elements:</emphasis> This will show all the data elements in the chosen area of work</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Show only Data Elements with values:</emphasis> This will show only the data elements which have value in the chosen area of work</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Show only Data Elements that are blank:</emphasis> This will show only the data elements which doesn’t have any values.</para>
+</listitem>
+</orderedlist>
+<para>Once the parameters have been selected, then click on Get Report. The output screen will open. The country report output will be in the same format as the dashboard. The first section will be the General Information about the country. The next section will have values, comments and source of the data elements of the area of works selected.There are following options in the output screen:</para>
+<orderedlist>
+<listitem>
+<para><emphasis role="bold">Change Selections:</emphasis> After clicking this option the parameter selection screen will open.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Download As Excel:</emphasis> To download the report in Excel format click on this option.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Print:</emphasis> To directly print the report, click on this option.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Share:</emphasis> The user can share the report with other users. Click on Share, which will open a new screen, where the user can search the names of people (S) he wants to send the report to. There will be link to the report.</para>
+</listitem>
+</orderedlist>
+</section>
+
+<section id="CannedReport">
+<title>Canned Report</title>
+<para>Canned report gives a preview and print out of the IPVreport for a country and PROWG Report for selected countries.</para>
+<orderedlist>
+<listitem>
+<para><emphasis role="bold">IPV Report: </emphasis> </para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Select Area of Work:</emphasis> Select the area of work to generate the report</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Select Country:</emphasis> Select the country for which IPV Report to be generated, single country can be selected for IPV Report</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Show source:</emphasis>The report will have a default to show the source and date of information. If you do not want the source to show in a particular report, you can select this by clicking on this box. </para>
+</listitem>
+<para>Once the parameters have been selected, then click on Get Report. The output screen will open. There are following options in the output screen:</para>
+</orderedlist>
+<orderedlist>
+<listitem>
+<para><emphasis role="bold">Change Selections:</emphasis> After clicking this option the parameter selection screen will open.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Download As Excel:</emphasis> To download the report in Excel format click on this option.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Print:</emphasis> To directly print the report, click on this option.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Share:</emphasis> The user can share the report with other users. Click on Share, which will open a new screen, where the user can search the names of people (S) he wants to send the report to. There will be link to the report.</para>
+</listitem>
+</orderedlist>
+<orderedlist>
+<listitem>
+<para><emphasis role="bold">PROWG Report: </emphasis> </para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Select Area of Work:</emphasis> Select the area of work as PROWG Report to generate the report</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Once PROWG Report is selected then Country selection tree will be changed to multiple selection tree with pre selected countries which have been stored in Bookmark in Custom Report.</emphasis> Select the area of work as PROWG Report to generate the report</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Select Country:</emphasis> Even after pre selected countries, Country selection an be changed using the tree.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Show source:</emphasis>The report will have a default to show the source and date of information. If you do not want the source to show in a particular report, you can select this by clicking on this box. </para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Period:</emphasis>Below the Country Selection tree there is option to Enter the From and To date, by default From date has current month and To has the After 12 month from now.</para>
+</listitem>
+<para>Once the parameters have been selected, then click on Get Report. The output screen will open, which contains two tables One for PCV and another for Rota as dataelement related to these two are selected in the Bookmark. There are following options in the output screen:</para>
+</orderedlist>
+<orderedlist>
+<listitem>
+<para><emphasis role="bold">Edit Bookmark:</emphasis> To rename the Bookmark or to overwrite the bookmark and to make it availabel for public view.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Back:</emphasis> After clicking this option screen will be redirected to Custom Report with PROWG Report Bookmark selected parameters.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Download As Excel:</emphasis> To download the report in Excel format click on this option.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Print:</emphasis> To directly print the report, click on this option.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Share:</emphasis> The user can share the report with other users. Click on Share, which will open a new screen, where the user can search the names of people (S) he wants to send the report to. There will be link to the report.</para>
+</listitem>
+</orderedlist>
+</section>
+
+
+<section id="CustomReport">
+<title>Custom Report</title>
+<para>Custom report provides the information about the country’s general information and values of Area of work in a tabular form. .The following are the parameters for selection:</para>
+<orderedlist>
+<listitem>
+<para><emphasis role="bold">Select a Country:</emphasis> Select a country or a region from the list of regions and countries.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Select Data Elements:</emphasis> Select the data elements from the available list of data elements to generat the Report.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Available Bookmark:</emphasis> Select the bookmark if same report is to be generated as Bookmark</para>
+</listitem>
+</orderedlist>
+<para>Once the parameters have been selected, then click on Get Report. The output screen will open. The output will be displayed in the screen itself with the following features:</para>
+<orderedlist>
+<listitem>
+<para><emphasis role="bold">Edit Bookmark:</emphasis> To rename the Bookmark or to overwrite the bookmark and to make it availabel for public view.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Back:</emphasis> After clicking this option screen will be redirected to Custom Report with PROWG Report Bookmark selected parameters.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Download As Excel:</emphasis> To download the report in Excel format click on this option.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Print:</emphasis> To directly print the report, click on this option.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Share:</emphasis> The user can share the report with other users. Click on Share, which will open a new screen, where the user can search the names of people (S) he wants to send the report to. There will be link to the report.</para>
+</listitem>
+</orderedlist>
+</section>
+<section id="KeyFlagReport">
+<title>Key Flag Report</title>
+<para>This report is cross cutting report for Key Flag indicators i.e. filtering of the key flags and region based on the selection of the Vaccines.The following are the parameters for selection:</para>
+<orderedlist>
+<listitem>
+<para><emphasis role="bold">Vaccines:</emphasis> Select one or multiple vaccines from the list of Vaccines.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Select a Country:</emphasis> Select a country or a region from the list of regions and countries.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Select an area of work:</emphasis> Select one or multiple area of works from the list of options</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Date Range:</emphasis> Select a date range from any of the following factors: YYYY/YYYY-Qn/YYYY-MM</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Use data for selected organisational group only:</emphasis> Select option of Show All Countries (which is the default) or from any of the organisational groups mentioned in the list.</para>
+</listitem>
+</orderedlist>
+<para>Once the parameters have been selected, then click on Get Report. The output screen will open. The output will be displayed in the screen itself with the following features:</para>
+<orderedlist>
+<listitem>
+<para><emphasis role="bold">Change Selections:</emphasis> After clicking this option the parameter selection screen will open.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Download As Excel:</emphasis> To download the report in Excel format click on this option.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Print:</emphasis> To directly print the report, click on this option.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Share:</emphasis> The user can share the report with other users. Click on Share, which will open a new screen, where the user can search the names of people (S) he wants to send the report to. There will be link to the report.</para>
+</listitem>
+</orderedlist>
+</section>
+<section id="VaccineIntroductionReport">
+<title>Vaccine Introduction Report</title>
+<para>This report provides information regarding Vaccines and its status in different countries. The following are the parameters for selection:</para>
+<orderedlist>
+<listitem>
+<para><emphasis role="bold">Vaccines:</emphasis> Select single or multiple vaccines</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Select a Country:</emphasis> Select a country, or region or the whole Globe from the list of countries and regions</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Other Data:</emphasis> Select from the list of options, the details which needs to be displayed in the report for the selected vaccines.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Date Range:</emphasis> Select a date range from any of the following factors: YYYY/YYYY-Qn/YYYY-MM</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Use data for selected organisational group only:</emphasis> Select option of Show All Countries (which is the default) or from any of the organisational groups mentioned in the list.</para>
+</listitem>
+</orderedlist>
+<para>Once the parameters have been selected, then click on Get Report. The output screen will open. The output will be displayed in the screen itself with the following features:</para>
+<orderedlist>
+<listitem>
+<para><emphasis role="bold">Change Selections:</emphasis> After clicking this option the parameter selection screen will open.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Download As Excel:</emphasis> To download the report in Excel format click on this option.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Print:</emphasis> To directly print the report, click on this option.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Share:</emphasis> The user can share the report with other users. Click on Share, which will open a new screen, where the user can search the names of people (S) he wants to send the report to. There will be link to the report.</para>
+</listitem>
+</orderedlist>
+</section>
+<section id="RegionalSummaryReport">
+<title>Regional Summary Report</title>
+<para>Regional Summary Report gives the output of the regional dashboard of a selected region, the key flag indicators which have been flagged during the selectedtime range, and the data elements which have been updated in the selectedtime period. The following are the parameters for selection:</para>
+<orderedlist>
+<listitem>
+<para><emphasis role="bold">Select Countries:</emphasis> Select a country or multiple countries, or region or the whole Globe from the list of countries and regions</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Select Areas of Work:</emphasis> Select a single or multiple areas of work for which the report needs to be generated.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">User Source:</emphasis> Shows the source of user of the data entry (checked by default).</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Regional Dashboard:</emphasis> Shows the regional dashboard of the region selected (checked by default).</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Select Time Series:</emphasis> Select the time range, for which the report needs to be generated</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Select Option:</emphasis> you can choose to display all data elements, only the data elements with values, only the data elements which have no value, or only the key flags</para>
+</listitem>
+</orderedlist>
+<para>Once the parameters have been selected, then click on Get Report. The output screen will open. The output will be displayed in the screen itself with the following features:</para>
+<orderedlist>
+<listitem>
+<para><emphasis role="bold">Change Selections:</emphasis> After clicking this option the parameter selection screen will open.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Download As Excel:</emphasis> To download the report in Excel format click on this option.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Print:</emphasis> To directly print the report, click on this option.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Share:</emphasis> The user can share the report with other users. Click on Share, which will open a new screen, where the user can search the names of people (S) he wants to send the report to. There will be link to the report.</para>
+</listitem>
+</orderedlist>
+</section>
+<section id="TeleConferenceAgendaReport">
+<title>TeleConference Agenda Report</title>
+<para>It provides information about the Regional conference what ever happened. It gives information about vaccine introduction, demos and vaccine campaigns. The following are the parameters for selection:</para>
+<orderedlist>
+<listitem>
+<para><emphasis role="bold">Select Countries:</emphasis> Select a country or multiple countries, or region or the whole Globe from the list of countries and regions</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Select Period Range:</emphasis> Select a date range from the following factors: YYYY-MM for which the report needs to be generated.</para>
+</listitem>
+</orderedlist>
+<para>Once the parameters have been selected, then click on Get Report. The output screen will open. The output will be displayed in the screen itself with the following features:</para>
+<orderedlist>
+<listitem>
+<para><emphasis role="bold">Change Selections:</emphasis> After clicking this option the parameter selection screen will open.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Download As Excel:</emphasis> To download the report in Excel format click on this option.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Print:</emphasis> To directly print the report, click on this option.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Share:</emphasis> The user can share the report with other users. Click on Share, which will open a new screen, where the user can search the names of people (S) he wants to send the report to. There will be link to the report.</para>
+</listitem>
+</orderedlist>
+</section>
+<section id="ToolBoxReport">
+<title>Tool Box Report</title>
+<para>This report provides information regarding Technical Assistance, Discussion and Conflict that are there for different Areas of Work (data set) in different countries.The following are the selection parameters:</para>
+<orderedlist>
+<listitem>
+<para><emphasis role="bold">Select Area of Work:</emphasis> Select a single or multiple area of work from the list</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Select Country:</emphasis> Select a country or region or globe from the list of regions and countries</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Select Quarter:</emphasis> Select the quarter for which the report needs to be generated.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Use data for selected organisational group only:</emphasis> Select option of Show All Countries (which is the default) or from any of the organisational groups mentioned in the list.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Tools:</emphasis> Select from any one of the following: Technical Assistance, Discussion and Conflict.</para>
+</listitem>
+</orderedlist>
+<para>Once the parameters have been selected, then click on Get Report. The output screen will open. The output will be displayed in the screen itself with the following features:</para>
+<orderedlist>
+<listitem>
+<para><emphasis role="bold">Change Selections:</emphasis> After clicking this option the parameter selection screen will open.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Download As Excel:</emphasis> To download the report in Excel format click on this option.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Print:</emphasis> To directly print the report, click on this option.</para>
+</listitem>
+<listitem>
+<para><emphasis role="bold">Share:</emphasis> The user can share the report with other users. Click on Share, which will open a new screen, where the user can search the names of people (S) he wants to send the report to. There will be link to the report.</para>
+</listitem>
+</orderedlist>
+</section>
+</chapter>
+<chapter>
+<title>Data Dictionary</title>
+<section id="Acronyms">
+<title>Acronyms</title>
+<itemizedlist>
+<listitem>
+<para>ADC - Accelerated Disease Control</para>
+</listitem>
+<para>AEFI - Adverse Events Following Immunization</para>
+<listitem>
+<para>AFP - Acute Flaccid Paralysis</para>
+</listitem>
+<listitem>
+<para>AFR Central - WHO country grouping for Africa Central</para>
+</listitem>
+<listitem>
+<para>AFR East and South - WHO country grouping for Africa East and South</para>
+</listitem>
+<listitem>
+<para>AMR - WHO country grouping for America</para>
+</listitem>
+<listitem>
+<para>AFR West - WHO country grouping for Africa West</para>
+</listitem>
+<listitem>
+<para>CAH - Child and Adolescent Health</para>
+</listitem>
+<listitem>
+<para>CCM - Community Case Management</para>
+</listitem>
+<listitem>
+<para>cMYP - comprehensive Multi-Year Plan</para>
+</listitem>
+<listitem>
+<para>DHIS2 - District Health Information Software 2</para>
+</listitem>
+<listitem>
+<para>DHS - Demographic and Health Surveys</para>
+</listitem>
+<listitem>
+<para>DTP - Diphtheria-Tetanus-Pertussis. DTP3 is third dose of the vaccine</para>
+</listitem>
+<listitem>
+<para>EMR - WHO country grouping for the Eastern Mediterranean</para>
+</listitem>
+<listitem>
+<para>EPI - Expanded Programme on Immunization</para>
+</listitem>
+<listitem>
+<para>EUR - WHO country grouping for Europe</para>
+</listitem>
+<listitem>
+<para>EVM - Effective Vaccine Management</para>
+</listitem>
+<listitem>
+<para>GAPP - Global Action Plan for Prevention and Control of Pneumonia</para>
+</listitem>
+<listitem>
+<para>GAPP-D – Global Action Plan for the Prevention of Pneumonia and Diarrhoea</para>
+</listitem>
+<listitem>
+<para>GAR - Global Alert and Response</para>
+</listitem>
+<listitem>
+<para>GAVI - Global Alliance for Vaccines and Immunization</para>
+</listitem>
+<listitem>
+<para>HepA - Hepatitis A</para>
+</listitem>
+<listitem>
+<para>HepB - Hepatitis B. HepB BD is birth dose of the vaccine</para>
+</listitem>
+<listitem>
+<para>Hib - Haemophilus influenzae type b. Hib3 is third dose of the vaccine.</para>
+</listitem>
+<listitem>
+<para>HPV - Human Papillomavirus</para>
+</listitem>
+<listitem>
+<para>HR - Human Resources</para>
+</listitem>
+<listitem>
+<para>HSS - Health Systems Strengthening</para>
+</listitem>
+<listitem>
+<para>IB-VPD - Invasive Bacterial-Vaccine Preventable Diseases</para>
+</listitem>
+<listitem>
+<para>ICC - Immunization Coordination Committee</para>
+</listitem>
+<listitem>
+<para>IHP - International Health Partnership</para>
+</listitem>
+<listitem>
+<para>ISO - International Standards Organization</para>
+</listitem>
+<listitem>
+<para>ISS - Immunization Services Support</para>
+</listitem>
+<listitem>
+<para>IVB - Immunization, Vaccines, and Biologicals</para>
+</listitem>
+<listitem>
+<para>JE - Japanese encephalitis</para>
+</listitem>
+<para>JRF - Joint Reporting Form</para>
+<listitem>
+<para>KAPB - Knowledge, Attitude, Practices and Behavior</para>
+</listitem>
+<listitem>
+<para>MCV - Measles Containing Vaccine. MCV1 is the first dose of the vaccine</para>
+</listitem>
+<listitem>
+<para>MenA - Meningococcal A</para>
+</listitem>
+<listitem>
+<para>MICS - Multiple Indicator Cluster Surveys</para>
+</listitem>
+<listitem>
+<para>MIS - Management Information Systems</para>
+</listitem>
+<listitem>
+<para>MNTE - Maternal and Neonatal Tetanus Elimination</para>
+</listitem>
+<listitem>
+<para>MoH - Ministry of Health</para>
+</listitem>
+<listitem>
+<para>MSD - Measles Second Dose</para>
+</listitem>
+<listitem>
+<para>NITAG - National Immunization Technical Advisory Group</para>
+</listitem>
+<listitem>
+<para>NNT - Neonatal Tetanus</para>
+</listitem>
+<listitem>
+<para>NRA - National Regulatory Authority</para>
+</listitem>
+<listitem>
+<para>NUVI - New and Under-Utilized Vaccines Implementation</para>
+</listitem>
+<listitem>
+<para>NVI - New Vaccine Introduction</para>
+</listitem>
+<listitem>
+<para>PCV - Pneumococcal Conjugate Vaccine. PCV1 is first dose of the vaccine and PCV3 is the third dose of the vaccine</para>
+</listitem>
+<listitem>
+<para>PIE - Post Introduction Evaluation</para>
+</listitem>
+<listitem>
+<para>PIRI - Periodic Intensification of Routine Immunization Services</para>
+</listitem>
+<listitem>
+<para>Pol3 - Third dose of polio vaccine</para>
+</listitem>
+<listitem>
+<para>POLIS - Polio Information System</para>
+</listitem>
+<listitem>
+<para>QSS - Quality, Safety and Standards</para>
+</listitem>
+<listitem>
+<para>RA - Regional Advisor</para>
+</listitem>
+<listitem>
+<para>RED - Reaching Every District</para>
+</listitem>
+<listitem>
+<para>RI - Routine Immunization</para>
+</listitem>
+<listitem>
+<para>RO - WHO Regional Office or Officer</para>
+</listitem>
+<listitem>
+<para>SEAR - WHO country grouping for South East Asia Region </para>
+</listitem>
+<listitem>
+<para>SIA - Supplementary immunization activities</para>
+</listitem>
+<listitem>
+<para>SIG - Strategic Information Group</para>
+</listitem>
+<listitem>
+<para>Soc Mob - Social mobilization</para>
+</listitem>
+<listitem>
+<para>UNICEF SD - UNICEF Supply Division</para>
+</listitem>
+<listitem>
+<para>WPR - WHO country grouping for West Pacific Region </para>
+</listitem>
+<listitem>
+<para>WUENIC - WHO and UNICEF Estimates of National Immunization Coverage</para>
+</listitem>
+<listitem>
+<para>YF - Yellow Fever</para>
+</listitem>
+</itemizedlist>
+</section>
+<section id="KeyFlagDefinitions">
+<title>Key Flag Definitions</title>
+<orderedlist>
+<listitem>
+<title>National Regulatory Authorities (NRAs)</title>
+<itemizedlist>
+<listitem>
+<para>What is the main source of vaccines? (Domestic Production, Direct Procurement, UN Agency or a combination of all these?</para>
+</listitem>
+<listitem>
+<para>"1-Domestic production" is selected from a list of: 1-Domestic production; 2-Direct procurement; 3-UN Agency; Not applicable; or Not available.</para>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<title>ICCs</title>
+<itemizedlist>
+<listitem>
+<para>Is there a functional (at least 2 meetings per year, with written minutes) ICC in place?</para>
+</listitem>
+<listitem>
+<para>The Region reports that there are less than two meetings per year OR if the meetings are not circulated.</para>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<title>NITAGs</title>
+<itemizedlist>
+<listitem>
+<para>Has a NITAG been established?</para>
+</listitem>
+<listitem>
+<para>It is reported on the JRF that "No", a NITAG has not been established</para>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<title>Vaccine Intro Status</title>
+<itemizedlist>
+<listitem>
+<para>Is there a new or under-utilized vaccine introduction planned for the next 12 months?</para>
+</listitem>
+<listitem>
+<para>The Region manually enters an Intro Year and Month between now and a year from now for any of the listed vaccines.</para>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<title>Planning</title>
+<itemizedlist>
+<listitem>
+<para>Is the cMYP (or equivalent) up to date?</para>
+</listitem>
+<listitem>
+<para>The end date of the cMYP is earlier than today's date.</para>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<title>Financial Sustainability</title>
+<itemizedlist>
+<listitem>
+<para>Have there been any problems in the last 12 months with the country financing its vaccines?</para>
+</listitem>
+<listitem>
+<para>UNICEF SD or the Region manually select "Yes", there have been problems with country financing of vaccines over the past 12 months.</para>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<title>Access and Equity</title>
+<itemizedlist>
+<listitem>
+<para>Percentage of districts that have under 80% DTP3 coverage.</para>
+</listitem>
+<listitem>
+<para>It is reported on the JRF that more than 20% of districts have DTP3 coverage less than 80%.</para>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<title>Accelerated Disease Control</title>
+<itemizedlist>
+<listitem>
+<para>Is this country a priority ADC country for WHO?</para>
+</listitem>
+<listitem>
+<para>SIG provides information that the country is an ADC priority for one or more of the listed diseases (Polio, Measles, Rubella, MenA, Yellow Fever, MNTE, Cholera, or Typhoid).</para>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<title>Vaccine Management</title>
+<itemizedlist>
+<listitem>
+<para>Has the national vaccine store experienced any vaccine stock-outs in the last six months?</para>
+</listitem>
+<listitem>
+<para>The Region manually selects "Yes", the national vaccine store has experienced a stock-out in the last six months.</para>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<title>Cold Chain</title>
+<itemizedlist>
+<listitem>
+<para>Is there sufficient cold chain capacity at national level to meet the stated needs in the cMYP?</para>
+</listitem>
+<listitem>
+<para>The Region manually selects, "No", there is not sufficient cold chain capacity at national level to meet the stated needs in the cMYP.</para>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<title>Human Resources Capacity Building</title>
+<itemizedlist>
+<listitem>
+<para>Are human resources identified as a major barrier towards increasing immunization coverage in the cMYP?</para>
+</listitem>
+<listitem>
+<para>The Region manually selects, "Yes", human resources have been identified as a major barrier towards increasing immunization coverage in the cMYP.</para>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<title>Social Mobilization and Communication (ADC, RI, NVI)</title>
+<itemizedlist>
+<listitem>
+<para>Are social mobilization activities included in the cMYP?</para>
+</listitem>
+<listitem>
+<para>The Region manually selects, "Yes", there are social mobilization activities included in the cMYP.</para>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<title>Health Systems Strengthening</title>
+<itemizedlist>
+<listitem>
+<para>Is this a priority country for Health Systems Strengthening?</para>
+</listitem>
+<listitem>
+<para>HSS manually selects, "Yes", the country is a priority for Health Systems Strengthening.</para>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<title>Integrated Approaches to Disease Control</title>
+<itemizedlist>
+<listitem>
+<para>Are there activities around integrated approaches to disease control being implemented around diarrhoeal, pneumococcal, and cervical cancer control?</para>
+</listitem>
+<listitem>
+<para>The Region manually selects, "No", there are not integrated approaches to disease control being implemented.</para>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<title>Immunization Data</title>
+<itemizedlist>
+<listitem>
+<para>Does DTP3/Penta3 Coverage have >5% difference between WUENIC and Admin Data?</para>
+</listitem>
+<listitem>
+<para>Subtracting the WUENIC from the JRF is greater than 5%.</para>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<title>Surveillance</title>
+<itemizedlist>
+<listitem>
+<para>What was the year of the last assessment?</para>
+</listitem>
+<listitem>
+<para>The maximum year of the last assessment is more than five years ago.</para>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<title>Vaccine Safety/Pharmocovigilance</title>
+<itemizedlist>
+<listitem>
+<para>Is there an AEFI monitoring system in place?</para>
+</listitem>
+<listitem>
+<para>It is reported on the JRF that "No", an AEFI monitoring system is not in place.</para>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<title>Programmatic Monitoring</title>
+<itemizedlist>
+<listitem>
+<para>Is there regular in country EPI programme meetings between national and sub-national levels? (At least half-yearly meetings)</para>
+</listitem>
+<listitem>
+<para>The Region manually selects, "No", there are not regular in country EPI programme meetings.</para>
+</listitem>
+</itemizedlist>
+</listitem>
+</orderedlist>
+</section>
+</chapter>
+<chapter>
+<title>Others</title>
+<section id="LoginPage">
+<title>Login Page</title>
+<para>The login page has two fields, one for User Name and other for password. Each user will have their unique username and password.Request to the system can be requested by contacting the email id given in the login page. Click on the Email id link in the login page to request access.</para>
+</section>
+<section id="Contact">
+<title>Contact</title>
+<para>If a user wants to contact the admin or a group of select users, (S) he can click on ‘Contact’ on the top right side of the homepage. This will open a new page, where Subject and Text needs to be entered. The message will be received by a pre defined group of users including the admin.</para>
+</section>
+<section id="Translation">
+<title>Translation</title>
+<para>On the top right hand side of the homepage, there is an option to translate to French and Spanish. If the user wants to view the page in some either of the two languages, then (S) he needs to just click on the particular language link.</para>
+</section>
+<section id="Resource">
+<title>Resource</title>
+<para>In Help Section there is an option of Resource. Using Resource option documents can be uploaded which will be shared with other users. Documents can be uploaded for individual Country ot Region ot Globe. Once the document is uploaded then that can be downloaded by any user and can be used.</para>
+</section>
+<section id="Logout">
+<title>Logout</title>
+<para>The user must click on Logout on the top right hand corner of the screen to logout of the system.</para>
+</section>
+</chapter>
+</book>

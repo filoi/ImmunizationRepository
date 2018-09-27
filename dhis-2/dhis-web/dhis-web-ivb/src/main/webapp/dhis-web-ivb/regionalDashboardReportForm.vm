@@ -1,0 +1,149 @@
+
+<style type="text/css">
+
+	.multiselect {
+	    max-height: 25em;
+	    background-color: #FFF;
+	    border: solid 1px #c0c0c0;
+	    overflow: auto;
+	}
+	
+	.multiselect label{
+		display: block;
+	}
+
+</style>
+
+<script type="text/javascript">
+
+	$(document).ready(function(){
+	    $('#myjquerymenu').find('#report').addClass("selected");
+	    pageName = 'RegionalDashboardReport';
+        	    
+	    $("#submit").button(); 
+	    $("#cancel").button(); 		    
+
+	});
+
+	function selectAllOrUnselectAll_OU( ){
+		if($("#selectAllOrUnselectAllCB_OU").prop("checked")){
+			$("#countryMultiSelectDiv label:visible input[type='checkbox'].oucbs").prop("checked",true);
+			$("#countryMultiSelectDiv label:hidden input[type='checkbox'].oucbs").prop("checked",false);
+		}
+		else{
+			$("#countryMultiSelectDiv  input[type='checkbox'].oucbs").prop("checked",false);
+		}
+	}
+	
+	function selectAllOrUnselectAll_DS( ){
+		if($("#selectAllOrUnselectAllCB_DS").prop("checked")){
+			$("#dsMultiSelectDiv label:visible input[type='checkbox'].dscbs").prop("checked",true);
+			$("#dsMultiSelectDiv label:hidden input[type='checkbox'].dscbs").prop("checked",false);
+		}
+		else{
+			$("#dsMultiSelectDiv input[type='checkbox'].dscbs").prop("checked",false);
+		}
+	}
+			
+	function formValidations()
+	{
+		return true;
+	}		
+	
+    function generateHTMLreport()
+    {
+    	var countryTags = $countryList;
+    	$('#selectedListDataset option').attr('selected', 'selected');
+    	var dataSetListBox = document.getElementById('selectedListDataset');
+    	var bValue = false;
+    	
+		var countryId = $("#orgUnitId").val();
+    	for(var i=0;i<=countryTags.length-1;i++)
+		{
+			if(countryTags[i] == countryId )
+			{
+				bValue = true;
+			}
+		}
+		
+		if(bValue == false)
+		{
+			alert('Please Select Country');
+    		return false;
+		} 
+		
+		var hasAllImages = true;
+		var isAllImagesOk = true;
+		var emptyImgCount = 0;
+		
+		for(var x=1; x<=5; x++)
+		{
+			var thisID = "#input-image" + x;
+			
+			if( $(thisID).val() == "" ){
+				//hasAllImages = false;
+				emptyImgCount++;
+			}
+			else if( $(thisID).val().split(".")[$(thisID).val().split(".").length - 1].toLowerCase() != "png")
+				isAllImagesOk = false;				
+		}
+		
+		if( emptyImgCount >= 5 )
+		{
+			alert("Please select atleast one image and click upload");
+			return false;
+		}
+		
+		if( !isAllImagesOk )
+		{
+			alert("Invalid images files found. Only PNG images are allowed");
+			return false;
+		}
+		
+    }
+
+	</script>
+
+<br/>
+
+#if( $regionalDBCount == 0 )
+	<div style="font-size:16px; width:93%; margin:auto;" class="ui-widget-header ui-corner-all"><b>$i18n.getString( "afro_east_and_south_dashboard" )</b></div>
+#elseif( $regionalDBCount == 1 )
+	<div style="font-size:16px; width:93%; margin:auto;" class="ui-widget-header ui-corner-all"><b>$i18n.getString( "afro_central_dashboard" )</b></div>
+#else
+	<div style="font-size:16px; width:93%; margin:auto;" class="ui-widget-header ui-corner-all"><b>$i18n.getString( "afro_west_dashboard" )</b></div>
+#end
+<form id="regionalDashboardForm" action="regionalDashboardReportResult.action" onsubmit="return formValidations()" method="post">
+ 	<div id="reportFilterDiv" >     
+ 		<table style="width:90%;margin:auto;" cellpadding="4" cellspacing="2">
+ 			<tr>
+ 				<td width="40%" style="vertical-align:top;">
+ 					$i18n.getString( "select_country" )<br/> 	
+					<div class="multiselect" id="countryMultiSelectDiv">
+						<label><input type="checkbox" name="selectAllOrUnselectAllCB_OU" title="Select/Deselect All" onclick="selectAllOrUnselectAll_OU()" id="selectAllOrUnselectAllCB_OU"/><b>Select All</b></label>
+						#foreach( $orgUnit in $orgUnits )
+							<label class="ouname"><input type="checkbox" name="orgUnits" class="oucbs" value="$orgUnit.uid" checked="checked" />$orgUnit.displayName</label>
+						#end
+				  	</div>				
+				 </td>				 
+ 				 <td width="5%">&nbsp;</td>
+				 <td width="55%" style="vertical-align:top;">
+				 	$i18n.getString( "select_area_of_work" )<br/> 					
+					<div class="multiselect" id="dsMultiSelectDiv">
+						<label><input type="checkbox" name="selectAllOrUnselectAllCB_DS" title="Select/Deselect All" onclick="selectAllOrUnselectAll_DS()" id="selectAllOrUnselectAllCB_DS"/><b>Select All</b></label>
+						#foreach( $dataSet in $datasetList )
+							<label class="dsname"><input type="checkbox" name="dataSets" class="dscbs" value="$dataSet.uid" checked="checked" />$dataSet.displayName</label>
+						#end
+				  	</div>				
+				 </td>			 
+			</tr>
+ 			<tr>
+	 			<td><input type="submit" value="$i18n.getString( 'get_report' )" /></td>
+	 			<td>&nbsp;</td>
+	 			<td><input type="checkbox" id="includeComment" name="includeComment" /> Include comments in excel export</td>
+ 			</tr>
+		 </table>
+		 <input type="hidden" name="regionalDBCount" id="regionalDBCount" value="$regionalDBCount" />
+    </div>
+	<br/><br/>
+</form>

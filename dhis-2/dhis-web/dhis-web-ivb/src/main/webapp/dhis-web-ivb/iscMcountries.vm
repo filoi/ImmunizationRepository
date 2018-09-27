@@ -1,0 +1,1850 @@
+<!-- <script type="text/javascript" src="js/jquery.min.js"></script>-->
+<script type="text/javascript" src="js/jszip.min.js"></script>
+<script type="text/javascript" src="js/promise.min.js"></script>     <!-- optional if not using IE11 -->
+<script type="text/javascript" src="js/pptxGen/pptxgen.shapes.js"></script>  <!-- optional if you dont need non-core Shapes -->
+<script type="text/javascript" src="js/pptxGen/pptxgen.masters.js"></script> <!-- optional if you dont need Slide Masters/Templates -->
+<script type="text/javascript" src="js/pptxGen/pptxgen.js"></script>
+<!-- pptxGen -->
+
+<script type="text/javascript" src="js/base64Images.js"></script>
+<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
+<style>
+	.image-input
+	{
+		position: absolute;
+		top:-15px;
+		height:130px;
+		width:200px;
+		opacity:0.01;
+	}
+	
+	.preview-img
+	{
+		width: 175px;
+		height:110px;
+		border-radius:0 0 2px 2px;
+	}
+	
+	.img-title
+	{
+		width:175px;
+		height:15px;
+		text-align:center;
+		background:#006397;
+		color:#fff;
+		border-radius:2px 2px 0 0;
+		font-size:12px;
+	}
+	
+	#img-upload-cont tr td
+	{
+		padding: 0px 10px 5px 0px;
+		text-align:center;
+	}
+
+	.up-cont
+	{
+		display: inline-block;
+		padding: 2px 2px 2px 2px;		
+	}
+
+</style>
+
+
+<script type="text/javascript">
+
+function numFormat1(n) {
+    return n.replace(/./g, function(c, i, a) {
+        return i > 0 && c !== "." && (a.length - i) % 3 === 0 ? "," + c : c;
+    });
+}
+
+
+	$(document).ready(function(){
+	    $('#myjquerymenu').find('#isc_reports').addClass("selected");
+	    pageName = 'ISC-MultipleCountries';
+	            
+	    $("#submit").button(); 
+	    $("#cancel").button(); 		    
+	});
+
+    function getOrgUnitId(orgUnits)
+    { 
+    	$("#orgUnitId").val(orgUnits[0]);	
+		
+		if($("#orgUnitId").val() != ""){
+			$("#uploadBtn").show();
+			$("#img-upload-cont").show();			
+		}
+    }
+
+    function generateHTMLreport()
+    {
+    	var countryTags = $countryList;
+    	$('#selectedListDataset option').attr('selected', 'selected');
+    	var dataSetListBox = document.getElementById('selectedListDataset');
+    	var bValue = false;
+    	
+		var countryId = $("#orgUnitId").val();
+    	for(var i=0;i<=countryTags.length-1;i++)
+		{
+			if(countryTags[i] == countryId )
+			{
+				bValue = true;
+			}
+		}
+		
+		if(bValue == false)
+		{
+			alert('Please Select Country');
+    		return false;
+		} 
+		
+		var hasAllImages = true;
+		var isAllImagesOk = true;
+		var emptyImgCount = 0;
+		
+		for(var x=1; x<=6; x++)
+		{
+			var thisID = "#input-image" + x;
+			
+			if( $(thisID).val() == "" ){
+				//hasAllImages = false;
+				emptyImgCount++;
+			}
+			else if( $(thisID).val().split(".")[$(thisID).val().split(".").length - 1].toLowerCase() != "png")
+				isAllImagesOk = false;				
+		}
+		
+		if( emptyImgCount >= 6 )
+		{
+			alert("Please select atleast one image and click upload");
+			return false;
+		}
+		
+		if( !isAllImagesOk )
+		{
+			alert("Invalid images files found. Only PNG images are allowed");
+			return false;
+		}
+		
+    }
+
+	function treeSelected( unitIds )
+	{		
+		$("#orgUnitId").val(unitIds);
+		
+		if($("#orgUnitId").val() != ""){
+			$("#img-upload-cont").show();
+			$("#uploadBtn").show();
+		}
+			
+		refreshThumbnails($("#orgUnitId").val());
+	}
+
+	function epiCountrySelectionChange( unitUid )
+	{		
+		$("#orgUnitId").val(unitUid);
+		
+		if($("#orgUnitId").val() != ""){
+			$("#img-upload-cont").show();
+			$("#uploadBtn").show();
+		}
+		refreshThumbnails($("#orgUnitId").val());
+	}
+
+	
+	jQuery(document).ready(function() {
+		//selectionTreeSelection.setListenerFunction( treeSelected );	
+		//selectionTreeSelection.setMultipleSelectionAllowed( true );
+		//selectionTree.clearSelectedOrganisationUnits();
+		//selectionTree.buildSelectionTree();
+	});
+</script>
+
+<br/>
+
+<div style="font-size:16px; width:93%; margin:auto;" class="ui-widget-header ui-corner-all"><b>$i18n.getString( "isc_report_multiple_countries" )</b></div>
+<form id="form1" action="#" onsubmit="return generateHTMLreport()" method="post">
+
+ 	<input type="hidden" name="orgUnitId" id="orgUnitId" value="$orgUnitId" />
+	 	
+ 	<div id="reportFilterDiv" >     
+ 		<table style="width:90%;margin:auto;" cellpadding="4" cellspacing="2">
+ 			<tr>
+ 				<td width="50%" valign="top">
+ 					<div id="orgUnitTreeContainer" style="height: 250px; width: 450px;">
+						#organisationUnitSelectionTree1( false, true, true )
+					</div>
+ 					<!-- <div id="selectionTree" class="ui-widget-content ui-corner-all" style="height: 250px; width: 375px; overflow:auto;"></div> -->
+ 					<!--
+ 					<div id="orgUnitTreeContainer" class="ui-widget-content ui-corner-all" style="height: 166px; width: 375px; overflow:auto;">
+ 						<div id="selectionTree" ></div>
+ 					</div>
+ 					--->
+			    </td>		
+				<td width="5%">&nbsp;</td>
+				<td width="45%" align="left">
+			 		<input type="hidden" id="deIds" name="deIds" value="1181489,1181490,1181491,1181492,
+						1181493,1181494,1181495,1181496,
+						1181497,1181498,1181499,1181500,
+						1181501,1181502,1181503,1181504,
+						1181505,1181506,1181507,1181508,
+						1181510,1181511,1181512,1181513,1181514,1181515,1181516,1181517,1181518,
+						1181519,1181520,1181521,1181522,1181523,1181524,1181525,1181526,1181527" />
+			 		<input type="button" onclick="downloadISCData()" value="Process Scorecard" id="submit" style="width:180px;" /><br/><br/>
+					<input type="button" onclick="#" value="Performance Dashboard" id="submit2" style="width:180px;" />					
+	 			</td>				 
+			</tr>
+ 			
+		 </table>
+    </div>
+	<br/><br/>
+</form>
+
+<!-- 
+<script>
+
+jQuery(document).ready(function() {
+	console.log( "Before: "+$("#orgUnitId").val());
+	if($("#orgUnitId").val() != ""){
+		$("#img-upload-cont").show();
+		$("#uploadBtn").show();
+		refreshThumbnails($("#orgUnitId").val());
+	}
+	console.log( "after");
+});
+
+</script>
+-->
+
+<script>
+	/** FUNCTIONS FOR IMAGE UPLOAD AND THUMBNAILS **/
+	//var imageBaseURL = window.location.protocol + "/" + window.location.hostname + "/api/";
+	var imageBaseURL = "../api/documents"
+	var noImageUrl = 'images/noimage.png';
+	//var appURL = window.location.protocol + "//" + window.location.hostname + "/api/documents/";
+	var appURL = "http://172.104.45.26/api/documents/";
+	//var appURL = "http://localhost:8090/dhis/api/documents/";
+	//var appURL = "https://www.who-immunization-repository.org/api/documents/";
+	
+	
+	
+	
+	function previewFile(element, previewId) 
+	{
+	  var preview = document.getElementById(previewId);
+	  var file    = element.files[0];
+	  var reader  = new FileReader();
+
+	  reader.onloadend = function () 
+	  {
+		preview.src = reader.result;
+	  }
+
+	  if (file) 
+		reader.readAsDataURL(file);
+	  else 
+		preview.src = "";
+	}
+	
+</script>
+	
+<script type="text/javascript">
+	// ==================================================================================================================
+	var opObj = {};
+	function downloadISCData()
+	{
+		var url = "iscReportMcountriesJSON.action";
+		var data = $('#form1').serializeArray();
+		//console.log(data);
+		$.post(url, data, function(res){
+			console.log(res);
+			opObj = res;
+			downloadISCPPT();
+		});		
+	}
+	
+	function downloadISCPPT(){
+		var slideWidth = 11;
+		var slideHeight = 7.8;
+
+		var pptx = new PptxGenJS();
+		pptx.setLayout({ name:'ISC', width:slideWidth, height:slideHeight });
+		
+		var offsetY = 0.01;
+		var defFontFace = 'Calibri';
+		var defFontSize = 10;
+		var defTitleFontSize = 10;
+		var defFillColor = 'ffffff';
+		var defHeadFillColor = 'DEDEF2';
+		var defFontColor = '000000';
+		var defHeadFontColor = '090942';
+		var defTitleFontColor = '090942';
+		var defRowHeight = 0.3;
+		var defBorder = {pt:'1',color:'000000'};
+		var thinBorder = {pt:'1'};
+		var thickBorder = [{pt:'1'},{pt:'2'},{pt:'1'},{pt:'1'}];
+		var thickBorder2 = [{pt:'1'},{pt:'1'},{pt:'1'},{pt:'2'}];
+		var defNoBorder = {pt:'1',color:'ffffff'};
+		var defPadding = 0.02;
+			
+			
+			//slide = pptx.addNewSlide();
+			tableStyle = { x:0.08, y:0.45, w:'100%', 
+							colW:[0.85, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4], 
+							fill:defFillColor, 
+							color:defFontColor, font_face:defFontFace, font_size:defFontSize,marginPt:0, valign:'m', align:'c', border:defBorder, margin:2,
+							rowH:[0.2,0.2] };
+			
+			titleCellStyle = {x:0.05, y:0.08, w:'99%', fill:defHeadFillColor, font_size:13, color:defHeadFontColor, bold:true};
+			
+			var resultFontColor = '4f93a8';
+			
+			var iscTables = [];
+			
+			var iscTableHeader1 = [
+							{ text: 'Countries', opts:{colspan: 1, rowspan:2, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true, border:thickBorder}},
+							{ text: 'Leadership', opts:{colspan: 5, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true, border:thickBorder}},
+							{ text: 'Contineous Improvement Plan', opts:{colspan: 5, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true, border:thickBorder}},
+							{ text: 'Data for management', opts:{colspan: 5, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true, border:thickBorder}},
+							{ text: 'Cold Chain Equipment', opts:{colspan: 5, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true, border:thickBorder}},
+							{ text: 'System Design', opts:{colspan: 5, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,thinBorder}}
+						];
+			
+			var iscTableHeader2 = [
+							{ text: ' ', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thickBorder}},
+							
+							{ text: 'L1', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thickBorder2}},
+							{ text: 'L2', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}},
+							{ text: 'L3', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}},
+							{ text: 'L4', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}},
+							{ text: 'L5', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thickBorder}},
+							
+							{ text: 'L1', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}},
+							{ text: 'L2', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}},
+							{ text: 'L3', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}},
+							{ text: 'L4', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}},
+							{ text: 'L5', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thickBorder}},
+
+							{ text: 'L1', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}},
+							{ text: 'L2', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}},
+							{ text: 'L3', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}},
+							{ text: 'L4', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}},
+							{ text: 'L5', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thickBorder}},
+
+							{ text: 'L1', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}},
+							{ text: 'L2', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}},
+							{ text: 'L3', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}},
+							{ text: 'L4', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}},
+							{ text: 'L5', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thickBorder}},
+
+							{ text: 'L1', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}},
+							{ text: 'L2', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}},
+							{ text: 'L3', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}},
+							{ text: 'L4', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}},
+							{ text: 'L5', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}}					
+						];
+						
+			var iscTable1 = [
+				[
+					{ text: 'Countries', opts:{colspan: 1, rowspan:2, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'Leadership', opts:{colspan: 5, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'Contineous Improvement Plan', opts:{colspan: 5, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'Data for management', opts:{colspan: 5, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'Cold Chain Equipment', opts:{colspan: 5, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'System Design', opts:{colspan: 5, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}}
+				],
+				[
+					{ text: ' ', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					
+					{ text: 'L1', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L2', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L3', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L4', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L5', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					
+					{ text: 'L1', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L2', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L3', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L4', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L5', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+
+					{ text: 'L1', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L2', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L3', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L4', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L5', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+
+					{ text: 'L1', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L2', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L3', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L4', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L5', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+
+					{ text: 'L1', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L2', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L3', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L4', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L5', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}}
+					
+				]
+			];
+			
+			var des = [ 
+				[1181489,1181490,1181491],
+				[1181493,1181494,1181495],
+				[1181497,1181498,1181499],
+				[1181501,1181502,1181503],
+				[1181505,1181506,1181507]
+			];
+			
+			//Thin / Default border
+			var baseLevelCellOptions = {color:'A7FAB8', fill:'A7FAB8',border:thinBorder};
+			var currentLevelCellOptions = {color:'33E758', fill:'33E758',border:thinBorder};
+			var targetLevelCellOptions = {color:'079C26', fill:'079C26',border:thinBorder};
+			var defCellOptions = {color:'FFFFFF', fill:'FFFFFF',border:thinBorder};			
+
+			//Thick border
+			var baseLevelCellOptions2 = {color:'A7FAB8', fill:'A7FAB8',border:thickBorder};
+			var currentLevelCellOptions2 = {color:'33E758', fill:'33E758',border:thickBorder};
+			var targetLevelCellOptions2 = {color:'079C26', fill:'079C26',border:thickBorder};
+			var defCellOptions2 = {color:'FFFFFF', fill:'FFFFFF',border:thickBorder};			
+			var defCellOptions3 = {color:'000000', fill:'FFFFFF',border:thickBorder, align:'l'};			
+			
+			var tableCount = 0;
+			var rowCount = 0;
+			
+			var cellOptionsArray = [baseLevelCellOptions, currentLevelCellOptions, targetLevelCellOptions ];
+			
+			var orgUnits = opObj.orgUnits;
+			
+			iscTables[tableCount] = [];
+			iscTables[tableCount].push( iscTableHeader1 );
+			iscTables[tableCount].push( iscTableHeader2 );
+			
+			//console.log( orgUnits );
+			for( var ouIndex in orgUnits ){				
+				rowCount++;
+				var oneRow = [];
+				var oneCell = {};
+				oneCell.text = orgUnits[ouIndex].code;
+				oneCell.options = defCellOptions3;
+				oneRow.push( oneCell );
+					
+				var i = 0;
+				for( var deIndex in des){			
+					for( var j = 1; j<=5; j++){
+						var curLevel = "Level "+j;
+																		
+						var dvKey = "";
+						var baseLevelVal = "";
+						var currLevelVal = "";
+						var targetLevelVal = "";
+
+						try{ dvKey = orgUnits[ouIndex].id+"_"+des[deIndex][0]; }catch(e){ dvKey="" }
+						try{ baseLevelVal = opObj.dvMap[dvKey].strVal1; }catch(e){ baseLevelVal = "";}
+
+						try{ dvKey = orgUnits[ouIndex].id+"_"+des[deIndex][1]; }catch(e){ dvKey="" }
+						try{ currLevelVal = opObj.dvMap[dvKey].strVal1; }catch(e){ currLevelVal = "";}
+
+						try{ dvKey = orgUnits[ouIndex].id+"_"+des[deIndex][2]; }catch(e){ dvKey="" }
+						try{ targetLevelVal = opObj.dvMap[dvKey].strVal1; }catch(e){ targetLevelVal = "";}
+						
+						oneCell = {};
+						
+						if( curLevel == baseLevelVal ){
+							oneCell.text = 'B';
+							if( j==5) 
+								oneCell.options = baseLevelCellOptions2;	
+							else
+								oneCell.options = baseLevelCellOptions;	
+						}
+						else if( curLevel == currLevelVal ){
+							oneCell.text = 'C';
+							if(j==5)
+								oneCell.options = currentLevelCellOptions2;
+							else
+								oneCell.options = currentLevelCellOptions;
+						}
+						else if( curLevel == targetLevelVal ){
+							oneCell.text = 'T';
+							if(j==5)
+								oneCell.options = targetLevelCellOptions2;
+							else
+								oneCell.options = targetLevelCellOptions;
+						}
+						else{
+							oneCell.text = '-';
+							if(j==5 && deIndex != des.length-1)
+								oneCell.options = defCellOptions2;
+							else
+								oneCell.options = defCellOptions;
+						}
+						
+						oneRow.push(oneCell);																	
+					}
+					i++;
+				}
+				
+				//iscTable1.push( oneRow );
+				iscTables[tableCount].push( oneRow );
+				
+				if( rowCount == 30 ){
+					tableCount++;
+					iscTables[tableCount] = [];
+					iscTables[tableCount].push( iscTableHeader1 );
+					iscTables[tableCount].push( iscTableHeader2 );
+
+					rowCount = 0;
+				}				
+			}
+			
+			console.log( iscTables );
+			for( var tableIndex in iscTables ){
+				slide = pptx.addNewSlide()
+				slide.addText('iSC Global Process Scorecard', titleCellStyle );	
+				slide.addTable( iscTables[tableIndex], tableStyle );
+			}
+			
+					
+			pptx.save( 'ISC_Scorecard' );
+	}
+	
+	function downloadPPT() {
+			/** ========================================================================================
+			============================================================================================
+			DATA FOR DEs
+			============================================================================================
+			======================================================================================== **/
+			/** ***********************************************************
+			**  SLIDE 1
+			*********************************************************** **/
+			 
+			//cell 1 - EPI PROFILE
+			var keyBarriers_s1c1 = ""; try{ keyBarriers_s1c1 = EPIObj.epiDataMap["1000296"].strVal2;}catch(err){}
+			var opporunities_s1c1 = ""; try{ opporunities_s1c1 = EPIObj.epiDataMap["1000297"].strVal2;}catch(err){}
+			 
+			//cell 2 - Immunization Strategies
+			var fixedService_s1c2 = ""; try{ fixedService_s1c2 = EPIObj.epiDataMap["1000298"].strVal2;}catch(err){}
+			var outReach_s1c2 = ""; try{ outReach_s1c2 = EPIObj.epiDataMap["1000299"].strVal2;}catch(err){}
+			var specialStrategies_s1c2 = ""; try{ specialStrategies_s1c2 = EPIObj.epiDataMap["1000300"].strVal2;}catch(err){}
+			var activitiesToRI_s1c2 = ""; try{ activitiesToRI_s1c2 = EPIObj.epiDataMap["1000301"].strVal2;}catch(err){}
+			var commentsIS_s1c2 = ""; try{ commentsIS_s1c2 = EPIObj.epiDataMap["1000368"].strVal2;}catch(err){}
+			 
+			//cell 3 - Vaccine Schedule 
+			var bcg_s1c3 = ""; try{ bcg_s1c3 = EPIObj.epiDataMap["1000302"].strVal2;}catch(err){}
+			var dtphib_s1c3 = ""; try{ dtphib_s1c3 = EPIObj.epiDataMap["1000303"].strVal2;}catch(err){}
+			var opv_s1c3 = ""; try{ opv_s1c3 = EPIObj.epiDataMap["1000304"].strVal2;}catch(err){}
+			var ipv_s1c3 = ""; try{ ipv_s1c3 = EPIObj.epiDataMap["1000305"].strVal2;}catch(err){}
+			var pcv_s1c3 = ""; try{ pcv_s1c3 = EPIObj.epiDataMap["1000306"].strVal2;}catch(err){}
+			var measles_s1c3 = ""; try{ measles_s1c3 = EPIObj.epiDataMap["1000307"].strVal2;}catch(err){}
+			var measlesRubella_s1c3 = ""; try{ measlesRubella_s1c3 = EPIObj.epiDataMap["1067424"].strVal2;}catch(err){}
+			var tt_s1c3 = ""; try{ tt_s1c3 = EPIObj.epiDataMap["1000308"].strVal2;}catch(err){}
+			var rotaVirus_s1c3 = ""; try{ rotaVirus_s1c3 = EPIObj.epiDataMap["1000309"].strVal2;}catch(err){}
+			var commentsVS_s1c3 = ""; try{ commentsVS_s1c3 = EPIObj.epiDataMap["1000312"].strVal2;}catch(err){}
+			//var yf_s1c3 = ""; 
+			 
+			//cell 4 - Health System Planning & Finance 
+			var nhpspsDates_s1c4 = "-"; try{ nhpspsDates_s1c4 = EPIObj.epiDataMap["1000313"].strVal2;}catch(err){}
+			var fiscalYear_s1c4 = "-"; try{ fiscalYear_s1c4 = EPIObj.epiDataMap["1000367"].strVal2;}catch(err){};fiscalYear_s1c4 = fiscalYear_s1c4 == ""?"-":fiscalYear_s1c4;
+			var hscc_dpcc_s1c4 = "-"; try{ hscc_dpcc_s1c4 = EPIObj.epiDataMap["1000314"].strVal2;}catch(err){}
+			var annualHsReview_s1c4 = "-"; try{ annualHsReview_s1c4 = EPIObj.epiDataMap["1000315"].strVal2;}catch(err){}
+			var IHPCountry_s1c4 = "-"; try{ IHPCountry_s1c4 = EPIObj.epiDataMap["1000316"].strVal2;}catch(err){}
+			var UHCCountry_s1c4 = "-"; try{ UHCCountry_s1c4 = EPIObj.epiDataMap["1000317"].strVal2;}catch(err){}
+			var swapPresent_s1c4 = "-"; try{ swapPresent_s1c4 = EPIObj.epiDataMap["1000318"].strVal2;}catch(err){}
+			var odaCommitment_s1c4 = "-"; try{ odaCommitment_s1c4 = EPIObj.epiDataMap["1000319"].strVal2;}catch(err){}
+			var keySourcesOfODA_s1c4 = "-"; try{ keySourcesOfODA_s1c4 = EPIObj.epiDataMap["1000320"].strVal2;}catch(err){}
+			var hss_cefCycle_s1c4 = "-"; try{ hss_cefCycle_s1c4 = EPIObj.epiDataMap["1058902"].strVal2;}catch(err){}
+			var commentsHSFP_s1c4 = "-"; try{ commentsHSFP_s1c4 = EPIObj.epiDataMap["1000321"].strVal2;}catch(err){}
+			 
+			//cell 5 - Immunization Supply Chain (ISC)
+			var natlManager_s1c5 = ""; try{ natlManager_s1c5 = EPIObj.epiDataMap["1000322"].strVal2;}catch(err){}
+			var isc_s1c5 = ""; try{ isc_s1c5 = EPIObj.epiDataMap["1000323"].strVal2;}catch(err){}
+			var estock_s1c5 = ""; try{ estock_s1c5 = EPIObj.epiDataMap["1000324"].strVal2;}catch(err){}
+			var ccEtempMonitor_s1c5 = ""; try{ ccEtempMonitor_s1c5 = EPIObj.epiDataMap["1000325"].strVal2;}catch(err){}
+			var stockOut_s1c5 = ""; try{ stockOut_s1c5 = EPIObj.epiDataMap["1000326"].strVal2;}catch(err){}
+			var cceop_s1c5 = ""; try{ cceop_s1c5 = EPIObj.epiDataMap["725"].strVal2;}catch(err){}
+			var commentsISC_s1c5 = "-"; try{ commentsISC_s1c5 = EPIObj.epiDataMap["1000327"].strVal2;}catch(err){}
+			 
+			//cell6 - Effective Vaccine Management
+			/**
+			var evmYearsY1_s1c6 = ""; try{ evmYearsY1_s1c6 = EPIObj.evmDataMap["146"].strVal1;}catch(err){}
+			var evmYearsY2_s1c6 = ""; try{ evmYearsY2_s1c6 = EPIObj.evmDataMap["146"].strVal2;}catch(err){}
+			var evmIndicators80Y1_s1c6 = ""; try{ evmIndicators80Y1_s1c6 = EPIObj.evmDataMap["1000328"].strVal1;}catch(err){}
+			var evmIndicators80Y2_s1c6 = ""; try{ evmIndicators80Y2_s1c6 = EPIObj.evmDataMap["1000328"].strVal2;}catch(err){}
+			var evmCompositeScoreY1_s1c6 = ""; try{ evmCompositeScoreY1_s1c6 = EPIObj.evmDataMap["145"].strVal1;}catch(err){}
+			var evmCompositeScoreY2_s1c6 = ""; try{ evmCompositeScoreY2_s1c6 = EPIObj.evmDataMap["145"].strVal2;}catch(err){}
+			var evmArrivalProcedureY1_s1c6 = ""; try{ evmArrivalProcedureY1_s1c6 = EPIObj.evmDataMap["304"].strVal1;}catch(err){}
+			var evmArrivalProcedureY2_s1c6 = ""; try{ evmArrivalProcedureY2_s1c6 = EPIObj.evmDataMap["304"].strVal2;}catch(err){}
+			var evmVaxStorageTempY1_s1c6 = ""; try{ evmVaxStorageTempY1_s1c6 = EPIObj.evmDataMap["305"].strVal1;}catch(err){}
+			var evmVaxStorageTempY2_s1c6 = ""; try{ evmVaxStorageTempY2_s1c6 = EPIObj.evmDataMap["305"].strVal2;}catch(err){}
+			var evmStorageCapacityY1_s1c6 = ""; try{ evmStorageCapacityY1_s1c6 = EPIObj.evmDataMap["306"].strVal1;}catch(err){}
+			var evmStorageCapacityY2_s1c6 = ""; try{ evmStorageCapacityY2_s1c6 = EPIObj.evmDataMap["306"].strVal2;}catch(err){}
+			var evmEquipTransportY1_s1c6 = ""; try{ evmEquipTransportY1_s1c6 = EPIObj.evmDataMap["307"].strVal1;}catch(err){}
+			var evmEquipTransportY2_s1c6 = ""; try{ evmEquipTransportY2_s1c6 = EPIObj.evmDataMap["307"].strVal2;}catch(err){}
+			var evmMaintenanceY1_s1c6 = ""; try{ evmMaintenanceY1_s1c6 = EPIObj.evmDataMap["308"].strVal1;}catch(err){}
+			var evmMaintenanceY2_s1c6 = ""; try{ evmMaintenanceY2_s1c6 = EPIObj.evmDataMap["308"].strVal2;}catch(err){}
+			var evmStockManagementY1_s1c6 = ""; try{ evmStockManagementY1_s1c6 = EPIObj.evmDataMap["309"].strVal1;}catch(err){}
+			var evmStockManagementY2_s1c6 = ""; try{ evmStockManagementY2_s1c6 = EPIObj.evmDataMap["309"].strVal2;}catch(err){}
+			var evmDistributionY1_s1c6 = ""; try{ evmDistributionY1_s1c6 = EPIObj.evmDataMap["310"].strVal1;}catch(err){}
+			var evmDistributionY2_s1c6 = ""; try{ evmDistributionY2_s1c6 = EPIObj.evmDataMap["310"].strVal2;}catch(err){}
+			var evmMgmtPracticesY1_s1c6 = ""; try{ evmMgmtPracticesY1_s1c6 = EPIObj.evmDataMap["311"].strVal1;}catch(err){}
+			var evmMgmtPracticesY2_s1c6 = ""; try{ evmMgmtPracticesY2_s1c6 = EPIObj.evmDataMap["311"].strVal2;}catch(err){}
+			var evmInfoSystemY1_s1c6 = ""; try{ evmInfoSystemY1_s1c6 = EPIObj.evmDataMap["312"].strVal1;}catch(err){}
+			var evmInfoSystemY2_s1c6 = ""; try{ evmInfoSystemY2_s1c6 = EPIObj.evmDataMap["312"].strVal2;}catch(err){}
+			**/
+			var commentsEVM_s1c6 = "-"; try{ commentsEVM_s1c6 = EPIObj.epiDataMap["1000329"].strVal2;}catch(err){}
+			 
+			//cell7 - Governance , Assessments, Targets 
+			var evmNitagEstab_s1c7 = ""; try{ evmNitagEstab_s1c7 = EPIObj.epiDataMap["15"].strVal2;}catch(err){}
+			var evmAefiComitee_s1c7 = ""; try{ evmAefiComitee_s1c7 = EPIObj.epiDataMap["1000330"].strVal2;}catch(err){}
+			var evmFunctionalICC_s1c7 = ""; try{ evmFunctionalICC_s1c7 = EPIObj.epiDataMap["314"].strVal2;}catch(err){}
+			var evmEpiReview_s1c7 = ""; try{ evmEpiReview_s1c7 = EPIObj.epiDataMap["299"].strVal2;}catch(err){}
+			var evmDQS_s1c7 = "No data"; try{ evmDQS_s1c7 = EPIObj.epiDataMap["223"].strVal2;}catch(err){}; evmDQS_s1c7 = (evmDQS_s1c7 == "" || evmDQS_s1c7 == null || evmDQS_s1c7 == undefined) ? "No data" : evmDQS_s1c7;
+			var evmNextSurvey_s1c7 = "No data"; try{ evmNextSurvey_s1c7 = EPIObj.epiDataMap["222"].strVal2;}catch(err){}; evmNextSurvey_s1c7 = (evmNextSurvey_s1c7 == "" || evmNextSurvey_s1c7 == null || evmNextSurvey_s1c7 == undefined) ? "No data" : evmNextSurvey_s1c7;
+			var evmDqipDates_s1c7 = "No data"; try{ evmDqipDates_s1c7 = EPIObj.epiDataMap["857"].strVal2;}catch(err){}; evmDqipDates_s1c7 = (evmDqipDates_s1c7 == "" || evmDqipDates_s1c7 == null || evmDqipDates_s1c7 == undefined) ? "No data" : evmDqipDates_s1c7;
+			var evmSurveyReview_s1c7 = "No data"; try{ evmSurveyReview_s1c7 = EPIObj.epiDataMap["520"].strVal2;}catch(err){}; evmSurveyReview_s1c7 = evmSurveyReview_s1c7 == "" ? "No data" : evmSurveyReview_s1c7;
+			//if(evmSurveyReview_s1c7.trim() == "") evmSurveyReview_s1c7 = "";
+			//console.log(evmSurveyReview_s1c7);
+			var evmPolioErad_s1c7 = ""; try{ evmPolioErad_s1c7 = EPIObj.epiDataMap["1000331"].strVal2;}catch(err){}
+			var evmMNTElimination_s1c7 = ""; try{ evmMNTElimination_s1c7 = EPIObj.epiDataMap["1000332"].strVal2;}catch(err){}
+			var evmMRElimination_s1c7 = ""; try{ evmMRElimination_s1c7 = EPIObj.epiDataMap["1000333"].strVal2;}catch(err){}
+			var evmHBElimination_s1c7 = ""; try{ evmHBElimination_s1c7 = EPIObj.epiDataMap["1000334"].strVal2;}catch(err){}
+			var commentsGAT_s1c7 = "-"; try{ commentsGAT_s1c7 = EPIObj.epiDataMap["1000335"].strVal2;}catch(err){}
+				 
+			//cell8 - Planning, HR & Finance 
+			var evmCMYP_s1c8 = ""; try{ evmCMYP_s1c8 = EPIObj.epiDataMap["104"].strVal2.substring(0, 20);}catch(err){}
+			var evmCMYP2_s1c8 = ""; try{ evmCMYP2_s1c8 = EPIObj.epiDataMap["105"].strVal2.substring(0, 20);}catch(err){}
+			var evmAnnualEPI_s1c8 = ""; try{ evmAnnualEPI_s1c8 = EPIObj.epiDataMap["1000336"].strVal2.substring(0, 20);}catch(err){}
+			var evmPolioTrans_s1c8 = ""; try{ evmPolioTrans_s1c8 = EPIObj.epiDataMap["1000337"].strVal2.substring(0, 20);}catch(err){}
+			var evmVaxPaidByGovt_s1c8 = ""; try{ evmVaxPaidByGovt_s1c8 = EPIObj.epiDataMap["112"].strVal2.substring(0, 20);}catch(err){}
+			var evmRIPaidByGovt_s1c8 = ""; try{ evmRIPaidByGovt_s1c8 = EPIObj.epiDataMap["113"].strVal2.substring(0, 20);}catch(err){}
+			var evmGaviCat_s1c8 = ""; try{ evmGaviCat_s1c8 = EPIObj.epiDataMap["4"].strVal2.substring(0, 20);}catch(err){}
+			var evmFinancingStatus_s1c8 = ""; try{ evmFinancingStatus_s1c8 = EPIObj.epiDataMap["114"].strVal2.substring(0, 20);}catch(err){}
+			var commentsPHRF_s1c8 = "-"; try{ commentsPHRF_s1c8 = EPIObj.epiDataMap["1000338"].strVal2;}catch(err){}
+			 
+			//cell9 - WHO Support
+		/*	var evmHSSActivities_s1c9 = ""; try{ evmHSSActivities_s1c9 = EPIObj.epiDataMap["1000339"].strVal2;}catch(err){}
+			var evmHSSMilestones_s1c9 = ""; try{ evmHSSMilestones_s1c9 = EPIObj.epiDataMap["1000340"].strVal2;}catch(err){}
+			var evmHSSFunds_s1c9 = ""; try{ evmHSSFunds_s1c9 = EPIObj.epiDataMap["1000341"].strVal2;}catch(err){}
+			var evmHSSMilestoneMidYear_s1c9 = ""; try{ evmHSSMilestoneMidYear_s1c9 = EPIObj.epiDataMap["1000342"].strVal2;}catch(err){}
+			var evmHSSMilestoneEndYear_s1c9 = ""; try{ evmHSSMilestoneEndYear_s1c9 = EPIObj.epiDataMap["1000343"].strVal2;}catch(err){}
+			 
+			var evmPolicyActivities_s1c9 = ""; try{ evmPolicyActivities_s1c9 = EPIObj.epiDataMap["1000344"].strVal2;}catch(err){}
+			var evmPolicyMilestones_s1c9 = ""; try{ evmPolicyMilestones_s1c9 = EPIObj.epiDataMap["1000345"].strVal2;}catch(err){}
+			var evmPolicyFunds_s1c9 = ""; try{ evmPolicyFunds_s1c9 = EPIObj.epiDataMap["1000346"].strVal2;}catch(err){}
+			var evmPolicyMilestoneMidYear_s1c9 = ""; try{ evmPolicyMilestoneMidYear_s1c9 = EPIObj.epiDataMap["1000347"].strVal2;}catch(err){}
+			var evmPolicyMilestoneEndYear_s1c9 = ""; try{ evmPolicyMilestoneEndYear_s1c9 = EPIObj.epiDataMap["1000348"].strVal2;}catch(err){}
+			 
+			var evmDeliveryActivities_s1c9 = ""; try{ evmDeliveryActivities_s1c9 = EPIObj.epiDataMap["1000349"].strVal2;}catch(err){}
+			var evmDeliveryMilestones_s1c9 = ""; try{ evmDeliveryMilestones_s1c9 = EPIObj.epiDataMap["1000350"].strVal2;}catch(err){}
+			var evmDeliveryFunds_s1c9 = ""; try{ evmDeliveryFunds_s1c9 = EPIObj.epiDataMap["1000351"].strVal2;}catch(err){}
+			var evmDeliveryMilestoneMidYear_s1c9 = ""; try{ evmDeliveryMilestoneMidYear_s1c9 = EPIObj.epiDataMap["1000352"].strVal2;}catch(err){}
+			var evmDeliveryMilestoneEndYear_s1c9 = ""; try{ evmDeliveryMilestoneEndYear_s1c9 = EPIObj.epiDataMap["1000353"].strVal2;}catch(err){}
+			 
+			var evmSupplyActivities_s1c9 = ""; try{ evmSupplyActivities_s1c9 = EPIObj.epiDataMap["1000354"].strVal2;}catch(err){}
+			var evmSuplyMilestones_s1c9 = ""; try{ evmSuplyMilestones_s1c9 = EPIObj.epiDataMap["1000355"].strVal2;}catch(err){}
+			var evmSuplyFunds_s1c9 = ""; try{ evmSuplyFunds_s1c9 = EPIObj.epiDataMap["1000356"].strVal2;}catch(err){}
+			var evmSuplyMilestoneMidYear_s1c9 = ""; try{ evmSuplyMilestoneMidYear_s1c9 = EPIObj.epiDataMap["1000357"].strVal2;}catch(err){}
+			var evmSuplyMilestoneEndYear_s1c9 = ""; try{ evmSuplyMilestoneEndYear_s1c9 = EPIObj.epiDataMap["1000358"].strVal2;}catch(err){}
+			 
+			var evmDataActivities_s1c9 = "";  try{ evmDataActivities_s1c9 = EPIObj.epiDataMap["1000359"].strVal2;}catch(err){}
+			var evmDataMilestones_s1c9 = ""; try{ evmDataMilestones_s1c9 = EPIObj.epiDataMap["1000360"].strVal2;}catch(err){}
+			var evmDataFunds_s1c9 = ""; try{ evmDataFunds_s1c9 = EPIObj.epiDataMap["1000361"].strVal2;}catch(err){}
+			var evmDataMilestoneMidYear_s1c9 = ""; try{ evmDataMilestoneMidYear_s1c9 = EPIObj.epiDataMap["1000362"].strVal2;}catch(err){}
+			var evmDataMilestoneEndYear_s1c9 = ""; try{ evmDataMilestoneEndYear_s1c9 = EPIObj.epiDataMap["1000363"].strVal2;}catch(err){}
+			 
+			var evmADCActivities_s1c9 = ""; try{ evmADCActivities_s1c9 = EPIObj.epiDataMap["1000364"].strVal2;}catch(err){}
+			var evmADCMilestones_s1c9 = ""; try{ evmADCMilestones_s1c9 = EPIObj.epiDataMap["1000365"].strVal2;}catch(err){}
+			var evmADCFunds_s1c9 = ""; try{ evmADCFunds_s1c9 = EPIObj.epiDataMap["1000366"].strVal2;}catch(err){}
+			var evmADCMilestoneMidYear_s1c9 = ""; try{ evmADCMilestoneMidYear_s1c9 = EPIObj.epiDataMap["1000367"].strVal2;}catch(err){}
+			var evmADCMilestoneEndYear_s1c9 = ""; try{ evmADCMilestoneEndYear_s1c9 = EPIObj.epiDataMap["1000368"].strVal2;}catch(err){}
+			 
+			var evmTCARates_s1c9 = ""; try{ evmTCARates_s1c9 = EPIObj.epiDataMap["1000369"].strVal2;}catch(err){}
+			var evmTCARates2_s1c9 = ""; try{ evmTCARates2_s1c9 = EPIObj.epiDataMap["1000371"].strVal2;}catch(err){}
+			var evmTCAStaffHired_s1c9 = ""; try{ evmTCAStaffHired_s1c9 = EPIObj.epiDataMap["1000370"].strVal2;}catch(err){}
+			var commentsWHOS_s1c9 = ""; try{ commentsWHOS_s1c9 = EPIObj.epiDataMap["1000372"].strVal2;}catch(err){}*/
+			
+			/** ***********************************************************
+			**  SLIDE 2
+			*********************************************************** **/
+			
+			//cell1 -  All vaccines; coverage trends
+			var lastCensus_s2c1 = ""; try{ lastCensus_s2c1 = EPIObj.epiDataMap["1058903"].strVal2;}catch(err){}
+			var totalPopulation_s2c1 = ""; try{ totalPopulation_s2c1 = EPIObj.epiDataMap["1000373"].strVal2;}catch(err){}
+			var births_s2c1 = ""; try{ births_s2c1 = EPIObj.epiDataMap["1000374"].strVal2;}catch(err){}
+			var commentOnTrend_s2c1 = ""; try{ commentOnTrend_s2c1 = EPIObj.epiDataMap["1000375"].strVal2;}catch(err){}
+			
+			//cell2 -  DTP3 coverage; Admin, WUENIC, DQ 
+			var DHSYear_s2c2 = ""; try{ DHSYear_s2c2 = EPIObj.epiDataMap["1053816"].strVal2;}catch(err){}
+			var MICSYear_s2c2 = ""; try{ MICSYear_s2c2 = EPIObj.epiDataMap["1053812"].strVal2;}catch(err){}
+			var commentOnDQ_s2c2 = ""; try{ commentOnDQ_s2c2 = EPIObj.epiDataMap["1000376"].strVal2;}catch(err){}
+
+			//cell 3 - Next Round:  Indicators of Coverage Equity  OR subnational Map
+			var numberOfDistricts_s2c3 = ""; try{ numberOfDistricts_s2c3 = EPIObj.epiDataMap["763"].strVal2;}catch(err){}
+			var districtDTPLess80_s2c3 = ""; try{ districtDTPLess80_s2c3 = EPIObj.epiDataMap["1000377"].strVal2;}catch(err){}
+			var districtDropOut10_s2c3 = ""; try{ districtDropOut10_s2c3 = EPIObj.epiDataMap["1000378"].strVal2;}catch(err){}
+			var commentEquity_s2c3 = ""; try{ commentEquity_s2c3 = EPIObj.epiDataMap["1000379"].strVal2;}catch(err){}
+
+			//cell 4 - Measles coverage & surveillance
+			var MCV2Intro_s2c4 = ""; try{ MCV2Intro_s2c4 = EPIObj.epiDataMap["63"].strVal2;}catch(err){}
+			var commentSurveilence_s2c4 = ""; try{ commentSurveilence_s2c4 = EPIObj.epiDataMap["1000380"].strVal2;}catch(err){}
+
+			//cell 5 - Key Links
+			/*var otherLinksText1_s2c5 = ""; try{ otherLinksText1_s2c5 = EPIObj.epiDataMap["1000381"].strVal2;}catch(err){}
+			var otherLinksLink1_s2c5 = ""; try{ otherLinksLink1_s2c5 = EPIObj.epiDataMap["1001339"].strVal2;}catch(err){}
+			var otherLinksText2_s2c5 = ""; try{ otherLinksText2_s2c5 = EPIObj.epiDataMap["1005944"].strVal2;}catch(err){}
+			var otherLinksLink2_s2c5 = ""; try{ otherLinksLink2_s2c5 = EPIObj.epiDataMap["1005945"].strVal2;}catch(err){}
+
+			//cell 6 - Calendar key 2017 activities & plans
+			var upcomingActivities_s2c6 = ""; try{ upcomingActivities_s2c6 = EPIObj.epiDataMap["1000382"].strVal2;}catch(err){}*/
+
+			//cell 7 - WHO & Country Contacts
+			var EPIManager_s2c7 = ""; try{ EPIManager_s2c7 = EPIObj.epiDataMap["1000383"].strVal2;}catch(err){}
+			var COEPI_s2c7 = ""; try{ COEPI_s2c7 = EPIObj.epiDataMap["1000384"].strVal2;}catch(err){}
+			var COHSS_s2c7 = ""; try{ COHSS_s2c7 = EPIObj.epiDataMap["1000385"].strVal2;}catch(err){}
+			var ISTFOEPI_s2c7 = ""; try{ ISTFOEPI_s2c7 = EPIObj.epiDataMap["1000386"].strVal2;}catch(err){}
+			var ISTFOHSS_s2c7 = ""; try{ ISTFOHSS_s2c7 = EPIObj.epiDataMap["1000387"].strVal2;}catch(err){}
+			var WHORepresentative_s2c7 = ""; try{ WHORepresentative_s2c7 = EPIObj.epiDataMap["1000388"].strVal2;}catch(err){}
+			var WHOROEPI_s2c7 = ""; try{ WHOROEPI_s2c7 = EPIObj.epiDataMap["1000389"].strVal2;}catch(err){}
+			var WHOROHSS_s2c7 = ""; try{ WHOROHSS_s2c7 = EPIObj.epiDataMap["1000390"].strVal2;}catch(err){}
+			var WHOHQFOEPI_s2c7 = ""; try{ WHOHQFOEPI_s2c7 = EPIObj.epiDataMap["1000391"].strVal2;}catch(err){}
+			var WHOHQFOHSS_s2c7 = ""; try{ WHOHQFOHSS_s2c7 = EPIObj.epiDataMap["1000392"].strVal2;}catch(err){}
+			var WHOHQSupport_s2c7 = ""; try{ WHOHQSupport_s2c7 = EPIObj.epiDataMap["1066999"].strVal2;}catch(err){}
+			
+
+			//cell 8 - Partner Contacts
+			var unicefHQ_s2c8 = ""; try{ unicefHQ_s2c8 = EPIObj.epiDataMap["1000393"].strVal2;}catch(err){}
+			var unicefRO_s2c8 = ""; try{ unicefRO_s2c8 = EPIObj.epiDataMap["1000394"].strVal2;}catch(err){}
+			var unicefCO_s2c8 = ""; try{ unicefCO_s2c8 = EPIObj.epiDataMap["1000395"].strVal2;}catch(err){}
+			var gaviSCM_s2c8 = ""; try{ gaviSCM_s2c8 = EPIObj.epiDataMap["1000396"].strVal2;}catch(err){}
+			var otherPartnerContact_s2c8 = ""; try{ otherPartnerContact_s2c8 = EPIObj.epiDataMap["1000397"].strVal2;}catch(err){}
+			var otherPartnerContact2_s2c8 = ""; try{ otherPartnerContact2_s2c8 = EPIObj.epiDataMap["1067002"].strVal2;}catch(err){}
+			var otherPartnerContact3_s2c8 = ""; try{ otherPartnerContact3_s2c8 = EPIObj.epiDataMap["1067003"].strVal2;}catch(err){}
+
+			var noDEValue = "";
+			
+			//Email addresses of WHO Contacts and Partner Contacts
+			var email_1 = ""; try{ email_1 = EPIObj.epiDataMap["1064716"].strVal2;}catch(err){}; email_1 = email_1 || "";
+			var email_2 = ""; try{ email_2 = EPIObj.epiDataMap["1064721"].strVal2;}catch(err){}; email_2 = email_2 || "";
+			var email_3 = ""; try{ email_3 = EPIObj.epiDataMap["1064717"].strVal2;}catch(err){}; email_3 = email_3 || "";
+			var email_4 = ""; try{ email_4 = EPIObj.epiDataMap["1064718"].strVal2;}catch(err){}; email_4 = email_4 || "";
+			var email_5 = ""; try{ email_5 = EPIObj.epiDataMap["1064719"].strVal2;}catch(err){}; email_5 = email_5 || "";
+			var email_6 = ""; try{ email_6 = EPIObj.epiDataMap["1064720"].strVal2;}catch(err){}; email_6 = email_6 || "";
+			var email_7 = ""; try{ email_7 = EPIObj.epiDataMap["1064722"].strVal2;}catch(err){}; email_7 = email_7 || "";
+			var email_8 = ""; try{ email_8 = EPIObj.epiDataMap["1064723"].strVal2;}catch(err){}; email_8 = email_8 || "";
+			var email_9 = ""; try{ email_9 = EPIObj.epiDataMap["1064724"].strVal2;}catch(err){}; email_9 = email_9 || "";
+			var email_10 = ""; try{ email_10 = EPIObj.epiDataMap["1064725"].strVal2;}catch(err){}; email_10 = email_10 || "";
+			
+			//email addresses of Partner Contacts
+			var email_11 = ""; try{ email_11 = EPIObj.epiDataMap["1064839"].strVal2;}catch(err){}; email_11 = email_11 || "";
+			var email_12 = ""; try{ email_12 = EPIObj.epiDataMap["1064840"].strVal2;}catch(err){}; email_12 = email_12 || "";
+			var email_13 = ""; try{ email_13 = EPIObj.epiDataMap["1064841"].strVal2;}catch(err){}; email_13 = email_13 || "";
+			var email_14 = ""; try{ email_14 = EPIObj.epiDataMap["1064742"].strVal2;}catch(err){}; email_14 = email_14 || "";
+			var email_15 = ""; try{ email_15 = EPIObj.epiDataMap["1064843"].strVal2;}catch(err){}; email_15 = email_15 || "";
+			var email_16 = ""; try{ email_16 = EPIObj.epiDataMap["1067004"].strVal2;}catch(err){}; email_16 = email_16 || "";
+			var email_17 = ""; try{ email_17 = EPIObj.epiDataMap["1067005"].strVal2;}catch(err){}; email_17 = email_17 || "";
+			var email_18 = ""; try{ email_18 = EPIObj.epiDataMap["1067001"].strVal2;}catch(err){}; email_18 = email_18 || "";
+			
+			//IMAGES			
+			var image1 = noImageUrl; try { image1 = EPIObj.epiCharts[0]; image1 = image1 == "" || image1 == null ? noImageUrl : appURL + image1 + "/data?n="+Math.random();} catch(err){}
+			var image2 = noImageUrl; try { image2 = EPIObj.epiCharts[1]; image2 = image2 == "" || image2 == null ? noImageUrl : appURL + image2 + "/data?n="+Math.random();} catch(err){}
+			var image3 = noImageUrl; try { image3 = EPIObj.epiCharts[2]; image3 = image3 == "" || image3 == null ? noImageUrl : appURL + image3 + "/data?n="+Math.random();} catch(err){}
+			var image4 = noImageUrl; try { image4 = EPIObj.epiCharts[3]; image4 = image4 == "" || image4 == null ? noImageUrl : appURL + image4 + "/data?n="+Math.random();} catch(err){}
+			var image5 = noImageUrl; try { image5 = EPIObj.epiCharts[4]; image5 = image5 == "" || image5 == null ? noImageUrl : appURL + image5 + "/data?n="+Math.random();} catch(err){}
+			var image6 = noImageUrl; try { image6 = EPIObj.epiCharts[5]; image6 = image6 == "" || image6 == null ? noImageUrl : appURL + image6 + "/data?n="+Math.random();} catch(err){}
+			//var image7 = noImageUrl; try { image7 = EPIObj.epiCharts[6]; image7 = image7 == "" || image7 == null ? noImageUrl : imageBaseURL + image7 + "/data?n="+Math.random();} catch(err){}
+			//var image8 = noImageUrl; try { image8 = EPIObj.epiCharts[7]; image8 = image8 == "" || image8 == null ? noImageUrl : imageBaseURL + image8 + "/data?n="+Math.random();} catch(err){}
+			
+			var legendImage = "images/Legend_img.jpg";
+			var legendImage2 = "images/Legend1_img.png";
+			var legendImage3 = "images/Legend2_img.png";
+			
+			
+			/** ***********************************************************
+			**  SLIDE 2 - Latest ones
+			*********************************************************** **/
+			//cell 2
+			var yrVacCov_s2c1 = ""; try{ yrVacCov_s2c1 = EPIObj.epiDataMap["1001307"].strVal2;}catch(err){}
+			
+			//cell 6
+			/*var keyActivity1_s2c6 = ""; try{ keyActivity1_s2c6 = EPIObj.epiDataMap["1001308"].strVal2;}catch(err){}
+			keyActivity1_s2c6 = keyActivity1_s2c6 == "" ? keyActivity1_s2c6 : keyActivity1_s2c6 + "";
+			var keyActivity2_s2c6 = ""; try{ keyActivity2_s2c6 = EPIObj.epiDataMap["1001309"].strVal2;}catch(err){}
+			keyActivity2_s2c6 = keyActivity2_s2c6 == "" ? keyActivity2_s2c6 : keyActivity2_s2c6 + "";
+			var keyActivity3_s2c6 = ""; try{ keyActivity3_s2c6 = EPIObj.epiDataMap["1001310"].strVal2;}catch(err){}
+			keyActivity3_s2c6 = keyActivity3_s2c6 == "" ? keyActivity3_s2c6 : keyActivity3_s2c6 + "";
+			var keyActivity4_s2c6 = ""; try{ keyActivity4_s2c6 = EPIObj.epiDataMap["1001311"].strVal2;}catch(err){}
+			keyActivity4_s2c6 = keyActivity4_s2c6 == "" ? keyActivity4_s2c6 : keyActivity4_s2c6 + "";
+			var keyActivity5_s2c6 = ""; try{ keyActivity5_s2c6 = EPIObj.epiDataMap["1001312"].strVal2;}catch(err){}
+			keyActivity5_s2c6 = keyActivity5_s2c6 == "" ? keyActivity5_s2c6 : keyActivity5_s2c6 + "";
+			var keyActivity6_s2c6 = ""; try{ keyActivity6_s2c6 = EPIObj.epiDataMap["1001313"].strVal2;}catch(err){}
+			keyActivity6_s2c6 = keyActivity6_s2c6 == "" ? keyActivity6_s2c6 : keyActivity6_s2c6 + "";
+			
+			var keyActivityPeriod1_s2c6 = ""; try{ keyActivityPeriod1_s2c6 = EPIObj.epiDataMap["1001314"].strVal2;}catch(err){}
+			var keyActivityPeriod2_s2c6 = ""; try{ keyActivityPeriod2_s2c6 = EPIObj.epiDataMap["1001315"].strVal2;}catch(err){}
+			var keyActivityPeriod3_s2c6 = ""; try{ keyActivityPeriod3_s2c6 = EPIObj.epiDataMap["1001316"].strVal2;}catch(err){}
+			var keyActivityPeriod4_s2c6 = ""; try{ keyActivityPeriod4_s2c6 = EPIObj.epiDataMap["1001317"].strVal2;}catch(err){}
+			var keyActivityPeriod5_s2c6 = ""; try{ keyActivityPeriod5_s2c6 = EPIObj.epiDataMap["1001318"].strVal2;}catch(err){}
+			var keyActivityPeriod6_s2c6 = ""; try{ keyActivityPeriod6_s2c6 = EPIObj.epiDataMap["1001319"].strVal2;}catch(err){}*/
+			
+			//=======================================================================================================================
+			//=======================================================================================================================
+			//=======================================================================================================================
+			//=======================================================================================================================
+			//=======================================================================================================================
+			
+			
+			var pptx = new PptxGenJS();
+			var slide = pptx.addNewSlide();
+			var slideWidth = 11;
+			var slideHeight = 7.8;
+			pptx.setLayout({ name:'DRC', width:slideWidth, height:slideHeight });
+			var offsetY = 0.01;
+
+			//universal styles
+			var defFontFace = 'Calibri';
+			var defFontSize = 10;
+			var defTitleFontSize = 10;
+			var defFillColor = 'ffffff';
+			var defHeadFillColor = 'DEDEF2';
+			var defFontColor = '000000';
+			var defHeadFontColor = '090942';
+			var defTitleFontColor = '090942';
+			var defRowHeight = 0.3;
+			var defBorder = {pt:'1',color:'000000'};
+			var defNoBorder = {pt:'1',color:'ffffff'};
+			var defPadding = 0.02;
+			
+			/** **********************************************************************************************************
+			**************************************************************************************************************
+			SLIDE 1
+			**************************************************************************************************************
+			*********************************************************************************************************** **/
+			
+			/* ***********************************************************************************************************
+			**	SLIDE 1 - TABLE 1 ****
+			** ******************************************************************************************************** */	
+			var colW = slideWidth/3;
+			var tableStyle = { x:0.15, y:0.2, w:'100%', colW:[1.7,1.75,2.1,0.85,0.85,1.65,1.8,1.7,1.75], rowH:[defRowHeight,3.4, defRowHeight,3.4,defRowHeight], fill:defFillColor, 
+								color:defFontColor, font_face:defFontFace, font_size:defFontSize,marginPt:0, valign:'t', align:'l'};
+			var titleCellStyle = {fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true};
+			var flagCellStyle = {fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true, align:'r'};
+			var textTitleCellStyle = {font_size:defFontSize, color:defTitleFontColor, bold:true};
+			var textTitleCellStyleWithBr = {font_size:defFontSize, color:defTitleFontColor, bold:true, breakLine: true}
+			
+			var upArrow = '\u2191';
+			var tempLabel = 'Activities to '+upArrow+' RI: ';
+			var commentCellStyle = {font_size:defFontSize, color:'000000', bold:true};
+			var resultFontColor = '4f93a8';
+			
+			var rows = [
+				[
+					{ text: (EPIObj.countryName == "Central African Republic (the)" ? "CAR" : EPIObj.countryName) + ' - EPI PROFILE ' + EPIObj.curYear, opts:{colspan: 2, align:'center', fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true, colW:4.5}},
+					{ text: 'Immunization Strategies', opts:{colspan: 3, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true, colW:4.5}},
+					{ text: 'Vaccine Schedule', opts:{colspan: 2, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true, colW:4.5}},
+					//{ text: 'Health System Planning & Finance', opts:{colspan: 2, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true, colW:3.5}}
+				],
+				[
+					//Cell 01 ===============================================================================
+					{ 
+						text: [
+								{text:'Key barriers to high performing RI:', options: textTitleCellStyle}, 
+								{text:keyBarriers_s1c1.split(';;').join('\n'), options:{bullet: true, color: resultFontColor }},
+								{text:'\n'},
+								{text:'Opportunities to improve RI:', options: textTitleCellStyle},
+								{text:opporunities_s1c1.split(';;').join('\n'), options:{bullet: true, color: resultFontColor }}							
+							], opts: {colspan: 2} 
+					},
+					//Cell 02 ===============================================================================
+					{ 
+						text: [
+								{text:'Fixed Service: ', options: textTitleCellStyle}, 
+								{text:fixedService_s1c2, options: {breakLine: true, color: resultFontColor }},
+								{text:' ', options: {breakLine: true}},
+								{text:'Outreach: ', options: textTitleCellStyle},
+								{text:outReach_s1c2, options: {breakLine: true, color: resultFontColor }},
+								{text:' ', options: {breakLine: true}},
+								{text:'Special strategies: ', options: textTitleCellStyle},
+								{text:specialStrategies_s1c2, options: {breakLine: true, color: resultFontColor }},
+								{text:' ', options: {breakLine: true}},
+								{text:tempLabel, options: textTitleCellStyle},
+								{text:activitiesToRI_s1c2, options: {breakLine: true, color: resultFontColor }},
+								{text:' ', options: {breakLine: true}}
+							], opts: {colspan: 3} 
+					},
+					//Cell 03 ===============================================================================
+					{ 
+						text: [
+								{text:'Vaccine', options: textTitleCellStyle}, 
+								{text:'\nBCG\nDTPHibHB\nOPV\nPCV\nRotavirus\nIPV\nMeasles\nMeasles-Rubella\nTT\n\n'}
+							], opts: { border: [defBorder, defNoBorder, defBorder, defBorder], colW: '15%' }
+					},
+					{ 
+						text: [
+								{text:'Age', options: textTitleCellStyle},
+								{text: "\n"+ bcg_s1c3 +"\n"+ dtphib_s1c3 +"\n"+ opv_s1c3 +"\n"+ pcv_s1c3 +"\n"+ rotaVirus_s1c3 +"\n"+ ipv_s1c3 +"\n"+ measles_s1c3 +"\n"+ measlesRubella_s1c3 +"\n"+ tt_s1c3 },
+								//{text: commentsVS_s1c3}
+							], opts: { colW: '9%', color: '42b55f' }
+					},
+					//Cell 04 ===============================================================================
+					/*{ 
+						text: [
+								{text:'NHPSPS dates: \nFiscal  year: \nHSCC/DPCC:\nAnnual HS review:\nIHP+ country: \nUHC Country: \nSWAP present: \nODA commitment: \n5 Health donors: '}
+							], opts: { border: [defBorder, defNoBorder, defBorder, defBorder], colW: '15%' }
+					},
+					{ 
+						text: [
+								{text:nhpspsDates_s1c4 + "\n" + fiscalYear_s1c4 + "\n" + hscc_dpcc_s1c4 + "\n" + annualHsReview_s1c4 + "\n" + IHPCountry_s1c4 + "\n" + UHCCountry_s1c4 + "\n" + swapPresent_s1c4 + "\n" + odaCommitment_s1c4 + "\n" + keySourcesOfODA_s1c4},
+								//{text: commentsHSFP_s1c4}
+							], opts: { colW: '9%'}
+					},*/
+				],
+				/**[
+					{ text:[{text: 'Comment: ', options: { breakLine: false, bold: true }}, {text:commentsIS_s1c2, options:{breakLine: false}}], opts: {colspan: 3}},
+					{ text:[{text: 'Comment: ', options: { breakLine: false, bold: true }}, {text:commentsVS_s1c3, options:{breakLine: false}}], opts: {colspan: 2}},
+					//{ text:[{text: 'Comment: ', options: { breakLine: false, bold: true }}, {text:commentsHSFP_s1c4, options:{breakLine: false}}], opts: {colspan: 2}}
+				],**/				
+				[
+					{ text: 'Immunization Supply Chain (ISC) - 1', opts:{colspan: 2, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true, colW:colW}},
+					{ text: 'Immunization Supply Chain (ISC) - 2', opts:{colspan: 3, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true, colW:colW}},
+					{ text: 'Governance, Assessments & Disease Control Targets', opts:{colspan: 2, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true, colW:colW}},
+					//{ text: 'Planning, HR & Finance', opts:{colspan: 2, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true, colW:colW}}
+				],
+				[
+					//Cell 04 ===============================================================================
+					{ 
+						text: [
+								{text:'Natl-level ISC manager: \nISC Improve Plan:\nCCEOP application (Year):', opts: { font_size:10 }}
+							], opts: { border: [defBorder, defNoBorder, defBorder, defBorder], colW: '25%', font_size:10}
+					},
+					{ 
+						text: [
+								{text:natlManager_s1c5 + "\n" + isc_s1c5 + "\n" + cceop_s1c5 , opts: { font_size:10 }}
+							], opts: { colW: '12%', font_size:10, color: '42b55f'}
+					},
+					
+					//Cell 05 ===============================================================================
+					{ 
+						text: [
+								{text:'e-stock mgmt @ district:\n%CC w e-temp monitor:\nDistrict stock-out:', opts: { font_size:10 }}
+							], opts: { border: [defBorder, defNoBorder, defBorder, defBorder], colW: '25%', font_size:10}
+					},
+					{ 
+						text: [
+								{text:estock_s1c5  + "\n" + ccEtempMonitor_s1c5  + "\n" + stockOut_s1c5, opts: { font_size:10, colspan: 2}}
+							], opts: { colW: '12%', font_size:10, colspan: 2, color: '42b55f'}
+					},
+					
+					
+						
+					
+					//Cell 06 ===============================================================================
+					{ 
+						text: [
+								{text:'NITAG established:\nAEFI Review Committee:\nFunctional ICC:\n\nEPI Review (Year):\nSurv Review (Year):\nLast DQA/DQS:\nNext Coverage Survey:\nDQIP dates validity:\n\nPolio Eradication:\nMNT Elimination:\nMR Elimination:\nHB Elimination:\n\n'}
+							], opts: { border: [defBorder, defNoBorder, defBorder, defBorder], colW: '25%' }
+					},
+					{ 
+						text: [
+								{text: (evmNitagEstab_s1c7||"No data").substring(0,20) + "\n" + (evmAefiComitee_s1c7||"No data").substring(0,20)  + "\n" + (evmFunctionalICC_s1c7||"No data").substring(0,20)  + "\n\n" + (evmEpiReview_s1c7||"No data").substring(0,20)  + "\n" + (evmSurveyReview_s1c7||"No data").substring(0,20) + "\n" + (evmDQS_s1c7||"No data").substring(0,20) + "\n" + (evmNextSurvey_s1c7||"No data").substring(0,20)+ "\n" + (evmDqipDates_s1c7||"No data").substring(0,20)  + "\n\n" + (evmPolioErad_s1c7||"No data").substring(0,20)  + "\n" + (evmMNTElimination_s1c7||"No data").substring(0,20)  + "\n" + (evmMRElimination_s1c7||"No data").substring(0,20)  + "\n" + (evmHBElimination_s1c7||"No data").substring(0,20) }
+							], opts: { colW: '12%', color: resultFontColor}
+					},
+				]
+				/*[
+					{ text: [{text:'WHO Support', options:{color:'09028E'}}, {text:'  [NOTE: 2017 focus is to be aware of  2017-2018 TCA  requests & to extent possible, help ? implementation & reporting]', options:{color:'750000'}}], opts: {fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true, colW:colW, colspan:9}}
+				]*/
+			];
+								
+			slide.addTable( rows, tableStyle );
+						
+			//country flag
+			offsetY += 0.21;
+			slide.addImage({ path:'images/flags/'+ EPIObj.flagName, x:0.18, y:offsetY, w:0.50, h:0.25 });			
+			
+			
+			slide.addText([{text:'Comment: ', options:{font_face:defFontFace, font_size:10, bold:true}, opts:{bold:true}}, {text: commentsIS_s1c2, options:{font_face:defFontFace, font_size:9, italic:true, color:'4f93a8'}}], { x:3.54, y:3.2, w:'32%' });
+			slide.addText([{text:'Comment: ', options:{font_face:defFontFace, font_size:10, bold:true}, opts:{bold:true}}, {text: commentsVS_s1c3, options:{font_face:defFontFace, font_size:9, italic:true, color:'4f93a8'}}], { x:7.33, y:3.2, w:'32%' });
+			//slide.addText([{text:'Comment: ', options:{font_face:defFontFace, font_size:9, bold:true}, opts:{bold:true}}, {text: commentsHSFP_s1c4, options:{font_face:defFontFace, font_size:9}}], { x:8.22, y:1.90, w:'24%' });
+			
+			slide.addText([{text:'Comment: ', options:{font_face:defFontFace, font_size:10, bold:true}, opts:{bold:true}}, {text: commentsISC_s1c5, options:{font_face:defFontFace, font_size:9, italic:true, color:'4f93a8'}}], { x:0.13, y:7.0, w:'32%' });
+			slide.addText([{text:'Comment: ', options:{font_face:defFontFace, font_size:10, bold:true}, opts:{bold:true}}, {text: commentsEVM_s1c6, options:{font_face:defFontFace, font_size:9, italic:true, color:'4f93a8'}}], { x:3.54, y:7.0, w:'32%' });
+			slide.addText([{text:'Comment: ', options:{font_face:defFontFace, font_size:10, bold:true}, opts:{bold:true}}, {text: commentsGAT_s1c7, options:{font_face:defFontFace, font_size:9, italic:true, color:'4f93a8'}}], { x:7.33, y:7.0, w:'32%' });
+			//slide.addText([{text:'Comment: ', options:{font_face:defFontFace, font_size:9, bold:true}, opts:{bold:true}}, {text: commentsPHRF_s1c8, options:{font_face:defFontFace, font_size:9}}], { x:8.22, y:4.5, w:'24%' });
+			
+			
+			
+			/* ***********************************************************************************************************
+			**	SLIDE 1 - TABLE 2 ****
+			** ******************************************************************************************************** */	
+			/*tableStyle = { x:0.01, y:5.5, w:'100%', rowH:0.2, colW:[1.5,4.2,1,1,3.3],fill:defFillColor, 
+								color:defFontColor, font_face:defFontFace, font_size:defFontSize,marginPt:0, valign:'m', align:'l', border:defBorder };
+			titleCellStyle = {fill:'ABFFC3', font_size:defTitleFontSize, color:defHeadFontColor, bold:true};
+			textTitleCellStyle = {font_size:defFontSize, color:defTitleFontColor, bold:true};
+			commentCellStyle = {font_size:defFontSize, color:'000000', bold:true, breakLine: false};
+			
+			rows = [
+				[
+					{ text: 'Topic', opts: titleCellStyle},
+					{ text: [{text: 'WHO CO TCA', options: {bold:true, color:defHeadFontColor, underline:true}}, {text: ' -2017', options: {bold:true, color:defHeadFontColor} },{text: ' activities;', options: {bold:true} },{text: ' milestones;', options: {bold:true, color: 'ff0000'} }, {text: ' funds', options: {bold:true, color: '0070c0'} } ], opts: titleCellStyle },
+					{ text: 'Milestones Mid-YR', opts: titleCellStyle},
+					{ text: 'Milestones End-YR', opts: titleCellStyle},
+					{ text: 'Other TCA-related & funded areas', opts: {fill:'ffffff', font_size:defTitleFontSize, color:defHeadFontColor, bold:true}}
+				],
+				[
+					{ text: 'HSS/Finance' },
+					{ text: [{text: evmHSSActivities_s1c9 + " ", options: { breakLine: false}}, {text: evmHSSMilestones_s1c9 + " ", options: { color: 'ff0000', breakLine: false}}, {text: evmHSSFunds_s1c9, options: { color: '0070c0', breakLine: false}}]},
+					{ text: evmHSSMilestoneMidYear_s1c9, opts:{rowspan:6}  },
+					{ text: evmHSSMilestoneEndYear_s1c9, opts:{rowspan:6} },
+					{ text: "- 2016 TCA cash used: " + evmTCARates_s1c9 + "\n" + "- 2017 TCA cash used: " + evmTCARates2_s1c9 + "\n" + "- TCA staff hired: " + evmTCAStaffHired_s1c9 , opts:{rowspan:3} },
+				],
+				[
+					{ text: 'Policy & strategy' },
+					{ text: [{text: evmPolicyActivities_s1c9 + " ", options: { breakLine: false}}, {text: evmPolicyMilestones_s1c9 + " ", options: { color: 'ff0000', breakLine: false}}, {text: evmPolicyFunds_s1c9, options: { color: '0070c0', breakLine: false}}]},
+					//{ text: ((evmPolicyActivities_s1c9 + "  " + evmPolicyMilestones_s1c9 + " " + evmPolicyFunds_s1c9)||"").substring(0,90)  }
+					//{ text: evmPolicyMilestoneMidYear_s1c9  },
+					//{ text: evmPolicyMilestoneEndYear_s1c9  }				
+				],
+				[
+					{ text: 'Delivery' },
+					{ text: [{text: evmDeliveryActivities_s1c9 + " ", options: { breakLine: false}}, {text: evmDeliveryMilestones_s1c9 + " ", options: { color: 'ff0000', breakLine: false}}, {text: evmDeliveryFunds_s1c9, options: { color: '0070c0', breakLine: false}}]},
+					//{ text: ((evmDeliveryActivities_s1c9 + " " + evmDeliveryMilestones_s1c9 + " " + evmDeliveryFunds_s1c9)||"").substring(0,90) }
+					//{ text: evmDeliveryMilestoneMidYear_s1c9  },
+					//{ text: evmDeliveryMilestoneEndYear_s1c9  }					
+				],
+				[
+					{ text: 'Supply Chain' },
+					{ text: [{text: evmSupplyActivities_s1c9 + " ", options: { breakLine: false}}, {text: evmSuplyMilestones_s1c9 + " ", options: { color: 'ff0000', breakLine: false}}, {text: evmSuplyFunds_s1c9, options: { color: '0070c0', breakLine: false}}]},
+					//{ text: ((evmSupplyActivities_s1c9 + " " + evmSuplyMilestones_s1c9 + " " + evmSuplyFunds_s1c9)||"").substring(0,90)  },
+					//{ text: evmSuplyMilestoneMidYear_s1c9    },
+					//{ text: evmSuplyMilestoneEndYear_s1c9   },
+					{ text: [ {text: "Comments on other partners/funds related to WHO TCA", options:{bold:true}}, {text: commentsWHOS_s1c9.split(';;').join('\n'), options:{bullet: true}} ], opts:{rowspan:3} },
+					//{ text: evmSuplyFunds_s1c9  + "\n" + evmDataFunds_s1c9  + "\n" + evmADCFunds_s1c9 , opts:{rowspan:3} },
+				],
+				[
+					{ text: 'Data' },
+					{ text: [{text: evmDataActivities_s1c9 + " ", options: { breakLine: false}}, {text: evmDataMilestones_s1c9 + " ", options: { color: 'ff0000', breakLine: false}}, {text: evmDataFunds_s1c9, options: { color: '0070c0', breakLine: false}}]},
+					//{ text: ((evmDataActivities_s1c9 + " " + evmDataMilestones_s1c9 +  " " + evmDataFunds_s1c9)||"").substring(0,90) }
+					//{ text: evmDataMilestoneMidYear_s1c9 },
+					//{ text: evmDataMilestoneEndYear_s1c9 }					
+				],
+				[
+					{ text: 'ADC/Other' },
+					{ text: [{text: evmADCActivities_s1c9 + " ", options: { breakLine: false}}, {text: evmADCMilestones_s1c9 + " ", options: { color: 'ff0000', breakLine: false}}, {text: evmADCFunds_s1c9, options: { color: '0070c0', breakLine: false}}]},
+					//{ text: ((evmADCActivities_s1c9 +  " " + evmADCMilestones_s1c9 + " " + evmADCFunds_s1c9)||"").substring(0,90)  }
+					//{ text: evmADCMilestoneMidYear_s1c9  },
+					//{ text: evmADCMilestoneEndYear_s1c9  }					
+				]
+			];
+								
+			slide.addTable( rows, tableStyle ); */
+			slide.addImage({ path:image5, x:0.3, y:5.0, w:3.0, h:2.0 });
+			slide.addImage({ path:image6, x:3.65, y:4.9, w:3.1, h:2.0 });
+						
+			/** **********************************************************************************************************
+			**************************************************************************************************************
+			SLIDE 2 - TABLE 1
+			**************************************************************************************************************
+			*********************************************************************************************************** **/
+			slide = pptx.addNewSlide();
+			tableStyle = { x:0.01, y:0.01, w:'100%', rowH:[0.2,2.3,0.2,2.3], colW:[3.5,2,3.5,2], fill:defFillColor, 
+								color:defFontColor, font_face:defFontFace, font_size:defFontSize,marginPt:0, valign:'t', align:'l', border:defBorder };
+
+			titleCellStyle = {fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true};
+			var cname = EPIObj.countryName == undefined ? "" : EPIObj.countryName; 
+			var resultFontColor = '4f93a8';
+			var rows = [
+				[
+					{ text: 'Coverage Trends for All Vaccines', opts:{colspan: 2, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'DTP3 coverage: Admin, WUENIC, DQ ', opts:{colspan: 2, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+				],
+				[
+					//Cell 01 ===============================================================================
+					{ 
+						text: '', opts: {border: [defBorder, defNoBorder, defBorder, defBorder]} 
+					},
+					{ 
+						text: [
+								//{text: [{text: yrVacCov_s2c1 + ' Total Pop: ', options:{bold:true}}, {text: numFormat1(totalPopulation_s2c1)}], opts:{colspan:3}},	
+								//{text:'\n'},								
+								//{text: [{text: yrVacCov_s2c1 + ' Births: ', options:{bold:true}}, {text: numFormat1(births_s2c1)}], opts:{colspan:3}},	
+								//{text:'\n'},
+								{text: 'Last Census: ', options: {bold:true, breakLine: false}},								
+								{text: lastCensus_s2c1, options: { breakLine: false,color: resultFontColor}},
+								{text: ''},
+								{text: yrVacCov_s2c1 + ' Total Pop: ', options: {bold:true, breakLine: false}},								
+								{text: totalPopulation_s2c1.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","), options: { breakLine: false,color: resultFontColor}},
+								{text: ''},
+								{text: yrVacCov_s2c1 + ' Births: ', options: {bold:true, breakLine: false}},								
+								{text: births_s2c1.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","), options: { breakLine: false,color: resultFontColor }},	
+								{text: '\n'},
+								{text:'Comment: ', options: commentCellStyle},								
+								{text: commentOnTrend_s2c1, options: { breakLine: false,color: resultFontColor }},								
+							] 
+					},
+					//Cell 02 ===============================================================================
+					{ 
+						text: '', opts: {border: [defBorder, defNoBorder, defBorder, defBorder]} 
+					},
+					{ 
+						text: [
+								{text: 'DHS (Year): ', options: {bold:true, breakLine: false}},								
+								{text: DHSYear_s2c2, options: { breakLine: false,color: resultFontColor}},
+								{text: ''},
+								{text: 'MICS: ', options: {bold:true, breakLine: false}},								
+								{text: MICSYear_s2c2, options: { breakLine: false,color: resultFontColor}},
+								{text: '\n\n'},
+								{text:'Comment: ', options: commentCellStyle},								
+								{text: commentOnDQ_s2c2, options: { breakLine: false,color: resultFontColor }},								
+							], opts: {border: [defBorder, defNoBorder, defBorder, defBorder]} 
+					}					
+				],
+				[				
+					{ text: 'Indicator of Coverage & Equity: District level DTP3 Coverage', opts:{colspan: 2, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true, colW:2.75}},
+					{ text: 'Measles vaccine coverage & surveillance', opts:{colspan: 2, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true, colW:2.75}}
+				],
+				[
+					//Cell 03 ===============================================================================
+					{ 
+						text: '', opts: {border: [defBorder, defNoBorder, defBorder, defBorder]} 
+					},
+					{ 
+						text: [
+								{text: '# Districts: ' , options: { bold:true, breakLine: false }},
+								{text: numberOfDistricts_s2c3, options: { breakLine: false,color: '42b55f' }},
+								{text: ''},
+								{text: '# Districts <80% DTP3: ', options: { bold:true, breakLine: false }},
+								{text: districtDTPLess80_s2c3, options: { breakLine: false,color: '42b55f' }},
+								{text:''},
+								{text: '# Districts w/ >10% Drop-out: ', options: { bold:true, breakLine: false }},
+								{text: districtDropOut10_s2c3, options: { breakLine: false,color: '42b55f' }},
+								{text:'\n'},
+								{text:'Comment: ', options: commentCellStyle},	
+								{text: commentEquity_s2c3, options: { breakLine: false,color: resultFontColor }},	
+							]
+					},
+					//Cell 04 ===============================================================================
+					{ 
+						text: '', opts: {border: [defBorder, defNoBorder, defBorder, defBorder]} 
+					},
+					{ 
+						text: [
+								{text: 'MCV2 Status: ', options: {bold:true, breakLine: false}},								
+								{text: MCV2Intro_s2c4, options: { breakLine: false,color: resultFontColor }},	
+								{text: '\n'},
+								{text:'Comment: ', options: commentCellStyle},								
+								{text: commentSurveilence_s2c4 , options: { breakLine: false,color: resultFontColor }},								
+							]
+					}
+				]
+			];
+			slide.addTable( rows, tableStyle );
+			
+			/** **********************************************************************************************************
+			**************************************************************************************************************
+			SLIDE 2 - TABLE 2
+			**************************************************************************************************************
+			*********************************************************************************************************** **/
+			tableStyle = { x:0.01, y:5.02, w:'100%', rowH:[0.2,2.5], colW:[1.37,1.38,1.37,1.37,2.75,2.75], fill:defFillColor, 
+								color:defFontColor, font_face:defFontFace, font_size:defFontSize,marginPt:0, valign:'t', align:'l', border:defBorder };
+			var resultFontColor = '4f93a8';
+			titleCellStyle = {fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true};
+			rows = [
+				[
+					{ text: 'Health System Planning & Finance', opts:{colspan: 2, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'EPI Planning & Finance', opts:{colspan: 2, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'WHO Contacts', opts:{fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'Partner Contacts ', opts:{fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}}
+				],
+				[
+					//Cell 05 ===============================================================================
+					{ 
+						text: [
+								{text:'NHPSPS dates: \nFiscal  year: \nHSCC/DPCC:\nAnnual HS review: \nUHC 2030: \nUHC Partnership: \nSWAP present: \nODA commitment: \nPortfolio Planning: \n5 Health donors:'}
+							], opts: { border: [defBorder, defNoBorder, defBorder, defBorder], colW: '15%' }
+					},
+					{ 
+						text: [
+								{text:nhpspsDates_s1c4 + "\n" + fiscalYear_s1c4 + "\n" + hscc_dpcc_s1c4 + "\n" + annualHsReview_s1c4 + "\n" + IHPCountry_s1c4 + "\n" + UHCCountry_s1c4 + "\n" + swapPresent_s1c4 + "\n" + odaCommitment_s1c4 + "\n" + hss_cefCycle_s1c4 + "\n" + keySourcesOfODA_s1c4},
+								//{text: commentsHSFP_s1c4}
+							], opts: { colW: '9%',color: resultFontColor}
+					},
+					//Cell 06 ===============================================================================
+					{ 
+						text: [
+								{text:'cMYP:\nAnnual EPI Plan 2017: \nPolio Transition: \n% Vax paid by Gov: \n% RI paid by Gavi: \nGavi Category: \nCo-fin Status:'}
+							], opts: { border: [defBorder, defNoBorder, defBorder, defBorder], colW: '15%' }
+					},
+					{ 
+						text: [
+								{text: ((evmCMYP_s1c8+"-"+evmCMYP2_s1c8)||"-").substring(0,20)  + "\n" + (evmAnnualEPI_s1c8||"-").substring(0,20)  + "\n" + (evmPolioTrans_s1c8||"-").substring(0,20)  + "\n" + (evmVaxPaidByGovt_s1c8||"-").substring(0,20)  + "\n" + (evmRIPaidByGovt_s1c8||"-").substring(0,20)  + "\n" + (evmGaviCat_s1c8||"-").substring(0,20)  + "\n" + (evmFinancingStatus_s1c8||"-").substring(0,20) }
+							], opts: { colW: '9%',color: resultFontColor}
+					},
+					/*{ 
+						text: '', options: {border: [defBorder, defNoBorder, defBorder, defBorder]}
+					},
+					{ 
+						text:''
+					},
+					//Cell 06 ===============================================================================
+					{ 
+						text: [
+								{text:'Activity', options: textTitleCellStyle}, 
+								{text:keyActivity1_s2c6 + "\n" + keyActivity2_s2c6 + "\n" + keyActivity3_s2c6 + "\n" + keyActivity4_s2c6 + "\n" + keyActivity5_s2c6 + "\n" + keyActivity6_s2c6}
+							], opts: { border: [defBorder, defNoBorder, defBorder, defBorder],color: resultFontColor} 
+						//text: keyActivity1_s2c6 + "\n" + keyActivity2_s2c6 + "\n" + keyActivity3_s2c6 + "\n" + keyActivity4_s2c6 + "\n" + keyActivity5_s2c6 + "\n" + keyActivity6_s2c6, options: {border: [defBorder, defNoBorder, defBorder, defBorder]}
+					},
+					{ 
+						text: [
+								{text:'Date', options: textTitleCellStyle}, 
+								{text:keyActivityPeriod1_s2c6 + "\n" + keyActivityPeriod2_s2c6 + "\n" + keyActivityPeriod3_s2c6 + "\n" + keyActivityPeriod4_s2c6 + "\n" + keyActivityPeriod5_s2c6 + "\n" + keyActivityPeriod6_s2c6}
+							] 
+						//text: keyActivityPeriod1_s2c6 + "\n" + keyActivityPeriod2_s2c6 + "\n" + keyActivityPeriod3_s2c6 + "\n" + keyActivityPeriod4_s2c6 + "\n" + keyActivityPeriod5_s2c6 + "\n" + keyActivityPeriod6_s2c6
+					},*/
+					//Cell 07 ===============================================================================
+					/*{ 
+						text: [
+								{text:'EPI Manager:\nWR: \nCO EPI: \nCO HSS: \nIST FO EPI: \nIST FO HSS: \nIST EPI: \nIST HSS: \nHQ EPI Lead: \nHQ EPI Support: \nHQ HSS:'}
+							], opts: { border: [defBorder, defNoBorder, defBorder, defBorder], colW: '15%' }
+					},
+					{ 
+						text: [
+								{text:EPIManager_s2c7 + "\n" + WHORepresentative_s2c7 + "\n" + COEPI_s2c7 + "\n" + COHSS_s2c7 + "\n" + ISTFOEPI_s2c7 + "\n" + ISTFOHSS_s2c7 + "\n" + WHOROEPI_s2c7 + "\n" + WHOROHSS_s2c7 + "\n" + WHOHQFOEPI_s2c7 + "\n" + WHOHQSupport_s2c7 + "\n" + WHOHQFOHSS_s2c7},
+							], opts: { colW: '9%',color: resultFontColor}
+					},*/
+					
+					{ 
+						text: [
+								//slide.addText([{text: 'EPI Manager : ' ,options:{font_face:defFontFace,font_size:9}},{text:EPIManager_s2c7, options:{font_size:9, hyperlink:{url:'mailto:' + email_1}}}], { x:5.6, y:5.4, w:'24%' });
+								/*{text: 'EPI Manager: ' , options: { bold:true, breakLine: false }},
+								{text: EPIManager_s2c7, options: { breakLine: false,color: resultFontColor }},*/
+								{text: '\n'},
+								/*{text: 'WR:                  ', options: { bold:true, breakLine: false }},
+								{text: WHORepresentative_s2c7, options: { breakLine: false,color: resultFontColor }},
+								{text:''},
+								{text: 'CO EPI:             ', options: { bold:true, breakLine: false }},
+								{text: COEPI_s2c7, options: { breakLine: false,color: resultFontColor }},
+								{text:''},
+								{text: 'CO HSS:             ', options: { bold:true, breakLine: false }},
+								{text: COHSS_s2c7, options: { breakLine: false,color: resultFontColor }},
+								{text:''},
+								{text: 'IST FO EPI:         ', options: { bold:true, breakLine: false }},
+								{text: ISTFOEPI_s2c7, options: { breakLine: false,color: resultFontColor }},
+								{text:''},
+								{text: 'IST FO HSS          ', options: { bold:true, breakLine: false }},
+								{text: ISTFOHSS_s2c7, options: { breakLine: false,color: resultFontColor }},
+								{text:''},
+								{text: 'IST EPI:             ', options: { bold:true, breakLine: false }},
+								{text: WHOROEPI_s2c7, options: { breakLine: false,color: resultFontColor }},
+								{text:''},
+								{text: 'IST HSS:            ', options: { bold:true, breakLine: false }},
+								{text: WHOROHSS_s2c7, options: { breakLine: false,color: resultFontColor }},
+								{text:''},
+								{text: 'HQ EPI Lead:        ', options: { bold:true, breakLine: false }},
+								{text: WHOHQFOEPI_s2c7, options: { breakLine: false,color: resultFontColor }},
+								{text:''},
+								{text: 'HQ EPI Support:     ', options: { bold:true, breakLine: false }},
+								{text: WHOHQSupport_s2c7, options: { breakLine: false,color: resultFontColor }},
+								{text:''},
+								{text: 'HQ HSS:             ', options: { bold:true, breakLine: false }},
+								{text: WHOHQFOHSS_s2c7, options: { breakLine: false,color: resultFontColor }},	*/
+							]
+					},
+					
+					/*{ 
+						text: [
+								//{text:'EPI Manager:        '+ EPIManager_s2c7 +'\nWR:                 '+ WHORepresentative_s2c7 +'\nCO EPI:             '+ COEPI_s2c7 +
+								'\nCO HSS:             '+ COHSS_s2c7 +'\nIST FO EPI:         '+ ISTFOEPI_s2c7 +'\nIST FO HSS:         '+ ISTFOHSS_s2c7 +'\nIST EPI:            '+ WHOROEPI_s2c7 + 
+								'\nIST HSS:            ' + WHOROHSS_s2c7 + '\nHQ EPI Lead:        ' + WHOHQFOEPI_s2c7 + '\nHQ EPI Support:     ' + WHOHQSupport_s2c7 + '\nHQ HSS:             ' + WHOHQFOHSS_s2c7}, 
+								{text:'EPI Manager:', options: { breakLine: false}},{text:EPIManager_s2c7, options: {color: resultFontColor }},{text:'WR:', options: { breakLine: false}},{text:WHORepresentative_s2c7, options: { color: resultFontColor }},{text:'CO EPI:', options: { breakLine: false}},{text:COEPI_s2c7, options: { color: resultFontColor }},{text:'CO HSS:', options: { breakLine: false }},{text:COHSS_s2c7, options: { color: resultFontColor }},{text:'IST FO EPI:', options: { breakLine: false }},{text:ISTFOEPI_s2c7, options: { color: resultFontColor }},{text:'IST FO HSS:', options: { breakLine: false }},{text:ISTFOHSS_s2c7, options: {color: resultFontColor }},{text:'IST EPI:', options: { breakLine: false }},{text:WHOROEPI_s2c7, options: {color: resultFontColor }},{text:'IST HSS:', options: { breakLine: false }},{text:WHOROHSS_s2c7, options: { color: resultFontColor }},{text:'HQ EPI Lead:', options: { breakLine: false }},{text:WHOHQFOEPI_s2c7, options: {color: resultFontColor }},{text:'HQ EPI Support:', options: { breakLine: false }},{text:WHOHQSupport_s2c7, options: { color: resultFontColor }},{text:'HQ HSS:', options: { breakLine: false }},{text:WHOHQFOHSS_s2c7, options: {color: resultFontColor }},
+							], opts: { border: defBorder }
+					},*/
+					//Cell 08 ===============================================================================
+					
+					{ 
+						text: [
+								{text: '\n'},
+								/*{text: 'UNICEF HQ: ' , options: { bold:true, breakLine: false }},
+								{text: unicefHQ_s2c8, options: { breakLine: false,color: resultFontColor }},
+								{text: ''},
+								{text: 'UNICEF RO: ', options: { bold:true, breakLine: false }},
+								{text: unicefRO_s2c8, options: { breakLine: false,color: resultFontColor }},
+								{text:''},
+								{text: 'UNICEF CO: ', options: { bold:true, breakLine: false }},
+								{text: unicefCO_s2c8, options: { breakLine: false,color: resultFontColor }},
+								{text:''},
+								{text: 'Gavi SCM:   ', options: { bold:true, breakLine: false }},
+								{text: gaviSCM_s2c8, options: { breakLine: false,color: resultFontColor }},
+								{text:''},
+								{text: 'Other partner contacts1: ', options: { bold:true, breakLine: false }},
+								{text: otherPartnerContact_s2c8, options: { breakLine: false,color: resultFontColor }},
+								{text:''},
+								{text: 'Other partner contacts2: ', options: { bold:true, breakLine: false }},
+								{text: otherPartnerContact2_s2c8, options: { breakLine: false,color: resultFontColor }},
+								{text:''},
+								{text: 'Other partner contacts3: ', options: { bold:true, breakLine: false }},
+								{text: otherPartnerContact3_s2c8, options: { breakLine: false,color: resultFontColor }},*/
+							]
+					},
+					/*{ 
+						text: [
+								{text:'UNICEF HQ:   '+unicefHQ_s2c8+'\nUNICEF RO:   '+unicefRO_s2c8+'\nUNICEF CO:   '+unicefCO_s2c8+'\nGavi SCM:    '+gaviSCM_s2c8
+								+'\n\nOther partner contacts1:   '+otherPartnerContact_s2c8+'\nOther partner contacts2:  '+otherPartnerContact2_s2c8+'\nOther partner contacts3: '+otherPartnerContact3_s2c8}, 
+							], opts: { border: defBorder,color: resultFontColor }
+					}*/
+				]
+			];
+			slide.addTable( rows, tableStyle );
+			slide.addImage({ path:image1, x:0.2, y:0.50, w:2.7, h:1.9 });
+			slide.addImage({ path:image2, x:5.7, y:0.55, w:3.2, h:1.8 });
+			slide.addImage({ path:image3, x:0.2, y:2.85, w:2.7, h:1.6 });
+			slide.addImage({ path:image4, x:5.7, y:3, w:3.2, h:1.8 });
+			
+			slide.addImage({ path:legendImage, x:3.06, y:2, w:2.4, h:0.5 });
+			if(image3 != noImageUrl)
+			{
+				slide.addImage({ path:legendImage2, x:0.02, y:4.5, w:1.8, h:0.35 });
+				//slide.addImage({ path:legendImage3, x:1.65, y:4.5, w:2.2, h:0.35 });
+			}
+
+			slide.addText([{text:'Comment: ', options:{font_face:defFontFace, font_size:10, bold:true}, opts:{bold:true}}, {text: commentsHSFP_s1c4, options:{font_face:defFontFace, font_size:9, italic:true, color:'4f93a8'}}], { x:0.05, y:7.2, w:'24%' });
+			slide.addText([{text:'Comment: ', options:{font_face:defFontFace, font_size:10, bold:true}, opts:{bold:true}}, {text: commentsPHRF_s1c8, options:{font_face:defFontFace, font_size:9, italic:true, color:'4f93a8'}}], { x:2.8, y:7.2, w:'24%' });
+			
+			/** **********************************************************************************************************
+			**************************************************************************************************************
+			SLIDE 2 - HYPERLINKS
+			**************************************************************************************************************
+			*********************************************************************************************************** **/
+			/*tableStyle = { x:0.03, y:5.4, w:'24%', rowH:[0.2], fill:defFillColor, 
+								color:defFontColor, font_face:defFontFace, font_size:defFontSize,marginPt:0, valign:'t', align:'l', border:defNoBorder };
+			titleCellStyle = {fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true};
+			
+						
+			slide.addText([{text:'JRF Data on Web', options:{font_size:9, hyperlink:{url:'http://apps.who.int/immunization_monitoring/en/globalsummary/countryprofileselect.cfm'}}}], { x:0.03, y:5.4, w:'24%' });
+			slide.addText([{text:'JRF data in Excel', options:{font_size:9, hyperlink:{url:'http://WIMS.WHO.INT'}}}], { x:0.03, y:5.6, w:'24%' });
+			slide.addText([{text:'WUENIC Summaries', options:{font_size:9, hyperlink:{url:'http://www.who.int/entity/immunization/monitoring_surveillance/data/Summary_Measles_SIA_Jan2000_Dec2017.xls?ua=1'}}}], { x:0.03, y:5.8, w:'24%' });
+			slide.addText([{text:'SIA latest Info', options:{font_size:9, hyperlink:{url:'http://apps.who.int/immunization_monitoring/immun_cal'}}}], { x:0.03, y:6.0, w:'24%' });
+			slide.addText([{text:'SIA Calendar', options:{font_size:9, hyperlink:{url:'http://www.who.int/entity/immunization/monitoring_surveillance/measlesreportedcasesbycountry.xlsx?ua=1'}}}], { x:0.03, y:6.2, w:'24%' });
+			slide.addText([{text:'Measles Case Count', options:{font_size:9, hyperlink:{url:'http://www.who.int/immunization/monitoring_surveillance/resources/NUVI/en/'}}}], { x:0.03, y:6.4, w:'24%' });
+			slide.addText([{text:'NV Surv Bulletins', options:{font_size:9, hyperlink:{url:'https://extranet.who.int/polis'}}}], { x:0.03, y:6.6, w:'24%' });
+			slide.addText([{text:'Polio Trans Docs', options:{font_size:9, hyperlink:{url:'http://WIMS.WHO.INT'}}}], { x:0.03, y:6.8, w:'24%' });
+			slide.addText([{text:'Other Links', options:{font_size:9, bold:true}}], { x:0.03, y:7.1, w:'24%' });
+			slide.addText([{text:otherLinksText1_s2c5, options:{font_size:9, hyperlink:{url:otherLinksLink1_s2c5}}}], { x:0.03, y:7.3, w:'24%' });
+			slide.addText([{text:otherLinksText2_s2c5, options:{font_size:9, hyperlink:{url:otherLinksLink2_s2c5}}}], { x:0.03, y:7.5, w:'24%' });*/
+			
+			//Email addresses WHO Contacts
+			slide.addText([{text: 'EPI Manager:    ' ,options:{font_face:defFontFace,font_size:10}},{text:EPIManager_s2c7, options:{font_size:9, hyperlink:{url:'mailto:' + email_1}}}], { x:5.5, y:5.3, w:'24%' });
+			slide.addText([{text: 'WR:                     ',options:{font_face:defFontFace,font_size:10}},{text:WHORepresentative_s2c7, options:{font_size:9, hyperlink:{url:'mailto:' + email_2}}}], { x:5.5, y:5.45, w:'24%' });
+			slide.addText([{text: 'CO EPI:                ',options:{font_face:defFontFace,font_size:10}},{text:COEPI_s2c7, options:{font_size:9, hyperlink:{url:'mailto:' + email_3}}}], { x:5.5, y:5.6, w:'24%' });
+			slide.addText([{text: 'CO HSS:               ',options:{font_face:defFontFace,font_size:10}},{text:COHSS_s2c7, options:{font_size:9, hyperlink:{url:'mailto:' + email_4}}}], { x:5.5, y:5.75, w:'24%' });
+			slide.addText([{text: 'RO FP EPI:            ',options:{font_face:defFontFace,font_size:10}},{text:ISTFOEPI_s2c7, options:{font_size:9, hyperlink:{url:'mailto:' + email_5}}}], { x:5.5, y:5.9, w:'24%' });
+			slide.addText([{text: 'RO FP HSS:            ',options:{font_face:defFontFace,font_size:10}},{text:ISTFOHSS_s2c7, options:{font_size:9, hyperlink:{url:'mailto:' + email_6}}}], { x:5.5, y:6.05, w:'24%' });
+			slide.addText([{text: 'IST EPI:               ',options:{font_face:defFontFace,font_size:10}},{text:WHOROEPI_s2c7, options:{font_size:9, hyperlink:{url:'mailto:' + email_7}}}], { x:5.5, y:6.2, w:'24%' });
+			slide.addText([{text: 'IST HSS:              ',options:{font_face:defFontFace,font_size:10}},{text:WHOROHSS_s2c7, options:{font_size:9, hyperlink:{url:'mailto:' + email_8}}}], { x:5.5, y:6.35, w:'24%' });
+			slide.addText([{text: 'HQ EPI Lead:      ',options:{font_face:defFontFace,font_size:10}},{text:WHOHQFOEPI_s2c7, options:{font_size:9, hyperlink:{url:'mailto:' + email_9}}}], { x:5.5, y:6.65, w:'24%' });
+			slide.addText([{text: 'HQ EPI Support:     ',options:{font_face:defFontFace,font_size:10}},{text:WHOHQSupport_s2c7, options:{font_size:9, hyperlink:{url:'mailto:' + email_18}}}], { x:5.5, y:6.8, w:'24%' });
+			slide.addText([{text: 'HQ HSS:              ',options:{font_face:defFontFace,font_size:10}},{text:WHOHQFOHSS_s2c7, options:{font_size:9, hyperlink:{url:'mailto:' + email_10}}}], { x:5.5, y:6.95, w:'24%' });
+			
+			//Email addresses of Partner Contacts
+			slide.addText([{text: 'UNICEF HQ:     ' ,options:{font_face:defFontFace,font_size:10}},{text:unicefHQ_s2c8, options:{font_size:9, hyperlink:{url:'mailto:' + email_11}}}], { x:8.2, y:5.3, w:'24%' });
+			slide.addText([{text: 'UNICEF RO:      ',options:{font_face:defFontFace,font_size:10}},{text:unicefRO_s2c8, options:{font_size:9, hyperlink:{url:'mailto:' + email_12}}}], { x:8.2, y:5.45, w:'24%' });
+			slide.addText([{text: 'UNICEF CO:      ',options:{font_face:defFontFace,font_size:10}},{text:unicefCO_s2c8, options:{font_size:9, hyperlink:{url:'mailto:' + email_13}}}], { x:8.2, y:5.6, w:'24%' });
+			slide.addText([{text: 'Gavi SCM:        ',options:{font_face:defFontFace,font_size:10}},{text:gaviSCM_s2c8, options:{font_size:9, hyperlink:{url:'mailto:' + email_14}}}], { x:8.2, y:5.75, w:'24%' });
+			slide.addText([{text: 'Partner 1:   ',options:{font_face:defFontFace,font_size:10}},{text:otherPartnerContact_s2c8, options:{font_size:9, hyperlink:{url:'mailto:' + email_15}}}], { x:8.2, y:6.05, w:'24%' });
+			slide.addText([{text: 'Partner 2:   ',options:{font_face:defFontFace,font_size:10}},{text:otherPartnerContact2_s2c8, options:{font_size:9, hyperlink:{url:'mailto:' + email_16}}}], { x:8.2, y:6.35, w:'24%' });
+			slide.addText([{text: 'Partner 3:   ',options:{font_face:defFontFace,font_size:10}},{text:otherPartnerContact3_s2c8, options:{font_size:9, hyperlink:{url:'mailto:' + email_17}}}], { x:8.2, y:6.65, w:'24%' });
+			
+			//current time
+			var today = new Date();
+			var dd = today.getDate();
+			var mm = today.getMonth()+1; //January is 0!
+			var yyyy = today.getFullYear();
+
+			if(dd<10) {
+				dd = '0'+dd
+			} 
+
+			if(mm<10) {
+				mm = '0'+mm
+			} 
+
+			today = mm + '/' + dd + '/' + yyyy;
+
+			var currentTime = today;
+			try { currentTime = EPIObj.curDate; } catch(err){currentTime = today;};
+			slide.addText(currentTime,{ x:9.4, y:7.15, w:1.2, h:0.3, align:'c', font_size:10, bold:true, color:'000000', fill:'dddddd' });
+			slide.addText("Data in green text comes from the latest JRF", { x:8.2, y:7.4, font_face:defFontFace,font_size:10, italic:true, bold:true, color: '42b55f' });
+			
+			/** **********************************************************************************************************
+			**************************************************************************************************************
+			SLIDE 3 - TABLE 1
+			**************************************************************************************************************
+			*********************************************************************************************************** **/
+			var whiteColor = 'FFFFFF';
+			
+			tableStyle = { x:0.08, y:0.08, w:'100%', colW:[3.65, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6], fill:defFillColor, 
+							color:defFontColor, font_face:defFontFace, font_size:defFontSize,marginPt:0, valign:'m', align:'l', border:defBorder, 
+							rowH:[0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2] };
+			
+			var headerOptions = {color:'090942', fill:'DEDEF2', align:'c'};
+			var subHeaderOptions = {color:'000000', fill:'#8DCEED', bold:true};	
+			var alertCellOptions = {color:'111DB1', fill:'111DB1'};	
+			var defCellOptions = {color:'FFFFFF', fill:'FFFFFF'};	
+			var slide3Table1 = [];
+			var slide3Table2 = [];
+			var oneMoreSlide = 0;
+						
+			//Row1: Header						
+			var headerRow = [];
+			var headerCell = {};
+			headerCell.text = 'Activity';
+			headerCell.options = headerOptions;
+            headerRow.push(headerCell);			
+			for( var i = 1; i<=12; i++){
+				var mKey = "M"+i;
+				headerCell = {};
+				headerCell.text = EPIObj.countryADB_monthNamesMap[mKey];
+				headerCell.options = headerOptions;				
+			    headerRow.push(headerCell);
+			}	            
+            //console.log(  headerRow );			
+			slide3Table1.push( headerRow );
+			slide3Table2.push( headerRow );
+			
+			var subHeaders = EPIObj.countryADB_SubHeaders;
+			var deMap = EPIObj.countryADB_Header_DeMap;
+			//var des = EPIObj.countryADB_DeObjs;
+			var deCount = 1;
+			for( var b in subHeaders ){
+				var subHeaderRow = [];
+				var subHeaderCell = {};
+				subHeaderCell.text = subHeaders[b];
+				subHeaderCell.options = subHeaderOptions;
+            	subHeaderRow.push(subHeaderCell);			
+				for( var i = 1; i<=12; i++){
+					var mKey = "M"+i;
+					subHeaderCell = {};
+					subHeaderCell.text = ' ';
+					subHeaderCell.options = subHeaderOptions;				
+			    	subHeaderRow.push(subHeaderCell);
+				}
+				
+				if( deCount++ <= 30 ){					
+					slide3Table1.push( subHeaderRow );
+				}
+				else{
+					oneMoreSlide = 1;
+					slide3Table2.push( subHeaderRow );
+				}
+				
+				var des = EPIObj.countryADB_Header_DeMap[ subHeaders[b]];
+				for( var i in des ){
+					var bodyRow = [];
+					var bodyCell = {};				
+					bodyCell.text = des[i].shortName;
+					bodyRow.push( bodyCell );
+					//console.log( des[i].id + "   " + des[i].name);
+					for( var j = 1; j<=12; j++){
+						var mKey = des[i].id+"_M"+j;
+						bodyCell = {};										
+						var alertFlag = 0;
+						try{ alertFlag = EPIObj.countryADB_ResultMap[mKey]; }catch(e){console.log("error");alertFlag = 0;}
+						if( alertFlag == undefined || alertFlag == "" || alertFlag == null ) 
+							alertFlag = 0;
+						if( alertFlag == 1){
+							bodyCell.text = 'A';
+							bodyCell.options = alertCellOptions;
+						}
+						else{
+							bodyCell.text = 'NA';
+							bodyCell.options = defCellOptions;
+						}
+						bodyRow.push( bodyCell );
+					}
+					//slide3Table1.push( bodyRow );
+				
+					if( deCount++ <= 30 ){					
+						slide3Table1.push( bodyRow );
+					}
+					else{
+						oneMoreSlide = 1;
+						slide3Table2.push( bodyRow );
+					}
+				}//de for loop
+			}//sub header for loop
+
+			slide = pptx.addNewSlide();
+			slide.addTable( slide3Table1, tableStyle );
+			
+			if( oneMoreSlide == 1 ){
+				slide = pptx.addNewSlide()
+				slide.addTable( slide3Table2, tableStyle );
+			}
+			
+			//console.log( slide3Table1 );
+
+			
+			/*
+			$.each(EPIObj.countryADB_DeObjs, function(ki, k){
+				var bodyRow = [];
+				var bodyCell = {};				
+				bodyCell.text = k.name;
+				bodyRow.push( bodyCell );
+				for( var i = 1; i<=12; i++){
+					var mKey = k.id+"_"+i;
+					bodyCell = {};
+					bodyCell.text = ' ';
+					
+					var alertFlag = 0;
+					try{ alertFlag = EPIObj.countryADB_ResultMap[mKey]; }catch(e){alertFlag = 0;}
+					if( alertFlag == undefined || alertFlag == "" || alertFlag = null ) 
+						alertFlag = 0;
+					if( alertFlag == 1)						
+						bodyCell.options = alertCellOptions;
+					else
+						bodyCell.options = defCellOptions;
+					bodyRow.push( bodyCell );	
+				}
+				slide3Table1.push( bodyRow );
+			});
+			*/
+			
+			/*
+			var slide3Table1Rows = [
+				//Row1: Header
+				[ 
+					{ text:'Data Element', options:{color:tableHeaderColor, fill:tableHeaderFill}},
+					{ text:EPIObj.countryADB_monthNamesMap["M1"], options:{ color:tableHeaderColor, fill:tableHeaderFill}},
+					{ text:EPIObj.countryADB_monthNamesMap["M2"], options:{ color:tableHeaderColor, fill:tableHeaderFill}},
+					{ text:EPIObj.countryADB_monthNamesMap["M3"], options:{ color:tableHeaderColor, fill:tableHeaderFill}},
+					{ text:EPIObj.countryADB_monthNamesMap["M4"], options:{ color:tableHeaderColor, fill:tableHeaderFill}},					
+					{ text:EPIObj.countryADB_monthNamesMap["M5"], options:{ color:tableHeaderColor, fill:tableHeaderFill}},
+					{ text:EPIObj.countryADB_monthNamesMap["M6"], options:{ color:tableHeaderColor, fill:tableHeaderFill}},
+					{ text:EPIObj.countryADB_monthNamesMap["M7"], options:{ color:tableHeaderColor, fill:tableHeaderFill}},
+					{ text:EPIObj.countryADB_monthNamesMap["M8"], options:{ color:tableHeaderColor, fill:tableHeaderFill}},
+					{ text:EPIObj.countryADB_monthNamesMap["M9"], options:{ color:tableHeaderColor, fill:tableHeaderFill}},
+					{ text:EPIObj.countryADB_monthNamesMap["M10"], options:{ color:tableHeaderColor, fill:tableHeaderFill}},
+					{ text:EPIObj.countryADB_monthNamesMap["M11"], options:{ color:tableHeaderColor, fill:tableHeaderFill}},
+					{ text:EPIObj.countryADB_monthNamesMap["M12"], options:{ color:tableHeaderColor, fill:tableHeaderFill}}
+				],
+				//Row2
+				[ 
+					{ text:'At which Gavi High Level Review Panel (HLRP) will this country be reviewed?'},
+					{ text: ' ', options:{fill:EPIObj.countryADB_ResultMap["419_M11"]}}, 
+					{ text: ' ', options:{fill:EPIObj.countryADB_ResultMap["419_M11"]}},
+					{ text: ' ', options:{fill:EPIObj.countryADB_ResultMap["419_M11"]}}, 
+					{ text: ' ', options:{fill:EPIObj.countryADB_ResultMap["419_M11"]}},
+					{ text: ' ', options:{fill:EPIObj.countryADB_ResultMap["419_M11"]}}, 
+					{ text: ' ', options:{fill:EPIObj.countryADB_ResultMap["419_M11"]}},
+					{ text: ' ', options:{fill:EPIObj.countryADB_ResultMap["419_M11"]}}, 
+					{ text: ' ', options:{fill:EPIObj.countryADB_ResultMap["419_M11"]}},
+					{ text: ' ', options:{fill:EPIObj.countryADB_ResultMap["419_M11"]}}, 
+					{ text: ' ', options:{fill:EPIObj.countryADB_ResultMap["419_M11"]}},
+					{ text: ' ', options:{fill:EPIObj.countryADB_ResultMap["419_M11"]}}, 
+					{ text: ' ', options:{fill:EPIObj.countryADB_ResultMap["419_M11"]}}
+				]
+
+				//EPIObj.countryADB_ResultMap["419_M11"]
+			];
+			*/
+			
+			//slide.addTable( slide3Table1, { x:0.15, y:0.2, colW:[4.7, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5], margin:2, font_size:10, border:'CFCFCF' } );
+			
+			//slide = pptx.addNewSlide();
+			
+			/*
+			var orange = 'E58E09';
+			var blue = '108BF8';
+			var darkBlue = '00138C';
+			var green = '00BE23';
+			var pink = 'C710B1';
+			var purple = 'C710B1';
+			
+			slide = pptx.addNewSlide();
+			tableStyle = { x:0.01, y:0.01, w:'100%', rowH:[0.2,1.4], colW:[11/4, 11/4, 11/4, 11/4], fill:defFillColor, 
+								color:defFontColor, font_face:defFontFace, font_size:defFontSize,marginPt:0, valign:'m', align:'l', border:defBorder };
+			titleCellStyle = {fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true};
+			
+			var rows = [
+				[
+					{ text: 'EPI PROFILE: Information /data map', opts: titleCellStyle},
+					{ text: 'RI Strategies', opts: titleCellStyle},
+					{ text: 'Vaccine Schedule', opts: titleCellStyle},
+					{ text: 'Health System Planning & Finance', opts: titleCellStyle}
+				],
+				[
+					//Cell 01 ===============================================================================
+					{ 
+						text: [
+								{text:'Key barriers to achieving RI:', options: textTitleCellStyle}, 
+								{text:'-', options:{bullet: true, color: orange}},
+								{text:'\n\n'},
+								{text:'Opportunities to RI:', options: textTitleCellStyle},
+								{text:'-', options:{bullet: true, color: orange}}							
+							]
+					},
+					//Cell 02 ===============================================================================
+					{ 
+						text: [
+								{text:'Special Strategies:', options: textTitleCellStyle}, 
+								{text:'-', options:{bullet: true, color: orange}},
+								{text:'\n\n'},
+								{text:'Note can include info from JRF on:', options: textTitleCellStyle},
+								{text:'School Vax:'}							
+							]
+					},
+					//Cell 03 ===============================================================================
+					{ 
+						text: [
+								{text:'JRF Schedules', options: textTitleCellStyle}, 
+								{text:'\n\n\n\n'},
+								{text:'FP to complete', options:{color: orange}}							
+							]
+					},
+					//Cell 04 ===============================================================================
+					{ 
+						text: [
+								{text:'FP to complete', options:{color: orange}}, 
+								{text:'\n\n'}							
+							]
+					}
+				]
+			];
+			slide.addTable( rows, tableStyle );
+			*/
+			
+			/** **********************************************************************************************************
+			**************************************************************************************************************
+			SLIDE 3 - TABLE 2
+			************************************************************************************************************** **/
+			/*
+			tableStyle = { x:0.01, y:1.65, w:'100%', rowH:[0.2,2.8], colW:[15/8,7/8,34/24,10/24,34/24,10/24,34/24,10/24,15/8,7/8,11/4], fill:defFillColor, 
+								color:defFontColor, font_face:defFontFace, font_size:defFontSize,marginPt:0, valign:'t', align:'l', border:defBorder };
+			titleCellStyle = {fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true};
+			
+			var rows = [
+				[
+					{ text: 'Immunization Supply Chain',opts:{colspan: 2, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true, colW:2.75}},
+					{ text: 'EVM', opts:{colspan: 2, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true, colW:2.75}},
+					{ text: 'Gov, Pgm Review, Targets', opts:{colspan: 2, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true, colW:2.75}},
+					{ text: 'Planning & Finance', opts:{colspan: 2, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true, colW:2.75}},
+					{ text: 'WHO Support', opts:{colspan: 2, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true, colW:2.75}}
+				],
+				[
+					//Cell 05 ===============================================================================
+					{ 
+						text: [
+								{text:'Natl-level ISC manager:\nISC Improvement  Plan\ne-stock mgmt @ distr \n%CC w e-temp monitor\nDistrict Stock out\n\nCentral store capacity/birth\n\nCCEOP App (Year)\n\nFP\n\n'}, 
+								{text:'FP Comments:', options:{color: orange}}							
+							], opts: { border: [defBorder, defNoBorder, defBorder, defBorder] }
+					},
+					{ 
+						text: [
+								{text:'-\n-\-\n', options: {color: darkBlue}}, 
+								{text:'\n\-', options:{color: green}},
+								{text:'\n\n-', options:{color: purple}}			
+							]
+					},
+					//Cell 06 ===============================================================================
+					{ 
+						text: [
+								{text:'EVM Years\n% EVM indicators >80% \nOverall  scores\nScores for E1 - E9\n\n'}, 
+								{text:'FP Comments:', options:{color: orange}}							
+							], opts: { border: [defBorder, defNoBorder, defBorder, defBorder] }
+					},
+					{ 
+						text: [
+								{text:'-\n-\n-\n-', options: {color: purple}}
+							]
+					},
+					//Cell 07 ===============================================================================
+					{ 
+						text: [
+								{text:'NITAG estab:\nFunctional ICC\nAEFI Rev Comm\n\nEPI Review (Year):\nDQS (Year):\nSurv Review (Yr)\n\nPolio  EradMNTE\nMR Elimination\nHB control\n\n'}, 
+								{text:'FP Comments:', options:{color: orange}}							
+							], opts: { border: [defBorder, defNoBorder, defBorder, defBorder] }
+					},
+					{ 
+						text: [
+								{text:'-', options: {color: darkBlue}},
+								{text:'-', options: {color: green}},
+								{text:'-', options: {color: darkBlue}},
+								{text:'\n', options: {color: darkBlue}},
+								{text:'-', options: {color: green}},
+								{text:'-', options: {color: green}},
+								{text:'-', options: {color: green}},
+								{text:'\n', options: {color: darkBlue}},
+								{text:'-', options: {color: purple}},
+								{text:'-', options: {color: purple}},
+								{text:'-', options: {color: purple}},
+								{text:'-', options: {color: purple}},
+							]
+					},
+					//Cell 08 ===============================================================================
+					{ 
+						text: [
+								{text:'NITAG estab:\nFunctional ICC\nAEFI Rev Comm\n\nEPI Review (Year):\nDQS (Year):\nSurv Review (Yr)\n\nPolio  EradMNTE\nMR Elimination\nHB control\n\n'}, 
+								{text:'FP Comments:', options:{color: orange}}							
+							], opts: { border: [defBorder, defNoBorder, defBorder, defBorder] }
+					},
+					{ 
+						text: [
+								{text:'-', options: {color: darkBlue}},
+								{text:'-', options: {color: green}},
+								{text:'-', options: {color: darkBlue}},
+								{text:'\n', options: {color: darkBlue}},
+								{text:'-', options: {color: green}},
+								{text:'-', options: {color: green}},
+								{text:'-', options: {color: green}},
+								{text:'\n', options: {color: darkBlue}},
+								{text:'-', options: {color: purple}},
+								{text:'-', options: {color: purple}},
+								{text:'-', options: {color: purple}},
+								{text:'-', options: {color: purple}},
+							]
+					},
+					//Cell 09 ===============================================================================
+					{ 
+						text: '', opts: { colspan: 2 }
+					},
+				]
+			];
+			slide.addTable( rows, tableStyle );
+									
+			//=====================================================================================================================
+			//Data Cell - 9
+			//=====================================================================================================================
+			offsetY += 0.27;
+			colW = 1.8;
+			top = 7;
+			
+			rows = [
+						[{text:'Topic', opts:{bold:true}},{ text:'WHO CO TCA request', opts: {bold: true, colspan:2}}],
+						[{text:'Align programme area funding (column  B)  with EPI HQ and HSS teams to extent possible (it won`t be perfect!:', opts:{rowspan:3}},{text:'Extract activities & funds from  here: Latest TCA file', opts:{colspan:2}}],
+						[{text:'%TCA cash:'},{ text:'-', opts: {color: pink}}],
+						[{text:'%TCA staff:'},{ text:'-', opts: {color: pink}}],
+						[{text:'FP Comments', opts: {colspan:3, color: orange}}]
+			];
+			
+			innerTableStyle = { x:2.9+colW+colW+colW+0.08, y:2.5, w:'18%', rowH:[0.2], colW:[1.2, 0.55], fill:defFillColor, 
+								color:defFontColor, font_face:defFontFace, font_size:defFontSize, border:defNoBorder};
+			slide.addTable( rows, innerTableStyle, { fill: 'CFF3BF'} );
+			*/
+			
+			/** **********************************************************************************************************
+			**************************************************************************************************************
+			SLIDE 3 - TABLE 3
+			**************************************************************************************************************
+			*********************************************************************************************************** **/
+			/*
+			tableStyle = { x:0.01, y:5, w:'100%', rowH:[0.2,2.3], colW:[11/4, 11/4, 11/4, 11/4], fill:defFillColor, 
+								color:defFontColor, font_face:defFontFace, font_size:defFontSize,marginPt:0, valign:'t', align:'l', border:defBorder };
+			titleCellStyle = {fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true};
+			
+			var rows = [
+				[
+					{ text: 'All vaccines: coverage trends', opts: titleCellStyle},
+					{ text: 'DTP3 coverage; Admin, WUENIC, DQ s', opts: titleCellStyle},
+					{ text: 'DTP3 subnational data – 2015', opts: titleCellStyle},
+					{ text: 'Measles vaccine coverage & surveillance ', opts: titleCellStyle}
+				],
+				[
+					//Cell 10 ===============================================================================
+					{ 
+						text: [
+								{text:'All vaccines; coverage trends', options: textTitleCellStyle}, 
+								{text:'\n\n'},
+								{text:'2015 Total Pop\n2015 Births\nJRF Summary Data on Web\nJRF Country Reports in Excel'},
+								{text:'FP  Interpretation/comment & include equity info', options:{color: orange}}							
+							]
+					},
+					//Cell 11 ===============================================================================
+					{ 
+						text: [
+								{text:'DTP3 coverage'}, 
+								{text:'\n\n\n\n\n\n\n'},
+								{text:'FP  Interpretation/comment', options:{color: orange}}							
+							]
+					},
+					//Cell 12 ===============================================================================
+					{ 
+						text: [
+								{text:'Note.  HQ does not produce this map at this time. FP to fine & paste in this section', options: {color: darkBlue}}, 
+								{text:'\n\n\n\n\n\n'},
+								{text:'FP  Interpretation/comment', options:{color: orange}}							
+							]
+					},
+					//Cell 13 ===============================================================================
+					{ 
+						text: [
+								{text:'\n\n\n\n'},
+								{text:'FP  Interpretation/comment', options:{color: orange}}							
+							]
+					}
+				]
+			];
+			slide.addTable( rows, tableStyle );
+			*/		
+			
+			/** **********************************************************************************************************
+			**************************************************************************************************************
+			SLIDE 3 - TABLE 4
+			**************************************************************************************************************
+			*********************************************************************************************************** **/
+			/*
+			tableStyle = { x:0.01, y:6.9, w:'100%', rowH:[0.2,0.5], colW:[11/4, 11/4, 11/4, 11/4], fill:defFillColor, 
+								color:defFontColor, font_face:defFontFace, font_size:defFontSize,marginPt:0, valign:'t', align:'l', border:defBorder };
+			titleCellStyle = {fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true};
+						
+			var rows = [
+				[
+					{ text: 'Key Links', opts: titleCellStyle},
+					{ text: 'Calendar key 2017 activities & plans', opts: titleCellStyle},
+					{ text: 'WHO Contacts', opts: titleCellStyle},
+					{ text: 'Partner Contacts', opts: titleCellStyle}
+				],
+				[
+					{ text: '- FP and IDO to complete links)', opts: {color: orange} },
+					{ text: '- FP to complete', opts: {color: orange} },
+					{ text: '- FP to complete', opts: {color: orange} },
+					{ text: '- FP to complete', opts: {color: orange} }
+				]
+			];
+			slide.addTable( rows, tableStyle );
+			slide.addImage({ path:image5, x:1.4, y:5.7, w:0.5, h:0.5 });
+			slide.addImage({ path:image6, x:3.15, y:5.5, w:2, h:1 });
+			slide.addImage({ path:image7, x:5.65, y:5.7, w:1, h:0.9 });
+			slide.addImage({ path:image8, x:8.5, y:5.4, w:2, h:1 });
+			*/
+			
+			pptx.save( 'EPI Profile_'+EPIObj.countryName );
+	}
+
+	function getEVMColor(percentage)
+	{
+		if(percentage<=60)
+			return 'F50707';
+		else if(percentage<=79)
+			return 'DCAF36';
+		else
+			return '36DC48';
+	}
+	
+	function formatNumeric(val)
+	{
+		if(val == null || val == undefined || val == "")
+			val = 0;
+			
+		return val;
+	}
+	
+	function formatText(val)
+	{
+		if(val == null || val == undefined || val == "")
+			val = " ";
+			
+		return val;
+	}
+</script>
