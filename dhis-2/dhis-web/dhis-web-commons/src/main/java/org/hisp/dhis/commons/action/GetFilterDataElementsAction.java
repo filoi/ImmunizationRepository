@@ -185,7 +185,15 @@ public class GetFilterDataElementsAction
         throws Exception
     {
     	//System.out.println("Inside Filter DEs ACtion : ");
-    	
+    	User curUser = currentUserService.getCurrentUser();
+        
+        List<UserAuthorityGroup> userAuthorityGroups = new ArrayList<UserAuthorityGroup>( curUser.getUserCredentials().getUserAuthorityGroups() );
+        Set<DataElement> userDataElements = new HashSet<DataElement>();
+        for ( UserAuthorityGroup userAuthorityGroup : userAuthorityGroups )
+        {
+            userDataElements.addAll( userAuthorityGroup.getDataElements() );
+        }
+        
         if ( id != null && id != ALL )
         {
             DataElementGroup dataElementGroup = dataElementService.getDataElementGroup( id );
@@ -247,11 +255,11 @@ public class GetFilterDataElementsAction
         {
             // dataElements = new ArrayList<DataElement>(
             // dataElementService.getAllDataElements() );
-
+        	
             dataElements = new ArrayList<DataElement>( dataElementService.getAllDataElements() );
+            dataElements.retainAll( userDataElements );
 
-            ContextUtils.clearIfNotModified( ServletActionContext.getRequest(), ServletActionContext.getResponse(),
-                dataElements );
+            ContextUtils.clearIfNotModified( ServletActionContext.getRequest(), ServletActionContext.getResponse(), dataElements );
         }
 
         if ( key != null )
@@ -279,14 +287,7 @@ public class GetFilterDataElementsAction
         }
         
         
-        User curUser = currentUserService.getCurrentUser();
         
-        List<UserAuthorityGroup> userAuthorityGroups = new ArrayList<UserAuthorityGroup>( curUser.getUserCredentials().getUserAuthorityGroups() );
-        Set<DataElement> userDataElements = new HashSet<DataElement>();
-        for ( UserAuthorityGroup userAuthorityGroup : userAuthorityGroups )
-        {
-            userDataElements.addAll( userAuthorityGroup.getDataElements() );
-        }
             
         Constant ivbAggDEConst = constantService.getConstantByName( "IS_IVB_AGGREGATED_DE_ATTRIBUTE_ID" );
         Constant ivbRestrictedDEConst = constantService.getConstantByName( "RESTRICTED_DE_ATTRIBUTE_ID" );
@@ -328,6 +329,12 @@ public class GetFilterDataElementsAction
         restrictedDes.removeAll( userDataElements );
         
         dataElements.removeAll( restrictedDes );
+        
+        //DataElement de = dataElementService.getDataElement( 476 );
+        
+        //System.out.println( "Before: " + dataElements.size() + ",  " + userDataElements.size() +",  "+ dataElements.contains( de ) + ",  " + userDataElements.contains( de ) );
+        dataElements.retainAll( userDataElements );
+        //System.out.println( "After: " + dataElements.size() + ",  " + userDataElements.size() +",  "+ dataElements.contains( de ) + ",  " + userDataElements.contains( de ) );
         
         i18n( i18nService, dataElements );
         
