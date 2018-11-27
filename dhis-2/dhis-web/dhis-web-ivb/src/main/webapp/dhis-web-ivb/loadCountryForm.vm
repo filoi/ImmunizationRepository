@@ -317,6 +317,45 @@
 
 
         #set( $count = 0 )
+		#set( $lengthDEs = {} )
+		#set( $dummy = $lengthDEs.put("1000298", 100))
+		#set( $dummy = $lengthDEs.put("1000299", 100))
+		#set( $dummy = $lengthDEs.put("1000300", 100))
+		#set( $dummy = $lengthDEs.put("1000301", 100))
+		#set( $dummy = $lengthDEs.put("1000368", 220))
+		#set( $dummy = $lengthDEs.put("1000312", 220))
+		#set( $dummy = $lengthDEs.put("1000329", 150))
+		#set( $dummy = $lengthDEs.put("1000327", 150))
+		#set( $dummy = $lengthDEs.put("1000331", 25))
+		#set( $dummy = $lengthDEs.put("1000332", 25))
+		#set( $dummy = $lengthDEs.put("1000333", 25))
+		#set( $dummy = $lengthDEs.put("1000334", 25))
+		#set( $dummy = $lengthDEs.put("1000335", 150))
+		#set( $dummy = $lengthDEs.put("1000375", 150))
+		#set( $dummy = $lengthDEs.put("1000376", 150))
+		#set( $dummy = $lengthDEs.put("1000379", 250))
+		#set( $dummy = $lengthDEs.put("1000380", 300))
+		#set( $dummy = $lengthDEs.put("1000321", 110))
+		#set( $dummy = $lengthDEs.put("1000338", 110))
+		#set( $dummy = $lengthDEs.put("1000383", 25))
+		#set( $dummy = $lengthDEs.put("1000384", 25))
+		#set( $dummy = $lengthDEs.put("1000385", 25))
+		#set( $dummy = $lengthDEs.put("1000386", 25))
+		#set( $dummy = $lengthDEs.put("1000387", 25))
+		#set( $dummy = $lengthDEs.put("1000388", 25))
+		#set( $dummy = $lengthDEs.put("1000389", 25))
+		#set( $dummy = $lengthDEs.put("1000390", 25))
+		#set( $dummy = $lengthDEs.put("1000391", 25))
+		#set( $dummy = $lengthDEs.put("1000392", 25))
+		#set( $dummy = $lengthDEs.put("1000393", 25))
+		#set( $dummy = $lengthDEs.put("1000394", 25))
+		#set( $dummy = $lengthDEs.put("1000395", 25))
+		#set( $dummy = $lengthDEs.put("1000396", 25))
+		#set( $dummy = $lengthDEs.put("1000397", 25))
+		#set( $dummy = $lengthDEs.put("1066999", 25))
+		#set( $dummy = $lengthDEs.put("1067002", 25))
+		#set( $dummy = $lengthDEs.put("1067003", 25))
+	
 
     <form id="ivbDataEntryForm" name="ivbDataEntryForm" action="saveSingleCountryData.action" method="post" style="height:100%;" onsubmit="return saveDataValue()">
 
@@ -477,10 +516,18 @@
                                     </select>
                                 </td>
                             #elseif(!($dataElement.getOptionSet()))
-                                <td style="width:18%"><input type="text" style="width:130px;" #if( $deUpdateStatus == "no" ) disabled #end name="${dataEntryId}" id="${dataEntryId}" value="$!dataValue.get(${getter})"  onblur="javascript: saveValue('$!dataValue.get(${getter})','$!dataComments.get(${getter})', '$dataElement.id','$organisationUnit.id','$optionCombo.id','$count','$dataEntryId','$dataElement.valueType')" /></td>
+							#set( $maxLengthText = "")
+								#set( $deLength = 0 )
+								#set( $deLength = $lengthDEs.get("$!dataElement.id") )
+								#if(  $!deLength >= 1 )
+									#set( $maxLengthText = " maxlength=$!deLength ")
+								#else
+									#set( $maxLengthText = " maxlength=1000 ")
+								#end
+                                <td style="width:18%"><input type="text" $!maxLengthText style="width:130px;" #if( $deUpdateStatus == "no" ) disabled #end name="${dataEntryId}" id="${dataEntryId}" value="$!dataValue.get(${getter})"  onblur="javascript: saveValue('$!dataValue.get(${getter})','$!dataComments.get(${getter})', '$dataElement.id','$organisationUnit.id','$optionCombo.id','$count','$dataEntryId','$dataElement.valueType')" /></td>
                             #end
                         #else
-                            <td style="width:18%"><input type="text" style="width:130px;" #if( $deUpdateStatus == "no" ) disabled #end name="${dataEntryId}" id="${dataEntryId}" value="$!dataValue.get(${getter})"  onblur="javascript: saveValue('$!dataValue.get(${getter})','$!dataComments.get(${getter})', '$dataElement.id','$organisationUnit.id','$optionCombo.id','$count','$dataEntryId','$dataElement.valueType')"  /></td>
+                            <td style="width:18%"><input type="text" $!maxLengthText style="width:130px;" #if( $deUpdateStatus == "no" ) disabled #end name="${dataEntryId}" id="${dataEntryId}" value="$!dataValue.get(${getter})"  onblur="javascript: saveValue('$!dataValue.get(${getter})','$!dataComments.get(${getter})', '$dataElement.id','$organisationUnit.id','$optionCombo.id','$count','$dataEntryId','$dataElement.valueType')"  /></td>
                         #end
 
                         <td style="width:23%">
