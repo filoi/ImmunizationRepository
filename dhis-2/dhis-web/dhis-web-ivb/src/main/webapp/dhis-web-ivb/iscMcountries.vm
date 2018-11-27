@@ -186,15 +186,18 @@ function numFormat1(n) {
 			    </td>		
 				<td width="5%">&nbsp;</td>
 				<td width="45%" align="left">
-			 		<input type="hidden" id="deIds" name="deIds" value="1181489,1181490,1181491,1181492,
-						1181493,1181494,1181495,1181496,
-						1181497,1181498,1181499,1181500,
-						1181501,1181502,1181503,1181504,
-						1181505,1181506,1181507,1181508,
-						1181510,1181511,1181512,1181513,1181514,1181515,1181516,1181517,1181518,
-						1181519,1181520,1181521,1181522,1181523,1181524,1181525,1181526,1181527" />
-			 		<input type="button" onclick="downloadISCData()" value="Process Scorecard" id="submit" style="width:180px;" /><br/><br/>
-					<input type="button" onclick="#" value="Performance Dashboard" id="submit2" style="width:180px;" />					
+			 		<input type="hidden" id="deIds" name="deIds" 
+			 			value=" 1181489,1181490,1181491,1181492,
+								1181493,1181494,1181495,1181496,
+								1181497,1181498,1181499,1181500,
+								1181501,1181502,1181503,1181504,
+								1181505,1181506,1181507,1181508,
+								1181510,1181511,1181512,1181513,1181514,1181515,1181516,1181517,1181518,
+								1181519,1181520,1181521,1181522,1181523,1181524,1181525,1181526,1181527,
+								1181683,1181684,1181685,1181686,1181687,1181688,1181689,1181690,1181691,
+								1181692,1181693,1181694,1181695,1181696,1181697,1181698,1181699,1181700" />
+			 		<input type="button" onclick="downloadISCData1()" value="Process Scorecard" id="submit" style="width:180px;" /><br/><br/>
+					<input type="button" onclick="downloadISCData2()" value="Performance Dashboard" id="submit2" style="width:180px;" />					
 	 			</td>				 
 			</tr>
  			
@@ -229,9 +232,6 @@ jQuery(document).ready(function() {
 	//var appURL = "http://localhost:8090/dhis/api/documents/";
 	//var appURL = "https://www.who-immunization-repository.org/api/documents/";
 	
-	
-	
-	
 	function previewFile(element, previewId) 
 	{
 	  var preview = document.getElementById(previewId);
@@ -254,7 +254,7 @@ jQuery(document).ready(function() {
 <script type="text/javascript">
 	// ==================================================================================================================
 	var opObj = {};
-	function downloadISCData()
+	function downloadISCData1()
 	{
 		var url = "iscReportMcountriesJSON.action";
 		var data = $('#form1').serializeArray();
@@ -262,11 +262,12 @@ jQuery(document).ready(function() {
 		$.post(url, data, function(res){
 			console.log(res);
 			opObj = res;
-			downloadISCPPT();
+			downloadISCPPT1();
 		});		
 	}
 	
-	function downloadISCPPT(){
+	function downloadISCPPT1(){
+		console.log("inside downloadISCPPT1");
 		var slideWidth = 11;
 		var slideHeight = 7.8;
 
@@ -507,9 +508,267 @@ jQuery(document).ready(function() {
 				slide.addText('iSC Global Process Scorecard', titleCellStyle );	
 				slide.addTable( iscTables[tableIndex], tableStyle );
 			}
+								
+			pptx.save( 'ISC_Scorecard' );
+	}
+
+
+	function downloadISCData2()
+	{
+		var url = "iscReportMcountriesJSON.action";
+		var data = $('#form1').serializeArray();
+		//console.log(data);
+		$.post(url, data, function(res){
+			console.log(res);
+			opObj = res;
+			downloadISCPPT2();
+		});		
+	}
+	
+	function downloadISCPPT2(){
+		var slideWidth = 11;
+		var slideHeight = 7.8;
+
+		var pptx = new PptxGenJS();
+		pptx.setLayout({ name:'ISC', width:slideWidth, height:slideHeight });
+		
+		var offsetY = 0.01;
+		var defFontFace = 'Calibri';
+		var defFontSize = 10;
+		var defTitleFontSize = 10;
+		var defFillColor = 'ffffff';
+		var defHeadFillColor = 'DEDEF2';
+		var defFontColor = '000000';
+		var defHeadFontColor = '090942';
+		var defTitleFontColor = '090942';
+		var defRowHeight = 0.3;
+		var defBorder = {pt:'1',color:'000000'};
+		var thinBorder = {pt:'1'};
+		var thickBorder = [{pt:'1'},{pt:'2'},{pt:'1'},{pt:'1'}];
+		var thickBorder2 = [{pt:'1'},{pt:'1'},{pt:'1'},{pt:'2'}];
+		var defNoBorder = {pt:'1',color:'ffffff'};
+		var defPadding = 0.02;
+			
+			
+			//slide = pptx.addNewSlide();
+			tableStyle = { x:0.08, y:0.45, w:'100%', 
+							colW:[0.85, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4], 
+							fill:defFillColor, 
+							color:defFontColor, font_face:defFontFace, font_size:defFontSize,marginPt:0, valign:'m', align:'c', border:defBorder, margin:2,
+							rowH:[0.2,0.2] };
+			
+			titleCellStyle = {x:0.05, y:0.08, w:'99%', fill:defHeadFillColor, font_size:13, color:defHeadFontColor, bold:true};
+			
+			var resultFontColor = '4f93a8';
+			
+			var iscTables = [];
+			
+			var iscTableHeader1 = [
+							{ text: 'Countries', opts:{colspan: 1, rowspan:2, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true, border:thickBorder}},
+							{ text: 'Leadership', opts:{colspan: 5, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true, border:thickBorder}},
+							{ text: 'Contineous Improvement Plan', opts:{colspan: 5, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true, border:thickBorder}},
+							{ text: 'Data for management', opts:{colspan: 5, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true, border:thickBorder}},
+							{ text: 'Cold Chain Equipment', opts:{colspan: 5, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true, border:thickBorder}},
+							{ text: 'System Design', opts:{colspan: 5, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,thinBorder}}
+						];
+			
+			var iscTableHeader2 = [
+							{ text: ' ', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thickBorder}},
+							
+							{ text: 'L1', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thickBorder2}},
+							{ text: 'L2', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}},
+							{ text: 'L3', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}},
+							{ text: 'L4', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}},
+							{ text: 'L5', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thickBorder}},
+							
+							{ text: 'L1', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}},
+							{ text: 'L2', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}},
+							{ text: 'L3', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}},
+							{ text: 'L4', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}},
+							{ text: 'L5', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thickBorder}},
+
+							{ text: 'L1', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}},
+							{ text: 'L2', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}},
+							{ text: 'L3', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}},
+							{ text: 'L4', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}},
+							{ text: 'L5', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thickBorder}},
+
+							{ text: 'L1', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}},
+							{ text: 'L2', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}},
+							{ text: 'L3', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}},
+							{ text: 'L4', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}},
+							{ text: 'L5', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thickBorder}},
+
+							{ text: 'L1', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}},
+							{ text: 'L2', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}},
+							{ text: 'L3', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}},
+							{ text: 'L4', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}},
+							{ text: 'L5', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true,border:thinBorder}}					
+						];
+						
+			var iscTable1 = [
+				[
+					{ text: 'Countries', opts:{colspan: 1, rowspan:2, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'Leadership', opts:{colspan: 5, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'Contineous Improvement Plan', opts:{colspan: 5, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'Data for management', opts:{colspan: 5, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'Cold Chain Equipment', opts:{colspan: 5, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'System Design', opts:{colspan: 5, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}}
+				],
+				[
+					{ text: ' ', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					
+					{ text: 'L1', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L2', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L3', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L4', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L5', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					
+					{ text: 'L1', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L2', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L3', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L4', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L5', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+
+					{ text: 'L1', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L2', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L3', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L4', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L5', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+
+					{ text: 'L1', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L2', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L3', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L4', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L5', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+
+					{ text: 'L1', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L2', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L3', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L4', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}},
+					{ text: 'L5', opts:{colspan: 1, fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true}}
+					
+				]
+			];
+			
+			var des = [ 
+				[1181489,1181490,1181491],
+				[1181493,1181494,1181495],
+				[1181497,1181498,1181499],
+				[1181501,1181502,1181503],
+				[1181505,1181506,1181507]
+			];
+			
+			//Thin / Default border
+			var baseLevelCellOptions = {color:'A7FAB8', fill:'A7FAB8',border:thinBorder};
+			var currentLevelCellOptions = {color:'33E758', fill:'33E758',border:thinBorder};
+			var targetLevelCellOptions = {color:'079C26', fill:'079C26',border:thinBorder};
+			var defCellOptions = {color:'FFFFFF', fill:'FFFFFF',border:thinBorder};			
+
+			//Thick border
+			var baseLevelCellOptions2 = {color:'A7FAB8', fill:'A7FAB8',border:thickBorder};
+			var currentLevelCellOptions2 = {color:'33E758', fill:'33E758',border:thickBorder};
+			var targetLevelCellOptions2 = {color:'079C26', fill:'079C26',border:thickBorder};
+			var defCellOptions2 = {color:'FFFFFF', fill:'FFFFFF',border:thickBorder};			
+			var defCellOptions3 = {color:'000000', fill:'FFFFFF',border:thickBorder, align:'l'};			
+			
+			var tableCount = 0;
+			var rowCount = 0;
+			
+			var cellOptionsArray = [baseLevelCellOptions, currentLevelCellOptions, targetLevelCellOptions ];
+			
+			var orgUnits = opObj.orgUnits;
+			
+			iscTables[tableCount] = [];
+			iscTables[tableCount].push( iscTableHeader1 );
+			iscTables[tableCount].push( iscTableHeader2 );
+			
+			//console.log( orgUnits );
+			for( var ouIndex in orgUnits ){				
+				rowCount++;
+				var oneRow = [];
+				var oneCell = {};
+				oneCell.text = orgUnits[ouIndex].code;
+				oneCell.options = defCellOptions3;
+				oneRow.push( oneCell );
+					
+				var i = 0;
+				for( var deIndex in des){			
+					for( var j = 1; j<=5; j++){
+						var curLevel = "Level "+j;
+																		
+						var dvKey = "";
+						var baseLevelVal = "";
+						var currLevelVal = "";
+						var targetLevelVal = "";
+
+						try{ dvKey = orgUnits[ouIndex].id+"_"+des[deIndex][0]; }catch(e){ dvKey="" }
+						try{ baseLevelVal = opObj.dvMap[dvKey].strVal1; }catch(e){ baseLevelVal = "";}
+
+						try{ dvKey = orgUnits[ouIndex].id+"_"+des[deIndex][1]; }catch(e){ dvKey="" }
+						try{ currLevelVal = opObj.dvMap[dvKey].strVal1; }catch(e){ currLevelVal = "";}
+
+						try{ dvKey = orgUnits[ouIndex].id+"_"+des[deIndex][2]; }catch(e){ dvKey="" }
+						try{ targetLevelVal = opObj.dvMap[dvKey].strVal1; }catch(e){ targetLevelVal = "";}
+						
+						oneCell = {};
+						
+						if( curLevel == baseLevelVal ){
+							oneCell.text = 'B';
+							if( j==5) 
+								oneCell.options = baseLevelCellOptions2;	
+							else
+								oneCell.options = baseLevelCellOptions;	
+						}
+						else if( curLevel == currLevelVal ){
+							oneCell.text = 'C';
+							if(j==5)
+								oneCell.options = currentLevelCellOptions2;
+							else
+								oneCell.options = currentLevelCellOptions;
+						}
+						else if( curLevel == targetLevelVal ){
+							oneCell.text = 'T';
+							if(j==5)
+								oneCell.options = targetLevelCellOptions2;
+							else
+								oneCell.options = targetLevelCellOptions;
+						}
+						else{
+							oneCell.text = '-';
+							if(j==5 && deIndex != des.length-1)
+								oneCell.options = defCellOptions2;
+							else
+								oneCell.options = defCellOptions;
+						}
+						
+						oneRow.push(oneCell);																	
+					}
+					i++;
+				}
+				
+				//iscTable1.push( oneRow );
+				iscTables[tableCount].push( oneRow );
+				
+				if( rowCount == 30 ){
+					tableCount++;
+					iscTables[tableCount] = [];
+					iscTables[tableCount].push( iscTableHeader1 );
+					iscTables[tableCount].push( iscTableHeader2 );
+
+					rowCount = 0;
+				}				
+			}
+			
+			console.log( iscTables );
+			for( var tableIndex in iscTables ){
+				slide = pptx.addNewSlide()
+				slide.addText('iSC Global Performance Dashboard', titleCellStyle );	
+				slide.addTable( iscTables[tableIndex], tableStyle );
+			}
 			
 					
-			pptx.save( 'ISC_Scorecard' );
+			pptx.save( 'ISC_Performance_Dashboard' );
 	}
 	
 	function downloadPPT() {
