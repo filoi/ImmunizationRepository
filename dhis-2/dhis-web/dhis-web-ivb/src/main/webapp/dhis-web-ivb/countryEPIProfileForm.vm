@@ -67,9 +67,8 @@ function numFormat1(n) {
 	    
 	    selectionTreeSelection.setListenerFunction( getOrgUnitId ); 
         selectionTreeSelection.setMultipleSelectionAllowed( false );
-        #if( $epiOrgUnits.size() <= 0 )
-        	selectionTree.buildSelectionTree();
-        #end
+       	selectionTree.buildSelectionTree();
+        
         
 	    $("#submit").button(); 
 	    $("#cancel").button(); 		    
@@ -192,27 +191,21 @@ function numFormat1(n) {
 			</div>
 			<script> setTimeout(function(){ $("#errMsg").hide() }, 5000); </script>
 		#end
- 		<table style="width:90%;margin:auto;" cellpadding="4" cellspacing="2">
+ 		<table style="width:100%;margin:auto;" cellpadding="4" cellspacing="2">
  			<tr>
  			
- 				<td width="37%" valign="top">
- 					$i18n.getString( "select_country" )<br/>
- 					#if( $epiOrgUnits.size() > 0 )
- 						<select id="epiCountries" name="epiCountries" onchange="epiCountrySelectionChange( this.value )" size="15" style="width: 375px;">
- 							#foreach( $epiOrgUnit in $epiOrgUnits )
- 								<option value="$epiOrgUnit.uid" #if( $epiOrgUnit.uid == $orgUnitId ) selected #end>$epiOrgUnit.displayName</option>
- 							#end
- 						</select>
- 					#else
- 						<div id="selectionTree" class="ui-widget-content ui-corner-all" style="height: 250px; width: 375px; overflow:auto;"></div>
- 					#end
- 					<!--
- 					<div id="orgUnitTreeContainer" class="ui-widget-content ui-corner-all" style="height: 166px; width: 375px; overflow:auto;">
- 						<div id="selectionTree" ></div>
- 					</div>
- 					--->
+ 				<td width="20%" valign="top">
+ 					Priority Countries<br/>
+					<select id="epiCountries" name="epiCountries" onchange="epiCountrySelectionChange( this.value )" size="15" style="width: 275px;">
+ 						#foreach( $epiOrgUnit in $epiOrgUnits )
+ 							<option value="$epiOrgUnit.uid" #if( $epiOrgUnit.uid == $orgUnitId ) selected #end>$epiOrgUnit.displayName</option>
+ 						#end
+ 					</select>
 				 </td>				 
- 				 <td width="3%">&nbsp;</td>
+ 				 <td width="20%" valign="top">
+ 					$i18n.getString( "select_country" )<br/>
+ 					<div id="selectionTree" class="ui-widget-content ui-corner-all" style="height: 250px; width: 275px; overflow:auto;"></div>					
+				 </td>		
 				 <td width="60%">
 				 	<table class="table" id="img-upload-cont" style="display:none;">
 						<tr>

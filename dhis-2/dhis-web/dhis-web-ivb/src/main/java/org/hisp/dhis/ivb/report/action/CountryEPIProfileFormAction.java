@@ -2,6 +2,7 @@ package org.hisp.dhis.ivb.report.action;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -19,6 +20,9 @@ import org.hisp.dhis.ivb.EPIProfileSnapshot;
 import org.hisp.dhis.ivb.util.EPIProfileHelper;
 import org.hisp.dhis.ivb.util.GenericDataVO;
 import org.hisp.dhis.ivb.util.IVBUtil;
+import org.hisp.dhis.ivb.util.RegionalDashboardHelper;
+import org.hisp.dhis.lookup.Lookup;
+import org.hisp.dhis.lookup.LookupService;
 import org.hisp.dhis.message.MessageService;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
@@ -88,6 +92,9 @@ public class CountryEPIProfileFormAction implements Action
 	
     @Autowired 
     EPIProfileHelper epiProfileHelper;
+    
+    @Autowired
+    private LookupService lookupService;
 
 	// -------------------------------------------------------------------------
 	// Getters & Setters
@@ -191,7 +198,32 @@ public class CountryEPIProfileFormAction implements Action
 	    	}
 	    }
     
+	    /*
+	    Set<String> ouUids = new HashSet<String>();
+	    ouUids.add( "BMSi8yZ6D5x" ); //AFR Central
+	    ouUids.add( "fIyFY4vcDtC" ); //AFR East and South
+	    ouUids.add( "SKRd9ttfJyL" ); //AFR West
+	    //ouUids.add( "tT0PkVsv4zf" ); //AMR
+	    ouUids.add( "VdocRRUXGAn" ); //EMR
+	    //ouUids.add( "WpNkZRarZ8P" ); //EUR
+	    ouUids.add( "UtG207XFXaP" ); //SEAR
+	    ouUids.add( "YLOsyk5QDkE" ); //WPR
+	    ouUids.add( "zDDdWN1oTuM" ); //Xtra
+	    */
+	    
+	    Lookup lookup = lookupService.getLookupByName( "COUNTRY_EPI_PROFILE_REGION_UIDS" );
+	    Set<String> ouUids = new HashSet<String>( Arrays.asList(lookup.getValue().split( RegionalDashboardHelper.ROOT_SEPERATOR )) );
+        
+	    Set<OrganisationUnit> currentUserOrgUnits = new HashSet<OrganisationUnit>( organisationUnitService.getOrganisationUnitsByUid( ouUids ) );
+	    /*
 	    Set<OrganisationUnit> currentUserOrgUnits = new HashSet<OrganisationUnit>( currentUserService.getCurrentUser().getDataViewOrganisationUnits() );
+	    System.out.println( "currentUserOrgUnits.size() = " + currentUserOrgUnits.size() );
+	    int oucount = 1;
+	    for(OrganisationUnit ou : currentUserOrgUnits) {
+	    	System.out.println( oucount++ + ". " + ou.getName() + ", " + ou.getLevel() + ", " + ou.getHierarchyLevel());
+	    }
+	    */
+	    
 	    selectionTreeManager.setRootOrganisationUnits( currentUserOrgUnits );
 
 	    messageCount = (int) messageService.getUnreadMessageConversationCount();
