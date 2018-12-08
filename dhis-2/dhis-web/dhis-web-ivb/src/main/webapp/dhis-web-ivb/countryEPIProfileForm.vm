@@ -353,9 +353,9 @@ jQuery(document).ready(function() {
 	var imageBaseURL = "../api/documents"
 	var noImageUrl = 'images/noimage.png';
 	//var appURL = window.location.protocol + "//" + window.location.hostname + "/api/documents/";
-	var appURL = "http://172.104.45.26/api/documents/";
+	//var appURL = "http://172.104.45.26/api/documents/";
 	//var appURL = "http://localhost:8090/dhis/api/documents/";
-	//var appURL = "https://www.who-immunization-repository.org/api/documents/";
+	var appURL = "https://www.who-immunization-repository.org/api/documents/";
 	
 	
 	$(document).ready(function(){
@@ -1286,10 +1286,10 @@ jQuery(document).ready(function() {
 			slide.addText([{text: 'WR:                     ',options:{font_face:defFontFace,font_size:10}},{text:WHORepresentative_s2c7, options:{font_size:9, hyperlink:{url:'mailto:' + email_2}}}], { x:5.5, y:5.45, w:'24%' });
 			slide.addText([{text: 'CO EPI:                ',options:{font_face:defFontFace,font_size:10}},{text:COEPI_s2c7, options:{font_size:9, hyperlink:{url:'mailto:' + email_3}}}], { x:5.5, y:5.6, w:'24%' });
 			slide.addText([{text: 'CO HSS:               ',options:{font_face:defFontFace,font_size:10}},{text:COHSS_s2c7, options:{font_size:9, hyperlink:{url:'mailto:' + email_4}}}], { x:5.5, y:5.75, w:'24%' });
-			slide.addText([{text: 'RO FP EPI:            ',options:{font_face:defFontFace,font_size:10}},{text:ISTFOEPI_s2c7, options:{font_size:9, hyperlink:{url:'mailto:' + email_5}}}], { x:5.5, y:5.9, w:'24%' });
-			slide.addText([{text: 'RO FP HSS:            ',options:{font_face:defFontFace,font_size:10}},{text:ISTFOHSS_s2c7, options:{font_size:9, hyperlink:{url:'mailto:' + email_6}}}], { x:5.5, y:6.05, w:'24%' });
-			slide.addText([{text: 'IST EPI:               ',options:{font_face:defFontFace,font_size:10}},{text:WHOROEPI_s2c7, options:{font_size:9, hyperlink:{url:'mailto:' + email_7}}}], { x:5.5, y:6.2, w:'24%' });
-			slide.addText([{text: 'IST HSS:              ',options:{font_face:defFontFace,font_size:10}},{text:WHOROHSS_s2c7, options:{font_size:9, hyperlink:{url:'mailto:' + email_8}}}], { x:5.5, y:6.35, w:'24%' });
+			slide.addText([{text: 'RO FP EPI:            ',options:{font_face:defFontFace,font_size:10}},{text:WHOROEPI_s2c7, options:{font_size:9, hyperlink:{url:'mailto:' + email_7}}}], { x:5.5, y:5.9, w:'24%' });
+			slide.addText([{text: 'RO FP HSS:            ',options:{font_face:defFontFace,font_size:10}},{text:WHOROHSS_s2c7, options:{font_size:9, hyperlink:{url:'mailto:' + email_8}}}], { x:5.5, y:6.05, w:'24%' });
+			slide.addText([{text: 'IST EPI:               ',options:{font_face:defFontFace,font_size:10}},{text:ISTFOEPI_s2c7, options:{font_size:9, hyperlink:{url:'mailto:' + email_5}}}], { x:5.5, y:6.2, w:'24%' });
+			slide.addText([{text: 'IST HSS:              ',options:{font_face:defFontFace,font_size:10}},{text:ISTFOHSS_s2c7, options:{font_size:9, hyperlink:{url:'mailto:' + email_6}}}], { x:5.5, y:6.35, w:'24%' });
 			slide.addText([{text: 'HQ EPI Lead:      ',options:{font_face:defFontFace,font_size:10}},{text:WHOHQFOEPI_s2c7, options:{font_size:9, hyperlink:{url:'mailto:' + email_9}}}], { x:5.5, y:6.65, w:'24%' });
 			slide.addText([{text: 'HQ EPI Support:     ',options:{font_face:defFontFace,font_size:10}},{text:WHOHQSupport_s2c7, options:{font_size:9, hyperlink:{url:'mailto:' + email_18}}}], { x:5.5, y:6.8, w:'24%' });
 			slide.addText([{text: 'HQ HSS:              ',options:{font_face:defFontFace,font_size:10}},{text:WHOHQFOHSS_s2c7, options:{font_size:9, hyperlink:{url:'mailto:' + email_10}}}], { x:5.5, y:6.95, w:'24%' });
