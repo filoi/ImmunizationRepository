@@ -1114,7 +1114,7 @@ jQuery(document).ready(function() {
 					//Cell 06 ===============================================================================
 					{ 
 						text: [
-								{text:'cMYP:\nAnnual EPI Plan 2017: \nPolio Transition: \n% Vax paid by Gov: \n% RI paid by Gavi: \nGavi Category: \nCo-fin Status:'}
+								{text:'cMYP:\nAnnual EPI Plan: \nPolio Transition: \n% Vax paid by Gov: \n% RI paid by Gavi: \nGavi Category: \nCo-fin Status:'}
 							], opts: { border: [defBorder, defNoBorder, defBorder, defBorder], colW: '15%' }
 					},
 					{ 
