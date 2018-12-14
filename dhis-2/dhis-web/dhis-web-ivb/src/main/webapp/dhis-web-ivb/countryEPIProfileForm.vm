@@ -1323,13 +1323,14 @@ jQuery(document).ready(function() {
 			**************************************************************************************************************
 			*********************************************************************************************************** **/
 			var whiteColor = 'FFFFFF';
-			
+			var table3FontSize = 7;
 			tableStyle = { x:0.08, y:0.08, w:'100%', colW:[3.65, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6], fill:defFillColor, 
-							color:defFontColor, font_face:defFontFace, font_size:defFontSize,marginPt:0, valign:'m', align:'l', border:defBorder, 
-							rowH:[0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2] };
+							color:defFontColor, font_face:defFontFace, font_size:table3FontSize,marginPt:0, valign:'m', align:'l', border:defBorder, 
+							 };
 			
 			var headerOptions = {color:'090942', fill:'DEDEF2', align:'c'};
-			var subHeaderOptions = {color:'000000', fill:'#8DCEED', bold:true};	
+			var subHeaderOptions = {color:'000000', fill:'8DCEED', bold:true};
+			var subHeaderMonthOptions = {color:'8DCEED', fill:'8DCEED'};	
 			var alertCellOptions = {color:'111DB1', fill:'111DB1'};	
 			var defCellOptions = {color:'FFFFFF', fill:'FFFFFF'};	
 			var slide3Table1 = [];
@@ -1366,8 +1367,8 @@ jQuery(document).ready(function() {
 				for( var i = 1; i<=12; i++){
 					var mKey = "M"+i;
 					subHeaderCell = {};
-					subHeaderCell.text = ' ';
-					subHeaderCell.options = subHeaderOptions;				
+					subHeaderCell.text = '-';
+					subHeaderCell.options = subHeaderMonthOptions;				
 			    	subHeaderRow.push(subHeaderCell);
 				}
 				
@@ -1423,6 +1424,22 @@ jQuery(document).ready(function() {
 				slide.addTable( slide3Table2, tableStyle );
 			}
 			
+			var addlComments_s3c1 = ""; try{ addlComments_s3c1 = EPIObj.epiDataMap["1000296"].strVal2;}catch(err){}
+			var silde3table2Style = { x:0.08, y:5.16, w:'99%', rowH:[2.6], fill:defFillColor, 
+								color:defFontColor, font_face:defFontFace, font_size:defFontSize,marginPt:0, valign:'t', align:'l'};
+			var slide3table2Rows = [
+				[
+					{ 
+						text: [
+								{text:'Additional Comments:', options: textTitleCellStyle}, 
+								{text:addlComments_s3c1.split(';;').join('\n'), options:{bullet: true, color: resultFontColor }},
+															
+							]
+					},
+				]
+			];		
+			
+			slide.addTable( slide3table2Rows, silde3table2Style );			
 			//console.log( slide3Table1 );
 
 			
