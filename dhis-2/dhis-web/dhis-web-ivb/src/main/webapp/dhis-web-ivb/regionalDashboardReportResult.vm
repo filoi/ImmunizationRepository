@@ -251,9 +251,9 @@ jQuery(function() {
 							
 							#set( $dvObj = "" )
 							#set( $dvObj = $!regionalDBSnapshot.getRegionalDBDataMap().get( $dvObjKey ) )	
-							<td align="center" style="vertical-align: middle;background:$dvObj.getAlertColor();border: 1px solid #ccc;">$!dvObj.value</td>
+							<td align="center" style="vertical-align: middle;background:$dvObj.getAlertColor();border: 1px solid #ccc;color:#ffffff;">$!dvObj.value</td>
 							#if( $includeComment == "YES" )
-								<td align="center" style="vertical-align: middle;background:$dvObj.getAlertColor();border: 1px solid #ccc;">$!dvObj.comment</td>
+								<td align="center" style="vertical-align: middle;background:$dvObj.getAlertColor();border: 1px solid #ccc;color:#ffffff;">$!dvObj.comment</td>
 							#end
 						#end
 						</tr>
