@@ -551,6 +551,8 @@ public class KeyFlagCalculation
 
     public String getKyeIndicatorValueForProgrammatic( String expression, String indicatorUid, OrganisationUnit orgUnit )
     {
+    	System.out.println("1. "+indicatorUid );
+    	
         boolean isValue = false;
 
         String getter = valueMapGetter( indicatorUid, orgUnit );
@@ -615,7 +617,7 @@ public class KeyFlagCalculation
                 value = "Yes";
             }
             
-            //System.out.println( getter + " " + value );
+            System.out.println( "3." + getter + " " + value );
             
             if ( isAndCondion )
             {
@@ -779,6 +781,8 @@ public class KeyFlagCalculation
     
     public String getKeyIndicatorValueWithThresoldValue( String expression, String indicatorUid, OrganisationUnit orgUnit )
     {
+    	
+    	
         boolean isValue = false;
 
         if( expression.contains( "#VALUE_OF#" ) )
@@ -1183,6 +1187,7 @@ public class KeyFlagCalculation
 
     public String getCalculatedValue( String expression, OrganisationUnit orgUnit )
     {
+    	System.out.println("BK: Insdie getCalculatedValue");
         String DataElementValue = "";
 
         String[] expStrings = expression.split( "(\\*" + "|" + "\\/" + ")" );
@@ -1534,6 +1539,7 @@ public class KeyFlagCalculation
                 }
 
                 DataElementValue = curValue + "";
+                System.out.println("BK1: " + DataElementValue );
 
             }
             else

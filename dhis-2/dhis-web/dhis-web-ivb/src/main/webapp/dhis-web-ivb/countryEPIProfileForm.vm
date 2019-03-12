@@ -313,7 +313,7 @@ function numFormat1(n) {
 					1001313,1001314,1001315,1001316,1001317,1001318,1001319,1001339,1005944,1005945,725,520,763,114,
 					63,1066999,1067001,1067002,1067003,1067004,1067005,1058903,857,1053816,1053812,1064716,1064717,
 					1064718, 1064719,1064720,1064721,1064722,1064723,1064724,1064725,1064839,1064840,1064841,1064842,
-					1064843,1067004,1067005,1067001,1067424,1058902" />
+					1064843,1067004,1067005,1067001,1067424,1058902,1185657" />
 			 		<input type="button" onclick="downloadEPIData()" value="$i18n.getString( 'get_report' )" id="submit" />		 		
 	 			</td>
 	 			<td>&nbsp;</td>
@@ -1424,7 +1424,7 @@ jQuery(document).ready(function() {
 				slide.addTable( slide3Table2, tableStyle );
 			}
 			
-			var addlComments_s3c1 = ""; try{ addlComments_s3c1 = EPIObj.epiDataMap["1000296"].strVal2;}catch(err){}
+			var addlComments_s3c1 = ""; try{ addlComments_s3c1 = EPIObj.epiDataMap["1185657"].strVal2;}catch(err){}
 			var silde3table2Style = { x:0.08, y:5.16, w:'99%', rowH:[2.6], fill:defFillColor, 
 								color:defFontColor, font_face:defFontFace, font_size:defFontSize,marginPt:0, valign:'t', align:'l'};
 			var slide3table2Rows = [
