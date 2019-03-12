@@ -219,18 +219,24 @@ public class RegionalDashboardHelper
     		String value = flagCriteria.split( MAIN_SEPERATOR )[1].trim();
 			String dvValue = (regionalDBVo.getValue() == null )? "" : regionalDBVo.getValue().trim();
 
+			String flagCriteria3 = "";
+			try{ flagCriteria3 = ","+flagCriteria.split( MAIN_SEPERATOR )[3]+","; }catch(Exception e) {}
+			
+			//System.out.println("1. condition="+condition+", value="+value+", dvValue="+dvValue);
 			if( dvValue.equals("") ) {
 				alertColor = alertColorNoData;
 			}
 			//else if( flagCriteria.split( MAIN_SEPERATOR ).length == 5 && ( flagCriteria.split( MAIN_SEPERATOR )[3].equalsIgnoreCase( dvValue ) )) {
-			else if( flagCriteria.split( MAIN_SEPERATOR ).length == 5 && ( flagCriteria.split( MAIN_SEPERATOR )[3].contains( dvValue ) )) {
+			else if( flagCriteria.split( MAIN_SEPERATOR ).length == 5 && ( flagCriteria3.contains( ","+dvValue+"," ) )) {
 				alertColor = flagCriteria.split( MAIN_SEPERATOR )[4];
+				//System.out.println("2. alertColor="+alertColor);
 			}
 			else if( condition.equals( CONDITION_EQUALS ) ) {
     			if( value.equalsIgnoreCase( dvValue ) )
     				alertColor = alertColorFlagged;
     			else
     				alertColor = alertColorNotFlagged;
+    			//System.out.println("3. alertColor="+alertColor);
     		}
     		else if( condition.equals( CONDITION_LESSTHAN ) ) {
     			int intValue = 0;
