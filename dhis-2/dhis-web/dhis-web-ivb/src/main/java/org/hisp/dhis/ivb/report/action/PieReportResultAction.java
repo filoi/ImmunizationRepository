@@ -469,7 +469,9 @@ public class PieReportResultAction implements Action
 
                 String value = reviewList.get( 2 );
                 Date valueDate = getStartDateByString( value );
-                //System.out.println( orgUnit.getId()+":"+selReview.split( ":" )[0] +" ----- " + value );
+                //System.out.println( orgUnit.getName()+", " +orgUnit.getId()+":"+selReview.split( ":" )[0] +" ----- " + value );
+                //System.out.println( valueDate + " : " + sDate.getTime() + " : " + eDate.getTime() );
+                //System.out.println( valueDate + " : " + sDate + " : " + eDate );
                 if( valueDate != null && (sDate == null || eDate == null) )
                 {
                     reviewResultMap.put( orgUnit.getId()+":"+selReview.split( ":" )[0], reviewList );
@@ -513,6 +515,7 @@ public class PieReportResultAction implements Action
      */
     private Date getStartDateByString( String dateStr )
     {
+    	System.out.println( "dateStr = "+ dateStr );
         Date currentDate = new Date();
         Calendar cal = Calendar.getInstance();
         cal.setTime( currentDate );
@@ -520,11 +523,11 @@ public class PieReportResultAction implements Action
         String curMonth = "";
         if( cal.get( Calendar.MONTH )+1 <= 9 )
         {
-            curMonth = "-0"+cal.get( Calendar.MONTH )+1;
+            curMonth = "-0"+(cal.get( Calendar.MONTH )+1);
         }
         else
         {
-            curMonth = "-"+cal.get( Calendar.MONTH )+1;
+            curMonth = "-"+(cal.get( Calendar.MONTH )+1);
         }
         
         String curDay = "";
@@ -542,6 +545,7 @@ public class PieReportResultAction implements Action
         if ( startDateParts.length <= 1 )
         {
             startDate = startDateParts[0] + curMonth + curDay;
+            //System.out.println( "In Year if, startDate = "+ startDate );
         }
         else if ( startDateParts[1].equalsIgnoreCase( "Q1" ) )
         {
@@ -563,9 +567,9 @@ public class PieReportResultAction implements Action
         {
             startDate = startDateParts[0] + "-" + startDateParts[1] + "-01";
         }
-
+        //System.out.println( "Before parsing as Date, startDate = "+ startDate );
         Date sDate = format.parseDate( startDate );
-
+        //System.out.println( "sDate = "+ sDate );
         return sDate;
     }
 

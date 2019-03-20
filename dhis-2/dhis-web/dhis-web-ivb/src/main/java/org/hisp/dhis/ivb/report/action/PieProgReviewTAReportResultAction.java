@@ -548,9 +548,9 @@ public class PieProgReviewTAReportResultAction implements Action
                 
                 String value = reviewList.get( 2 );
                 Date valueDate = getStartDateByString( value );
-                System.out.println( orgUnit.getName()+", " +orgUnit.getId()+":"+selReview.split( ":" )[0] +" ----- " + value );
-                System.out.println( valueDate + " : " + sDate.getTime() + " : " + eDate.getTime() );
-                System.out.println( valueDate + " : " + sDate + " : " + eDate );
+                //System.out.println( orgUnit.getName()+", " +orgUnit.getId()+":"+selReview.split( ":" )[0] +" ----- " + value );
+                //System.out.println( valueDate + " : " + sDate.getTime() + " : " + eDate.getTime() );
+                //System.out.println( valueDate + " : " + sDate + " : " + eDate );
                 if( valueDate != null && (sDate == null || eDate == null) )
                 {
                 	//System.out.println( " inside if block ");
