@@ -29,6 +29,7 @@ package org.hisp.dhis.ivb.help.action;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.hisp.dhis.configuration.ConfigurationService;
@@ -186,6 +187,23 @@ public class GetAllDocumentsAction
             List<OrganisationUnit> orgUnits = new ArrayList<OrganisationUnit>( organisationUnitService.getOrganisationUnitByShortName( orgUnitName.trim() ));
             
             documents = new ArrayList<Document>( documentService.getDocumentsBySource( orgUnits.get( 0 ) ) );
+            Iterator<Document> iterator = documents.iterator();
+            while(iterator.hasNext())
+            {
+            	Document doc = iterator.next();
+            	try
+            	{
+	            	//System.out.println(doc.getName() + ", " + doc.getUrl() + ", " + doc.getContentType());
+            		if(doc.getUrl().trim().contains(doc.getName()) && doc.getName().contains("EPI_") && doc.getContentType().trim().equalsIgnoreCase("image/png"))
+	            	{
+	            		iterator.remove();
+	            	}
+            	}
+            	catch(Exception e)
+            	{
+            		//e.printStackTrace();
+            	}
+            }
         }
         else
         {
