@@ -149,8 +149,7 @@ jQuery(function() {
                     <!--<th align="left" style="vertical-align: middle;">$i18n.getString( "income_level" )</th>-->
                     <th align="left" style="vertical-align: middle;">$i18n.getString( "gavi_eligibility_status" )</th>
                     
-                    <th align="left" style="vertical-align: middle;">$i18n.getString( "review_type" )</th>
-                    
+                    <th align="left" style="vertical-align: middle;">$i18n.getString( "review_type" )</th>                    
                     <th align="left" style="display:none;vertical-align: middle;">$i18n.getString( "review_date" )</th>
                     <th class="removeCell" align="left" style="vertical-align: middle;">$i18n.getString( "review_date" )</th>
                     
@@ -209,10 +208,14 @@ jQuery(function() {
                                 #set( $reviewDate =  $reviewDate.replace("Q2", "06") )
                                 #set( $reviewDate =  $reviewDate.replace("Q3", "09") )
                                 #set( $reviewDate =  $reviewDate.replace("Q4", "12") )
+								#set( $reviewYDate = "" )
+								#set( $reviewYDate = $!reviewList.get(2) + "-12" )
                                 
                                 <td style="display:none;vertical-align: middle;">$!reviewList.get(2)</td>
                                 #if( $!reviewList.get(2).contains("Q") )
                                 	<td class="removeCell" style="vertical-align: middle;" title="$!reviewList.get(2)"><div class="note"></div>$!reviewDate</td>
+								#elseif( $!reviewList.get(2).length() == 4 )
+									<td class="removeCell" style="vertical-align: middle;" title="$!reviewList.get(2)"><div class="note"></div>$!reviewYDate</td>
                                 #else
                                 	<td class="removeCell" style="vertical-align: middle;">$!reviewDate</td>
                                 #end
