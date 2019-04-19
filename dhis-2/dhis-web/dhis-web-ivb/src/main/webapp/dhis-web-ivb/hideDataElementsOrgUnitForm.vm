@@ -63,24 +63,25 @@
 	
 	function viewTree()
 	{
-		var iframe = document.getElementById('treeFrame');
+		//alert("in viewTree");
+		var iframe = document.getElementById('treeFrame');		
+		
 		iframe.src = "filterOrganisationUnits.action?selectedDE="+deSelected;
+		//iframe.innerHTML = " ";
 		
-		
-$.ajax({
-type: "GET",
-url: iframe.src,
-//data: val,
-
-//async: false,
-//cache: false,
-success: function (msg) {
-
-
-}
-});
+		$.ajax({
+			type: "GET",
+			url: iframe.src,
+			//data: val,
+			
+			//async: false,
+			//cache: false,
+			success: function (msg) {
+				
+			}
+		});	
+	}
 	
-}
 	function selectDataElement(ui)
 	{
 		var selDEname = ui.item.value;

@@ -7,6 +7,7 @@ import org.hisp.dhis.dataelement.DataElement;
 import org.hisp.dhis.dataelement.DataElementService;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.oust.manager.SelectionTreeManager;
+import org.hisp.dhis.user.CurrentUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.Action;
@@ -42,6 +43,9 @@ public class FilterOrganisationUnitsAction implements Action {
 	@Autowired
 	private SelectionTreeManager selectionTreeManager;
 
+	@Autowired
+	private CurrentUserService currentUserService;
+	
 	public static Boolean failed = false;
 
 	// -------------------------------------------------------------------------
@@ -51,6 +55,8 @@ public class FilterOrganisationUnitsAction implements Action {
 	public String execute() throws Exception {
 		selectionTreeManager.clearSelectedOrganisationUnits();
 
+		System.out.println("Inside FilterOrganisationUnitsAction: " + selectedDE );
+		
 		if (selectedDE != null) {
 			failed = true;
 			DataElement hiddenDE = new DataElement();
@@ -58,7 +64,16 @@ public class FilterOrganisationUnitsAction implements Action {
 
 			Set<OrganisationUnit> orgUnitsForHiddenDE = new HashSet<OrganisationUnit>();
 			orgUnitsForHiddenDE = hiddenDE.getOrgUnits();
-			selectionTreeManager.setSelectedOrganisationUnits(orgUnitsForHiddenDE);
+			
+			System.out.println( "orgUnitsForHiddenDE Size: "+ orgUnitsForHiddenDE.size() );
+			
+			Set<OrganisationUnit> currentUserOrgUnits = new HashSet<OrganisationUnit>( currentUserService.getCurrentUser().getDataViewOrganisationUnits() );
+            selectionTreeManager.setRootOrganisationUnits( currentUserOrgUnits );
+
+            selectionTreeManager.clearSelectedOrganisationUnits();
+            selectionTreeManager.setSelectedOrganisationUnits( orgUnitsForHiddenDE );
+            
+			//selectionTreeManager.setSelectedOrganisationUnits(orgUnitsForHiddenDE);
 		} 
 		return SUCCESS;
 	}

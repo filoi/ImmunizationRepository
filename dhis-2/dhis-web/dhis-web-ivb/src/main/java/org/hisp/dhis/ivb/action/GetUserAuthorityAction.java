@@ -60,38 +60,26 @@ public class GetUserAuthorityAction
     // -------------------------------------------------------------------------
 
     private String maintenanceModuleAuthority;
-
-    public String getMaintenanceModuleAuthority()
-    {
+    public String getMaintenanceModuleAuthority(){
         return maintenanceModuleAuthority;
     }
-
-    public void setMaintenanceModuleAuthority( String maintenanceModuleAuthority )
-    {
+    public void setMaintenanceModuleAuthority( String maintenanceModuleAuthority ){
         this.maintenanceModuleAuthority = maintenanceModuleAuthority;
     }
 
     private String userConflictAuthority;
-
-    public String getUserConflictAuthority()
-    {
+    public String getUserConflictAuthority(){
         return userConflictAuthority;
     }
-
-    public void setUserConflictAuthority( String userConflictAuthority )
-    {
+    public void setUserConflictAuthority( String userConflictAuthority ){
         this.userConflictAuthority = userConflictAuthority;
     }
 
     private String userActivityReportAuthority;
-
-    public String getUserActivityReportAuthority()
-    {
+    public String getUserActivityReportAuthority(){
         return userActivityReportAuthority;
     }
-
-    public void setUserActivityReportAuthority( String userActivityReportAuthority )
-    {
+    public void setUserActivityReportAuthority( String userActivityReportAuthority ){
         this.userActivityReportAuthority = userActivityReportAuthority;
     }
 
@@ -193,6 +181,14 @@ public class GetUserAuthorityAction
 	}
 	public void setCountryEPIAuthority(String countryEPIAuthority) {
 		this.countryEPIAuthority = countryEPIAuthority;
+	}
+
+	private String iscReportAuthority;
+	public String getIscReportAuthority() {
+		return iscReportAuthority;
+	}
+	public void setIscReportAuthority(String iscReportAuthority) {
+		this.iscReportAuthority = iscReportAuthority;
 	}
 
 	public String execute()
@@ -314,7 +310,13 @@ public class GetUserAuthorityAction
         	countryEPIAuthority = "Yes";
         else
         	countryEPIAuthority = "No";
+        
+        if( userAuthorities.contains( "F_PROG_REVIEW_TECH_ASSISTANCE_REPORT" ) )
+        	iscReportAuthority = "Yes";
+        else
+        	iscReportAuthority = "No";
 
+        System.out.println("iscReportAuthority = " + iscReportAuthority  );
         
         return SUCCESS;
     }

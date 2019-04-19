@@ -77,17 +77,6 @@
 			<param name="stylesheets">../dhis-web-commons/javascripts/ext/resources/css/ext-plugin-gray.css,css/ivb-dataentry.css,css/jquery.fancybox.css,css/jquerycssmenu.css,css/jquery.treeview.css</param>
 		</action>
 
-		<action name="hideDataElementAction"
-			class="org.hisp.dhis.ivb.hiddendeorgunit.HideDataElementAction">
-			<result name="success" type="redirect">hideDataElementActionForm.action
-			</result>
-		</action>
-
-		<action name="filterOrganisationUnits"
-			class="org.hisp.dhis.ivb.hiddendeorgunit.FilterOrganisationUnitsAction">
-			<result type="velocity">/dhis-web-ivb/treeDivision.vm</result>
-		</action>
-
 		<action name="hideDataElementActionForm"
 			class="org.hisp.dhis.ivb.hiddendeorgunit.HideDataElementActionForm">
 			<result name="success" type="velocity">/dhis-web-ivb/main.vm</result>
@@ -97,6 +86,17 @@
 			<param name="stylesheets">../dhis-web-commons/javascripts/ext/resources/css/ext-plugin-gray.css,css/ivb-dataentry.css,css/jquery.fancybox.css,css/jquerycssmenu.css,css/jquery.treeview.css</param>
 		</action>
 
+		<action name="hideDataElementAction"
+			class="org.hisp.dhis.ivb.hiddendeorgunit.HideDataElementAction">
+			<result name="success" type="redirect">hideDataElementActionForm.action</result>
+		</action>
+
+		<action name="filterOrganisationUnits"
+			class="org.hisp.dhis.ivb.hiddendeorgunit.FilterOrganisationUnitsAction">
+			<result name="success" type="velocity">/dhis-web-ivb/treeDivision.vm</result>
+		</action>
+
+		
 		<action name="saveSingleCountryData"
 			class="org.hisp.dhis.ivb.dataentry.action.SaveSingleCountryDataAction">
 			<result name="success" type="redirect">loadSingleCoutryEntryForm.action
@@ -1370,6 +1370,20 @@
 
 		<action name="iscReportMcountriesJSON"
 			class="org.hisp.dhis.ivb.isc.action.ISCReportMcountriesJSONAction">
+			<result name="success" type="velocity-json">/dhis-web-ivb/jsonEPIReport.vm</result>
+		</action>
+		
+		<!-- iSC Tracking Report -->
+		<action name="iscTrackingReportForm"
+			class="org.hisp.dhis.ivb.isc.action.ISCTrackingReportFormAction">
+			<result name="success" type="velocity">/dhis-web-ivb/main.vm</result>
+			<param name="page">/dhis-web-ivb/iscTrackingReportForm.vm</param>
+			<param name="javascripts">../dhis-web-commons/oust/oust.js,javascript/ivb_report.js,javascript/jquerycssmenu.js,javascript/request.js,javascript/jquery.treeview.js</param>
+			<param name="stylesheets">css/ivb-dataentry.css,css/jquerycssmenu.css,css/jquery.treeview.css</param>
+		</action>
+
+		<action name="iscTrackingReportPPT"
+			class="org.hisp.dhis.ivb.isc.action.ISCTrackingReportJSONAction">
 			<result name="success" type="velocity-json">/dhis-web-ivb/jsonEPIReport.vm</result>
 		</action>
 				

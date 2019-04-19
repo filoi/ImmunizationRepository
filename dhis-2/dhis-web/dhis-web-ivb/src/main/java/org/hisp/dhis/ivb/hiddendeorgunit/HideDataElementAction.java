@@ -62,19 +62,22 @@ public class HideDataElementAction
         throws Exception
     {
         ouSelected = new HashSet<OrganisationUnit>( selectionTreeManager.getReloadedSelectedOrganisationUnits() );
+        System.out.println( "ouSelected in HideDE action"+ ouSelected );
         if(deSelected != null )
         {
             
             DataElement deToHide = new DataElement();
             deToHide = dataElementService.getDataElement( deSelected );
             
-            
-            if ( deToHide != null )
-            {
-                if ( deToHide.getOrgUnits().size() != 0 )
+            if ( deToHide != null ){
+            	
+                if( deToHide.getOrgUnits().size() != 0 )
                     deToHide.getOrgUnits().clear();
 
-                deToHide.setOrgUnits( ouSelected );
+                if( ouSelected.size() == 0 )
+                	deToHide.setOrgUnits( null );
+                else
+                	deToHide.setOrgUnits( ouSelected );
                 
                 dataElementService.updateDataElement( deToHide );
             }

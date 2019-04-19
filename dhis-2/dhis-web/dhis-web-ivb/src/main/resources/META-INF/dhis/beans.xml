@@ -1790,7 +1790,30 @@
         class="org.hisp.dhis.ivb.isc.action.ISCReportMcountriesJSONAction"
         scope="prototype">
     </bean>	
-	
+
+	<!-- ISC Tracking Report  -->
+	<bean id="org.hisp.dhis.ivb.isc.action.ISCTrackingReportFormAction"
+		class="org.hisp.dhis.ivb.isc.action.ISCTrackingReportFormAction"
+		scope="prototype">
+		<property name="organisationUnitService" ref="org.hisp.dhis.organisationunit.OrganisationUnitService" />
+		<property name="selectionTreeManager" ref="org.hisp.dhis.oust.manager.SelectionTreeManager" />
+		<property name="selectionManager" ref="org.hisp.dhis.ouwt.manager.OrganisationUnitSelectionManager" />
+		<property name="currentUserService" ref="org.hisp.dhis.user.CurrentUserService" />
+		<property name="i18nService" ref="org.hisp.dhis.i18n.I18nService" />
+		<property name="messageService" ref="org.hisp.dhis.message.MessageService" />
+		<property name="configurationService" ref="org.hisp.dhis.configuration.ConfigurationService" />
+	</bean>
+    <bean
+        id="org.hisp.dhis.ivb.isc.action.ISCTrackingReportJSONAction"
+        class="org.hisp.dhis.ivb.isc.action.ISCTrackingReportJSONAction"
+        scope="prototype">
+        <property name="currentUserService" ref="org.hisp.dhis.user.CurrentUserService" />
+        <property name="organisationUnitService" ref="org.hisp.dhis.organisationunit.OrganisationUnitService" />
+        <property name="selectionTreeManager" ref="org.hisp.dhis.oust.manager.SelectionTreeManager" />
+        <property name="documentService" ref="org.hisp.dhis.document.DocumentService" />
+        <property name="ivbUtil" ref="org.hisp.dhis.ivb.util.IVBUtil" />
+    </bean>	
+    
 	<bean
 		id="org.hisp.dhis.ivb.isc.ISCReportHelper"
 		class="org.hisp.dhis.ivb.isc.ISCReportHelper"

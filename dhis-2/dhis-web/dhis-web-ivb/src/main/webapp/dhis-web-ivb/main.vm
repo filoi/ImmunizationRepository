@@ -109,8 +109,12 @@
 		jQuery.ajax({
          url: "getAuthorities.action", 
          dataType: 'json',      
-         success: function(json){            
+         success: function(json){     
 			var auth = json;
+			
+			if(auth.iscReports == "Yes"){	
+				document.getElementById("menu_isc_reports").style.visibility = 'visible';
+			}
 			
 			if(jQuery.trim(auth.conflict) == "Yes")
 			{				
@@ -161,6 +165,7 @@
 			{				
 				document.getElementById("alertReport").style.display = 'block';				
 			}
+			
          }
       });
 	
@@ -593,10 +598,11 @@
 				</ul>
 			</li>
 
-			<li id="isc_reports"><a href="#"><b>$i18n.getString( "isc_reports" )</b></a>
+			<li id="menu_isc_reports" style="visibility: hidden;"><a href="#"><b>$i18n.getString( "isc_reports" )</b></a>
 				<ul>
 					<li><a href="iscReportScountry.action"><b>$i18n.getString( "isc_report_single_country" )</b></a></li>
-					<li><a href="iscReportMcountries.action"><b>$i18n.getString( "isc_report_multiple_countries" )</b></a></li>					
+					<li><a href="iscReportMcountries.action"><b>$i18n.getString( "isc_report_multiple_countries" )</b></a></li>
+					<li><a href="iscTrackingReportForm.action"><b>$i18n.getString( "isc_tracking_report" )</b></a></li>			
 				</ul>
 			</li>
 			
