@@ -40,7 +40,6 @@ public class HideDataElementAction
     // -------------------------------------------------------------------------
 
     private String deSelected;
-
     public void setDeSelected( String deSelected )
     {
         this.deSelected = deSelected;
@@ -62,12 +61,14 @@ public class HideDataElementAction
         throws Exception
     {
         ouSelected = new HashSet<OrganisationUnit>( selectionTreeManager.getReloadedSelectedOrganisationUnits() );
-        System.out.println( "ouSelected in HideDE action"+ ouSelected );
+        //System.out.println( "ouSelected in HideDE action = "+ ouSelected );
+        //System.out.println( "DeSelected in HideDE action = "+ deSelected );
         if(deSelected != null )
         {
-            
             DataElement deToHide = new DataElement();
             deToHide = dataElementService.getDataElement( deSelected );
+            
+            //System.out.println( "Before: " + deToHide.getOrgUnits().size() );
             
             if ( deToHide != null ){
             	
@@ -79,9 +80,13 @@ public class HideDataElementAction
                 else
                 	deToHide.setOrgUnits( ouSelected );
                 
+                //System.out.println( "After: " + deToHide.getOrgUnits().size() );
+                
                 dataElementService.updateDataElement( deToHide );
             }
         }
+        selectionTreeManager.clearSelectedOrganisationUnits();
+        
         return SUCCESS;
     }
 }

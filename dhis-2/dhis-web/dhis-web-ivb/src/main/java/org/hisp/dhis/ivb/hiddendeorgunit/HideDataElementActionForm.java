@@ -103,14 +103,37 @@ public class HideDataElementActionForm implements Action {
 		this.dataElementId = dataElementId;
 	}
 
+	private String selectedDE;
+	public String getSelectedDE() {
+		return selectedDE;
+	}
+
+	public void setSelectedDE(String selectedDE) {
+		this.selectedDE = selectedDE;
+	}
+	
+	private DataElement selDEObj;
+	public DataElement getSelDEObj() {
+		return selDEObj;
+	}
+
+	public void setSelDEObj(DataElement selDEObj) {
+		this.selDEObj = selDEObj;
+	}
+	
 	// -------------------------------------------------------------------------
 	// Action
 	// -------------------------------------------------------------------------
 
+
+	
+
 	public String execute() throws Exception {
 		FilterOrganisationUnitsAction FOA = new FilterOrganisationUnitsAction();
 
-		Boolean DESElected = FOA.failed;
+		//Boolean DESElected = FOA.failed;
+		
+		
 		
 		
 		userName = currentUserService.getCurrentUser().getUsername();
@@ -191,6 +214,8 @@ public class HideDataElementActionForm implements Action {
 		// HashSet<OrganisationUnit>(
 		// currentUserService.getCurrentUser().getDataViewOrganisationUnits() );
 		// selectionTreeManager.setRootOrganisationUnits( currentUserOrgUnits );
+		
+		/*
 		if (DESElected) {
 			
 			
@@ -200,8 +225,23 @@ public class HideDataElementActionForm implements Action {
 			selectionTreeManager.clearSelectedOrganisationUnits();
 		}
 		FOA.failed=false;
+		*/
 		//DESElected = false;
 
+		Set<OrganisationUnit> currentUserOrgUnits = new HashSet<OrganisationUnit>( currentUserService.getCurrentUser().getDataViewOrganisationUnits() );
+        selectionTreeManager.setRootOrganisationUnits( currentUserOrgUnits );
+        selectionTreeManager.clearSelectedOrganisationUnits();
+
+		if( selectedDE != null ) {
+			selDEObj = dataElementService.getDataElement(selectedDE);
+			Set<OrganisationUnit> orgUnitsForHiddenDE = new HashSet<OrganisationUnit>();
+			orgUnitsForHiddenDE = selDEObj.getOrgUnits();
+			
+			//System.out.println( "orgUnitsForHiddenDE Size: "+ orgUnitsForHiddenDE.size() );
+			
+            selectionTreeManager.setSelectedOrganisationUnits( orgUnitsForHiddenDE );
+		}
+		
 		ActionContext.getContext().getSession().put("adminStatus", adminStatus);
 		ActionContext.getContext().getSession().put("messageCount", messageCount);
 

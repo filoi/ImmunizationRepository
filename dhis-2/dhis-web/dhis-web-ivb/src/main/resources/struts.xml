@@ -93,9 +93,12 @@
 
 		<action name="filterOrganisationUnits"
 			class="org.hisp.dhis.ivb.hiddendeorgunit.FilterOrganisationUnitsAction">
-			<result name="success" type="velocity">/dhis-web-ivb/treeDivision.vm</result>
+			<!-- <result name="success" type="velocity">/dhis-web-ivb/treeDivision.vm</result> -->
+			<result name="success" type="redirectAction">
+				<param name="actionName">hideDataElementActionForm</param>
+    		    <param name="selectedDE">${selectedDE}</param>
+			</result>
 		</action>
-
 		
 		<action name="saveSingleCountryData"
 			class="org.hisp.dhis.ivb.dataentry.action.SaveSingleCountryDataAction">
