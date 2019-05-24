@@ -2431,9 +2431,9 @@ public class IVBUtil
             String query = "SELECT dv.sourceid, dv.dataelementid, dv.periodid, dv.value, dv.comment, dv.storedby, dv.lastupdated FROM datavalue dv " +
                             " INNER JOIN period p ON dv.periodid = p.periodid " + 
                             " WHERE " +
-                                " CONCAT(dv.sourceid,\",\",dv.dataelementid,\",\",p.startdate) " +
+                                " CONCAT(dv.sourceid,\',\',dv.dataelementid,\',\',p.startdate) " +
                                     " IN ( "+ 
-                                            " SELECT CONCAT( sourceid,\",\",dataelementid,\",\",MAX(period.startdate) ) FROM datavalue " +
+                                            " SELECT CONCAT( sourceid,\',\',dataelementid,\',\',MAX(period.startdate) ) FROM datavalue " +
                                                 " INNER JOIN period ON datavalue.periodid = period.periodid " + 
                                                     " WHERE sourceid IN (" + orgUnitIdsByComma +") AND dataelementid IN ("+ dataElementIdsByComma +") " + 
                                                     " GROUP BY sourceid,dataelementid" +

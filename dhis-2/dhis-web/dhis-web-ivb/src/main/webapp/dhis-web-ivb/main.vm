@@ -598,7 +598,7 @@
 				</ul>
 			</li>
 
-			<li id="menu_isc_reports" style="visibility: hidden;"><a href="#"><b>$i18n.getString( "isc_reports" )</b></a>
+			<li id="menu_isc_reports" style="display:none;"><a href="#"><b>$i18n.getString( "isc_reports" )</b></a>
 				<ul>
 					<li><a href="iscReportScountry.action"><b>$i18n.getString( "isc_report_single_country" )</b></a></li>
 					<li><a href="iscReportMcountries.action"><b>$i18n.getString( "isc_report_multiple_countries" )</b></a></li>

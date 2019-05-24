@@ -107,20 +107,21 @@ jQuery(function() {
 		<option value="$orgUnit.id"></option>
     #end
 </select>
-<form id="form1" name="form1" action="" method="post" onsubmit="return exportToExcel('table1','output')" target="_newtab">
-
+<form id="form1" name="form1" action="exportToWorkBook.action" method="post" onsubmit="return exportToExcel()" target="_newtab">
     <input type="hidden" name="htmlCode" id="htmlCode" />
 
     <div align="right" style="width:95%;margin:auto;padding-top:8px;padding-bottom:3px;">
         <input type="button" onclick="location.href='userActivityReportForm.action'" value="Change Selections"/>&nbsp;
-        <input type="button" onclick="tableToExcel('table1','output')" value="Download As Excel"/>&nbsp;
+        <!--<input type="button" onclick="tableToExcel('table1','output')" value="Download As Excel"/>&nbsp;-->
         <!--<input type="button" id="btnExport" value="Download As Excel" />-->
+	<input type="submit" value="Download As Excel"/>&nbsp;
         <input type="button" value="Print" onclick="javascript:printDiv('htmlContent')" />
         <input type="button" value="Share" onclick="javascript: getShareLink()"/>
     </div>
 
     <hr/>
-    
+    <div id="htmlContent" style="width:98%;margin:auto;" >
+
         <h3>
 			#if( $reportType == 'BY_AREA_OF_WORK' )
 				Report By Area of Work: $!dataSetNameByComma		 
@@ -190,13 +191,12 @@ jQuery(function() {
             </tbody>           
         </table>
         <br/><br/><br/>
-        <table style="margin:auto;display:none;color: #9F6000;background-color: #FEEFB3;border: 1px solid;" width="100%">
+	<table style="margin:auto;display:none;color: #9F6000;background-color: #FEEFB3;border: 1px solid;" width="100%">
             <tr>
-                <td>$i18n.getString( "report_inline_security_warning" )</td>
+                <td colspan="10">$i18n.getString( "report_inline_security_warning" )</td>
             </tr>
         </table>
-    
-    <div id="exportExcelDiv" style="display:none;" class="htmlContent"></div>    
+    </div> 
 </form>
 
 
@@ -288,32 +288,33 @@ jQuery(function() {
     
     function exportToExcel()
     {
+    	var originalHTMLContent = document.getElementById('htmlContent').innerHTML;
+    	
         var currentFlaggedImgPath = $('.flagedImg').find('img').attr('src');
-		var currentUnFlaggedImgPath = $('.unFlagedImg').find('img').attr('src');
-		
-		var redFlag = $('#redFlag').val();
-		var greyFlag = $('#greyFlag').val();
-		
-		
-		$('.flagedImg').find('img').remove();
-		$('.unFlagedImg').find('img').remove();
-		
-		$('.flagedImg').append('<font size=\"20\" color=\"red\">*</font>')
-		$('.unFlagedImg').append('<font size=\"20\" color=\"#A4A4A4\">*</font>');
-		
- 
-		document.getElementById('htmlCode').value = document.getElementById('htmlContent').innerHTML;
-		
-		$('.flagedImg').text('');
-		$('.unFlagedImg').text('');	
-		
-		$('.flagedImg').append('<img src=\"'+currentFlaggedImgPath+'\" width=\"20\" height=\"20\" style=\"float:left;\" \>');
-		$('.unFlagedImg').append('<img src=\"'+currentUnFlaggedImgPath+'\" width=\"20\" height=\"20\" style=\"float:left;\" \>');
-
-
+        var currentUnFlaggedImgPath = $('.unFlagedImg').find('img').attr('src');
+        
+        var redFlag = $('#redFlag').val();
+        var greyFlag = $('#greyFlag').val();
+        
+        $('.flagedImg').find('img').remove();
+        $('.unFlagedImg').find('img').remove();
+        
+        $('.flagedImg').append('<font size=\"20\" color=\"red\">*</font>')
+        $('.unFlagedImg').append('<font size=\"20\" color=\"#A4A4A4\">*</font>');
+        
+        $('.removeCell').remove();
+        document.getElementById('htmlCode').value = document.getElementById('htmlContent').innerHTML;
+                        
+        $('.flagedImg').text('');
+        $('.unFlagedImg').text(''); 
+        
+        $('.flagedImg').append('<img src=\"'+currentFlaggedImgPath+'\" width=\"20\" height=\"20\" style=\"float:left;\" \>');
+        $('.unFlagedImg').append('<img src=\"'+currentUnFlaggedImgPath+'\" width=\"20\" height=\"20\" style=\"float:left;\" \>');
+        
+        document.getElementById('htmlContent').innerHTML = originalHTMLContent;
+        
         return true;
     }
-    
 
 var tableToExcel = function() {
 
