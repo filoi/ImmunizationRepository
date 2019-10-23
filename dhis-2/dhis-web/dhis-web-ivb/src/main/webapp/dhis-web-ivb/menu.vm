@@ -731,7 +731,7 @@ function loadDataEntryByDataSetSection( dataSetSectionId )
 	</tr>
 	#end
 	
-	<tr height="30">
+<!--	<tr height="30">
 		<td width="18%" style="background-color:#E0ECF8;"><strong>Country iSC</strong></td>
 	</tr>
 	#set( $sections = $dataSetSectionMap.get( 'iwliCigsLT2' ) )
@@ -762,7 +762,7 @@ function loadDataEntryByDataSetSection( dataSetSectionId )
 	        <a href="javascript:loadDataEntryByDataSet('iwliCigsLT2')" id="iwliCigsLT2">$i18n.getString( "$!sections.get(0).getDataSet().getShortName()" )</a><br/>
 		</td>
 	</tr>
-	#end
+	#end-->
 		
 	
 </table>

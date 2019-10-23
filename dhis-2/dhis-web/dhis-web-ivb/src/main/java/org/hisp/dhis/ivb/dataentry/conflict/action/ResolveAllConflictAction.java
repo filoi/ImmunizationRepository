@@ -31,6 +31,7 @@ import java.util.Date;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hisp.dhis.common.AuditType;
 import org.hisp.dhis.dataelement.DataElement;
 import org.hisp.dhis.dataelement.DataElementCategoryOptionCombo;
 import org.hisp.dhis.dataelement.DataElementCategoryService;
@@ -227,7 +228,7 @@ public class ResolveAllConflictAction
             
             DataElement dataElement = dataElementService.getDataElement( Integer.parseInt( valuesType[2] ) );
             
-            //System.out.println( dataElement.getId() + " : " + organisationUnit.getId() + " : " + period.getId() );
+            System.out.println( dataElement.getId() + " : " + organisationUnit.getId() + " : " + period.getId() );
             
             DataValue dataValue = dataValueService.getDataValue( dataElement, period, organisationUnit, optionCombo );
 
@@ -255,16 +256,38 @@ public class ResolveAllConflictAction
                 dataValue.setValue( dataValueAudit.getValue() );
                 dataValue.setComment( dataValueAudit.getComment() );
                 dataValue.setStoredBy( dataValueAudit.getModifiedBy() );
+               // dataValue.setLastUpdated(dataValueAudit.getTimestamp() );
                 dataValue.setFollowup( false );
 
                 DataValue dataValue2 = dataValueService.getLatestDataValue( dataElement, optionCombo, organisationUnit );
-                DataValueAudit dataValueAudit1 = new DataValueAudit( dataValue2, dataValue2.getValue(),
-                    dataValue2.getStoredBy(), dataValue2.getLastUpdated(), dataValue2.getComment(),
-                    DataValueAudit.DVA_CT_HISOTRY, DataValueAudit.DVA_STATUS_ACTIVE );
+                //DataValueAudit dataValueAudit1 = new DataValueAudit( dataValue2, dataValue2.getValue(),
+                  //  dataValue2.getStoredBy(), dataValue2.getLastUpdated(), dataValue2.getComment(),
+                   // DataValueAudit.DVA_CT_HISOTRY, DataValueAudit.DVA_STATUS_ACTIVE );
                 
-                dataValueAuditService.addDataValueAudit( dataValueAudit1 );
+                
+                System.out.println(dataValue.getAttributeOptionCombo().getId() + "Attribute");
 
                 dataValueService.updateDataValue( dataValue );
+                
+                
+                DataValueAudit dataValueAudit1 = new DataValueAudit();
+                dataValueAudit1.setOrganisationUnit( dataValue2.getSource() );
+                dataValueAudit1.setCategoryOptionCombo( dataValue2.getCategoryOptionCombo() );
+                dataValueAudit1.setPeriod( dataValue2.getPeriod() );
+                dataValueAudit1.setDataElement( dataValue2.getDataElement() );
+                dataValueAudit1.setAttributeOptionCombo(dataValue2.getCategoryOptionCombo());
+                
+                // dataValueAudit.setDataValue( dataValue );
+                dataValueAudit1.setValue( dataValue2.getValue() );
+                dataValueAudit1.setComment( dataValue2.getComment() );
+                dataValueAudit1.setCommentType( DataValueAudit.DVA_CT_HISOTRY );
+                dataValueAudit1.setModifiedBy( dataValue2.getStoredBy() );
+                dataValueAudit1.setStatus(DataValueAudit.DVA_STATUS_ACTIVE);
+                dataValueAudit1.setTimestamp( dataValue2.getLastUpdated() );
+                dataValueAudit1.setAuditType(AuditType.UPDATE);
+                
+                dataValueAuditService.addDataValueAudit( dataValueAudit1 );
+                
 
             }
         }
