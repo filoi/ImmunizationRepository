@@ -29,13 +29,13 @@ package org.hisp.dhis.ivb.dataentry.action;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.hisp.dhis.datavalue.comparator.DataValueAuditLastUpdatedComparator;
 import org.hisp.dhis.attribute.AttributeValue;
 import org.hisp.dhis.constant.Constant;
 import org.hisp.dhis.constant.ConstantService;
@@ -47,6 +47,7 @@ import org.hisp.dhis.datavalue.DataValue;
 import org.hisp.dhis.datavalue.DataValueAudit;
 import org.hisp.dhis.datavalue.DataValueAuditService;
 import org.hisp.dhis.datavalue.DataValueService;
+import org.hisp.dhis.datavalue.comparator.DataValueAuditLastUpdatedComparator;
 import org.hisp.dhis.ivb.util.IVBUtil;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.organisationunit.OrganisationUnitService;
