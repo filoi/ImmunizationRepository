@@ -35,6 +35,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.hisp.dhis.datavalue.comparator.DataValueAuditLastUpdatedComparator;
 import org.hisp.dhis.attribute.AttributeValue;
 import org.hisp.dhis.constant.Constant;
 import org.hisp.dhis.constant.ConstantService;
@@ -585,6 +586,7 @@ public class GetHistoriesAction
 		    }
 		}
 		//System.out.println( "Next historyList.size() : "+historyList.size() );	
+		Collections.sort(historyList, new DataValueAuditLastUpdatedComparator());
 	
         return SUCCESS;
     }
