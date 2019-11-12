@@ -1389,6 +1389,12 @@
 			class="org.hisp.dhis.ivb.isc.action.ISCTrackingReportJSONAction">
 			<result name="success" type="velocity-json">/dhis-web-ivb/jsonEPIReport.vm</result>
 		</action>
+			 <!-- Get History data for Graph -->
+		<action name="getHistoryDataForGraph"
+			class="org.hisp.dhis.ivb.dataentry.action.GetHistoryDataForGraphAction">
+			<result name="success" type="velocity-json">/dhis-web-ivb/jsonHistoryData.vm</result>
+			<param name="onExceptionReturn">plainTextError</param>
+		</action>
 				
 		<!--  for download map to excel -->
    <!--  <action name="exportToExcel" class="org.hisp.dhis.ivb.exp.excel.ExportToExcelAction">

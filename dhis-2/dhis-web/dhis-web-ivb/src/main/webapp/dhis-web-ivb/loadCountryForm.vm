@@ -433,6 +433,14 @@
                     #else
                         #set( $deUpdateStatus = "no" )
                     #end
+                    
+                    #set( $dvHistory = "no" )
+                    #if( $dvHistoryDes.contains( $dataElement ) )
+                        #set( $dvHistory = "yes" )
+                    #else
+                        #set( $dvHistory = "no" )
+                    #end
+                    
                     <tr style="height:20px;background-color:$colorMap.get($dataElement.uid);">
                         <td style="width:7%" >
                             #if($deUpdateStatus == "yes" && $conflictMap.get(${getter})=="Yes")
@@ -459,7 +467,12 @@
                                 <img src="images/pencil.png" width="16" title="Edit"/ >
                             #end
                         </td>
-                        <td style="width:28%">$dataElement.displayName</td>
+                        
+                        #if( $dvHistory == "yes" )
+                        	<td style="width:28%"><a class="fancybox" href="javascript:getHistoryData('$selectedPeriod','$dataElement.id','$organisationUnit.id','$optionCombo.id','$dataElement.name','$deUpdateStatus',checkNumberType);">$dataElement.displayName</a></td>
+                        #else
+                        	<td style="width:28%">$dataElement.displayName</td>
+                        #end
 
                         #if($dataElement.valueType == 'NUMBER')
                        
@@ -566,6 +579,7 @@
         <div id="indicatorHelp" style="width:700px;"></div>
         <div id="technical" style="width:700px;"></div>
         <div id="history" style="width:800px;"></div>
+        <div id="history_graph_div" style="width:700px;height:360px;display:none;"></div>
     </form>
     #else
     <h4>&nbsp;&nbsp;$statusMessage</h4>
@@ -573,3 +587,5 @@
 </td>
 </tr>
 </table>
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>

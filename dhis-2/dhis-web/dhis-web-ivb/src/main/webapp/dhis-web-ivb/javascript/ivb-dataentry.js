@@ -847,4 +847,146 @@ function getIndicatorHelp(indicatorId,countryUid,selectedPeriod,userName)
         });
 }
 
+function getHistoryData(currentPeriod,dataElement,orgUnit,optionSet,value, updateStatus,status )
+{
+	var conflict = "";
+    if(document.getElementById("conflict") != null && document.getElementById("conflict").checked == true)
+        conflict = "skip conflict";
+    else
+        conflict = "conflict";
+
+    var period = document.getElementById("selectedPeriodId").value;     
+
+    var dataValue = {
+    		'dataElementId' : dataElement,
+            'optionComboId' : optionSet,
+            'organisationUnitId' : orgUnit,
+            'periodId' : period,
+            'updateStatus' : updateStatus,
+            'selectedPeriod' : currentPeriod,
+            'conflict' : conflict,
+            'checkNumberType' : status
+    };
+    
+    jQuery.ajax( {
+        url: 'getHistoryDataForGraph.action',
+        data: dataValue,
+        dataType: 'json',
+        success: handleSuccess1,
+        error: handleError1
+    } );
+
+	var dataJson;
+    function handleSuccess1( json )
+    {
+		dataJson = json;
+    	console.log( json );
+		
+		google.charts.load('current', {packages: ['corechart', 'bar']});
+		google.charts.setOnLoadCallback(drawBasic);
+		
+		$("#history_graph_div" ).dialog({
+			height: 430,
+			width: 580,
+			modal: true,
+			position: ['middle',170]			
+		});
+		//$.fancybox.open('#historyGraph');
+		
+    	//var data = json.responseText;
+    	//var jsonData = JSON.parse(data);
+    	//console.log( jsonData );
+        //showSuccessMessage( "Copied" );
+    }
+    function handleError1( json )
+    {
+		dataJson = json;
+    	console.log( json );
+    	//var data = json.responseText;
+    	//var jsonData = JSON.parse(data);
+    	//console.log( jsonData );
+    	//showWarningMessage( "Not Copied" );
+    }
+	
+	function drawBasic( ) {
+
+		//var arrData = [['LastUpdated', 'Datavalue']];    // Define an array and assign columns for the chart.
+        // Loop through each data and populate the array.        
+		var arrData = [];
+		var historyData = dataJson.historyData;
+		$.each(dataJson.historyData, function (index, dr) {
+			//var toolTip = '<div><strong>Value: </strong> '+dr.value+'<br><strong>SavedBy: </strong>'+dr.savedBy+'<br><strong>Comment: </strong>'+dr.comment;
+			var toolTip = '<div><strong>Value: </strong> '+dr.value+'<br><strong>SavedBy: </strong>'+dr.savedBy+'</div>';
+            arrData.push([dr.savedOn, parseInt(dr.value), toolTip]);
+        });
+
+		var dataTable = new google.visualization.DataTable();
+        dataTable.addColumn('string', 'LastUpdated');
+        dataTable.addColumn('number', 'Datavalue');        
+        //dataTable.addColumn({type: 'string', role: 'tooltip'});
+		dataTable.addColumn({type: 'string', role: 'tooltip', 'p': {'html': true}});
+        dataTable.addRows(arrData);
+
+        var options = { 
+			width: 550,
+			height: 380,
+			legend: 'none',
+			tooltip: { isHtml: true },
+			hAxis: {
+				title: 'Last Updated',
+				textStyle : {
+					fontSize: 10
+				},				
+				minValue: 0,
+				slantedText:true, 
+				slantedTextAngle:45,
+				
+			},
+			vAxis: {
+				title: 'Data Value',
+				textStyle : {
+					fontSize: 10
+				},
+				minValue: 0
+			} 
+		};
+        
+		var chart = new google.visualization.ColumnChart(document.getElementById('history_graph_div'));
+        chart.draw(dataTable, options);
+		
+		
+	  /*
+      var data = google.visualization.arrayToDataTable([
+        ['City', '2010 Population',],
+        ['New York City, NY', 8175000],
+        ['Los Angeles, CA', 3792000],
+        ['Chicago, IL', 2695000],
+        ['Houston, TX', 2099000],
+        ['Philadelphia, PA', 1526000]
+      ]);
+	  */
+	  /*
+	  console.log( arrData );
+	  var chartData = google.visualization.arrayToDataTable( arrData );	  
+      var options = {
+        title: 'Datavalue History',
+        width: 550,
+		height: 350,
+		legend: 'none',
+        hAxis: {
+          title: 'Data Value',
+          minValue: 0
+        },
+        vAxis: {
+          title: 'Last Updated'
+        },
+		
+      };
+
+      var chart = new google.visualization.BarChart(document.getElementById('history_graph_div'));
+
+      chart.draw(chartData, options);
+	  */
+    }
+}
 

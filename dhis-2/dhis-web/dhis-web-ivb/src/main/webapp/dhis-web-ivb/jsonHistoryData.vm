@@ -1,0 +1,13 @@
+#set( $size = $historyList.size() )
+{ 
+"historyData": [
+		#foreach( $dva in $historyList )
+  			{
+    		"savedOn": "$starndardDateFormat.format(${dva.timestamp})",
+    		"savedBy": "$!encoder.jsonEncode( ${dva.modifiedBy} )",
+			"comment": "$!encoder.jsonEncode( ${dva.comment} )",
+    		"value": "${dva.value}"
+  			}#if( $velocityCount < $size ),#end
+		#end
+	]
+}

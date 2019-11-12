@@ -247,6 +247,11 @@ public class LoadDataEntryFormAction
     {
         return off_pri_de_map;
     }
+    
+    private Set<DataElement> dvHistoryDes;
+	public Set<DataElement> getDvHistoryDes() {
+		return dvHistoryDes;
+	}
 
     private Map<String, List<String>> optionSetMap = new HashMap<String, List<String>>();
 
@@ -1030,17 +1035,18 @@ public class LoadDataEntryFormAction
             off_pri_de_attribute_id = (int) off_pri_de_attribute.getValue();
         }
 
-        off_pri_de_map = new HashMap<DataElement, String>();
-        for ( DataElement dataelemnt : dataElementList )
+        Constant dvhistory_de_attribute = constantService.getConstantByName( "SHOW_DVHISTORY_ATTRIBUTE_ID" );
+        int dvhistory_de_attribute_id = 1;
+        if ( dvhistory_de_attribute != null )
         {
-        	/*
-            if ( dataelemnt.getOptionSet() != null )
-            {
-                List<String> optionsetList = dataelemnt.getOptionSet().getOptions();
-                optionSetMap.put( dataelemnt.getOptionSet().getId() + "", optionsetList );
-            }
-            */
-
+        	dvhistory_de_attribute_id = (int) dvhistory_de_attribute.getValue();
+        }
+        
+        off_pri_de_map = new HashMap<DataElement, String>();
+        dvHistoryDes = new HashSet<>();
+        
+        /*for ( DataElement dataelemnt : dataElementList )
+        {
             Set<AttributeValue> dataElementAttributeValues = dataelemnt.getAttributeValues();
 
             if ( dataElementAttributeValues != null && dataElementAttributeValues.size() > 0 )
@@ -1069,7 +1075,44 @@ public class LoadDataEntryFormAction
                 off_pri_de_map.put( dataelemnt, "other" );
             }
         }
+*/
+        for ( DataElement dataelement : dataElementList )
+        {
+        	/*
+            if ( dataelemnt.getOptionSet() != null )
+            {
+                List<String> optionsetList = dataelemnt.getOptionSet().getOptions();
+                optionSetMap.put( dataelemnt.getOptionSet().getId() + "", optionsetList );
+            }
+            */
 
+            Set<AttributeValue> dataElementAttributeValues = dataelement.getAttributeValues();
+            if ( dataElementAttributeValues != null && dataElementAttributeValues.size() > 0 ){
+                for ( AttributeValue deAttributeValue : dataElementAttributeValues ){
+                    if ( deAttributeValue.getAttribute().getId() == off_pri_de_attribute_id ) {
+                    	if(deAttributeValue.getValue() != null ){
+                    		if( deAttributeValue.getValue().trim().equalsIgnoreCase( "Official" ) )
+                                off_pri_de_map.put( dataelement, "official" );
+                            else if( deAttributeValue.getValue().trim().equalsIgnoreCase( "Private" ) )
+                                off_pri_de_map.put( dataelement, "private" );
+                            else
+                                off_pri_de_map.put( dataelement, "other" );
+                    	}
+                    	else
+                    		off_pri_de_map.put( dataelement, "other" );
+                    }                                            
+                    else if ( deAttributeValue.getAttribute().getId() == dvhistory_de_attribute_id ) {
+                    	System.out.println( deAttributeValue.getValue() );
+                    	if( deAttributeValue.getValue() != null && deAttributeValue.getValue().trim().equalsIgnoreCase( "true" ) )
+                    		dvHistoryDes.add( dataelement );                    	
+                    }
+                }
+            }
+            else{
+                off_pri_de_map.put( dataelement, "other" );
+            }
+        }
+        
         ActionContext.getContext().getSession().put( "OrgUnitId", orgUnit.get( 0 ).getParent().getId() );
 
         if ( dataSetSectionId != null )
