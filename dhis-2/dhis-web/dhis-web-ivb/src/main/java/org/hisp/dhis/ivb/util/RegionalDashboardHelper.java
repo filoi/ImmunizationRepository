@@ -223,7 +223,13 @@ public class RegionalDashboardHelper
 			try{ flagCriteria3 = ","+flagCriteria.split( MAIN_SEPERATOR )[3]+","; }catch(Exception e) {}
 			
 			//System.out.println("1. condition="+condition+", value="+value+", dvValue="+dvValue);
-			if( dvValue.equals("") ) {
+			if(condition.equals("NO_CRITERIA"))
+			{
+				alertColor = "#c2c2a3";
+				try{ alertColor = flagCriteria.split( MAIN_SEPERATOR )[4]; }catch(Exception e) {}
+				//System.out.println(alertColor);
+			}
+			else if( dvValue.equals("") ) {
 				alertColor = alertColorNoData;
 			}
 			//else if( flagCriteria.split( MAIN_SEPERATOR ).length == 5 && ( flagCriteria.split( MAIN_SEPERATOR )[3].equalsIgnoreCase( dvValue ) )) {
