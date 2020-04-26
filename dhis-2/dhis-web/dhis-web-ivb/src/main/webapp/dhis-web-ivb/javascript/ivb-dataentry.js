@@ -159,7 +159,7 @@ function saveRegionValue(existingComment, existingvalue, dataelement ,source ,  
         var dateReg3 = /^\d{4}-Q[1-4]$/;
         var dateReg4 = /^\d{4}-(0[1-9]|1[1-2]|10)-(0[1-9]|1[0-9]|2[0-9]|30|31)$/;
 
-        if( value1 == "na" || value1 == "NA" || value1 == "" || value1.match(dateReg1) || value1.match(dateReg2) || value1.match(dateReg3) || value1.match(dateReg4) )
+        if(  value1 == "TBD" || value1 == "tbd" || value1 == "na" || value1 == "NA" || value1 == "" || value1.match(dateReg1) || value1.match(dateReg2) || value1.match(dateReg3) || value1.match(dateReg4) )
         { }
         else
         {
