@@ -224,9 +224,9 @@ $(function() {
                         #else
                             #set( $mark = true )
                         #end
-                        #set( $key1 = "${orgUnit.id}-${dataSetSection.id}")
+                        #set( $key1 = "${orgUnit.id}_${dataSetSection.id}")
                         #set( $vaccineResultMap = $dataMap.get( $key1 ) )
-                        #if($dataMap.get( $key1 ) && $dataMap.get( $key1 ) != " ")
+                     
 					   		<tr width="100%" #if( $mark ) bgcolor="white" #else bgcolor = "white" #end>
                             	#if( $isoCode == "ON" ) <td style="vertical-align: middle;">$orgUnit.code</td> #end
                             	#if( $whoRegion == "ON" ) <td align="left">$!orgUnit.getParent().shortName</td> #end
@@ -259,15 +259,15 @@ $(function() {
 	                            </td>                            
 	                            #foreach( $colObj in $colList )
 	                            	#set( $comment = "" )
-	                            	#set( $comment = $!vaccineResultMap.get( $!colObj.code ).comment )
+	                            	#set( $comment = $!vaccineResultMap.get( $!colObj.code ).strVal2 )
 	                                #if('$colObj.code' == 'COL_4')
 	                                	<td align="left">$comment</td>
 	                                #else
-	                                	<td align="left" #if(${comment} != '') style="color:green;" title="$!{comment}" #end>$!vaccineResultMap.get( $!colObj.code ).value</td>
+	                                	<td align="left" #if(${comment} != '') style="color:green;" title="$!{comment}" #end>$!vaccineResultMap.get( $!colObj.code ).strVal1</td>
 	                                #end	
 	                            #end
                         	</tr>
-                        #end
+                        
                     #end
                 #end
             </tbody>
