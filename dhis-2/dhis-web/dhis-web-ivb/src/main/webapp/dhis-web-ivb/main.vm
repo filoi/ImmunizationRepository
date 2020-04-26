@@ -530,6 +530,13 @@
 			<!-- <li id="action_point"><a href="#"><b>$i18n.getString( "menu_action_point" )</b></a></li> -->
 			<li id="report"><a href="#"><b>$i18n.getString( "menu_global_reports" )</b></a>
 				<ul>
+					<li><a href="#"><b>Covid-19 Campaign Tracker</b></a>
+						<ul>
+							<li><a href="campaignTrackerForm.action"><b>Campaign Tracker</b></a></li>
+							<li><a href="#"><b>Campaign Calendar</b></a></li>
+						</ul>
+					</li>	
+					
 					<li id="alertReport" style="display:none;"><a href="alertReportForm.action"><b>$i18n.getString( "alerts" )</b></a></li>
 					<li><a href="tabularReportForm.action"><b>$i18n.getString( "tabular_report" )</b></a></li>
 					<li id="cmypDevTrackingReport" style="display:none;"><a href="cmypDevTrackingReportForm.action"><b>$i18n.getString( "cmyp_development_tracking" )</b></a></li>
