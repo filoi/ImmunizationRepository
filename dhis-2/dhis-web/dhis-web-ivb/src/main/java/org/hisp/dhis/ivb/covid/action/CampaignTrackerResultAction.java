@@ -439,7 +439,7 @@ public class CampaignTrackerResultAction
         if ( orgUnitList.size() > 0 ){
         	ouIdsByComma = getCommaDelimitedString( organisationUnitIds );
         }
-        System.out.println(ouIdsByComma);
+        //System.out.println(ouIdsByComma);
         //Selected Campaigns 
         dataSetSections = new ArrayList<Section>();
         List<String> sectionNames = new ArrayList<String>();
@@ -471,7 +471,7 @@ public class CampaignTrackerResultAction
         	}
         }
         
-        System.out.println(deIdsByComma);
+        //System.out.println(deIdsByComma);
         
         Map<String, GenericDataVO> dvDataMap = iscReportHelper.getLatestDataValues( deIdsByComma, ouIdsByComma );
 		
@@ -487,7 +487,7 @@ public class CampaignTrackerResultAction
         				if( dataMap.get(key) == null )
         					dataMap.put(key, new HashMap<>());
         				dataMap.get(key).put(colCode, dvDataMap.get(key2));
-						System.out.println(key + " + " + colCode +" = " +dvDataMap.get(key2).getStrVal1());
+						//System.out.println(key + " + " + colCode +" = " +dvDataMap.get(key2).getStrVal1());
         			}
         		}
         	}

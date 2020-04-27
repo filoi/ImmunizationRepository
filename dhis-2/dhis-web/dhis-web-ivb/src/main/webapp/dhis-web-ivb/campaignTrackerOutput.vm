@@ -117,7 +117,7 @@ $(function() {
         <h2>Campaign Tracker</h2>
 		<h3>Campaigns: 
 			#foreach( $dataSetSection in $dataSetSections )
-				$dataSetSection.name &nbsp; 
+				$dataSetSection.code &nbsp; 
 			#end
 		</h3>
                
@@ -191,7 +191,7 @@ $(function() {
             <tr>
                 <td colspan="6">Vaccines: 
                     #foreach( $dataSetSection in $dataSetSections )
-                        $dataSetSection.name &nbsp; 
+                        $dataSetSection.code &nbsp; 
                     #end
                 </td>
             </tr>
@@ -225,8 +225,9 @@ $(function() {
                             #set( $mark = true )
                         #end
                         #set( $key1 = "${orgUnit.id}_${dataSetSection.id}")
+                        #set( $vaccineResultMap = "" )
                         #set( $vaccineResultMap = $dataMap.get( $key1 ) )
-                     
+                        #if($dataMap.get( $key1 ) && $dataMap.get( $key1 ) != " ")
 					   		<tr width="100%" #if( $mark ) bgcolor="white" #else bgcolor = "white" #end>
                             	#if( $isoCode == "ON" ) <td style="vertical-align: middle;">$orgUnit.code</td> #end
                             	#if( $whoRegion == "ON" ) <td align="left">$!orgUnit.getParent().shortName</td> #end
@@ -260,14 +261,16 @@ $(function() {
 	                            #foreach( $colObj in $colList )
 	                            	#set( $comment = "" )
 	                            	#set( $comment = $!vaccineResultMap.get( $!colObj.code ).strVal2 )
-	                                #if('$colObj.code' == 'COL_4')
-	                                	<td align="left">$comment</td>
+	                                #set( $value = "" )
+	                                #set( $value = $!vaccineResultMap.get( $!colObj.code ).strVal1 )
+	                                #if( $!colObj.code == "COL_4")
+	                                	<td align="left">$!comment</td>
 	                                #else
-	                                	<td align="left" #if(${comment} != '') style="color:green;" title="$!{comment}" #end>$!vaccineResultMap.get( $!colObj.code ).strVal1</td>
+	                                	<td align="left" #if(${comment} != '') title="$!{comment}" #end>$!value</td>
 	                                #end	
 	                            #end
                         	</tr>
-                        
+                        #end
                     #end
                 #end
             </tbody>

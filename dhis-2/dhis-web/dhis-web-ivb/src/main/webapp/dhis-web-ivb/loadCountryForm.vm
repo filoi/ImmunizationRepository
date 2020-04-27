@@ -519,7 +519,7 @@
                                 </select>
                             </td>
                         #elseif($dataElement.valueType == 'DATE')
-                            <td style="width:18%"><input type="text" id="${dataEntryId}" name="${dataEntryId}" style="width:130px;" #if( $deUpdateStatus == "no" ) disabled #end  value="$!dataValue.get(${getter})"  onblur="javascript:saveValue('$!dataValue.get(${getter})','$!dataComments.get(${getter})', '$dataElement.id','$organisationUnit.id','$optionCombo.id','$count','$dataEntryId','$dataElement.valueType')" title="Date Format: YYYY / YYYY-Qn / YYYY-MM / YYYY-MM-DD e.g. 2012 / 2012-Q1 / 2012-01 / 2012-01-01 / NA" /></td>
+                            <td style="width:18%"><input type="text" id="${dataEntryId}" name="${dataEntryId}" style="width:130px;" #if( $deUpdateStatus == "no" ) disabled #end  value="$!dataValue.get(${getter})"  onblur="javascript:saveValue('$!dataValue.get(${getter})','$!dataComments.get(${getter})', '$dataElement.id','$organisationUnit.id','$optionCombo.id','$count','$dataEntryId','$dataElement.valueType')" title="Date Format: YYYY / YYYY-Qn / YYYY-MM / YYYY-MM-DD e.g. 2012 / 2012-Q1 / 2012-01 / 2012-01-01 / NA / TBD" /></td>
                         #elseif($dataElement.valueType == 'TEXT')
                             #if( $dataElement.getOptionSet() )
                                 <td style="width:18%">
