@@ -1867,4 +1867,37 @@
 		<property name="configurationService" ref="org.hisp.dhis.configuration.ConfigurationService" />
 		<property name="selectionTreeManager" ref="org.hisp.dhis.oust.manager.SelectionTreeManager" />
 	</bean>
+	
+	<!-- Campaign Calendar -->
+	<bean id="org.hisp.dhis.ivb.covid.action.CampaignCalendarFormAction"
+        class="org.hisp.dhis.ivb.covid.action.CampaignCalendarFormAction"
+        scope="prototype">
+        <property name="selectionManager" ref="org.hisp.dhis.ouwt.manager.OrganisationUnitSelectionManager" />
+        <property name="currentUserService" ref="org.hisp.dhis.user.CurrentUserService" />
+        <property name="i18nService" ref="org.hisp.dhis.i18n.I18nService" />
+        <property name="dataSetService" ref="org.hisp.dhis.dataset.DataSetService" />
+        <property name="organisationUnitGroupService" ref="org.hisp.dhis.organisationunit.OrganisationUnitGroupService" />
+        <property name="dataElementService" ref="org.hisp.dhis.dataelement.DataElementService" />
+        <property name="messageService" ref="org.hisp.dhis.message.MessageService" />
+        <property name="configurationService" ref="org.hisp.dhis.configuration.ConfigurationService" />
+        <property name="constantService" ref="org.hisp.dhis.constant.ConstantService" />
+    </bean>
+	<bean
+		id="org.hisp.dhis.ivb.covid.action.CampaignCalendarResultAction"
+		class="org.hisp.dhis.ivb.covid.action.CampaignCalendarResultAction"
+		scope="prototype">
+		<property name="sectionService" ref="org.hisp.dhis.dataset.SectionService" />
+		<property name="dataElementService" ref="org.hisp.dhis.dataelement.DataElementService" />
+		<property name="organisationUnitGroupService" ref="org.hisp.dhis.organisationunit.OrganisationUnitGroupService" />
+		<property name="organisationUnitService" ref="org.hisp.dhis.organisationunit.OrganisationUnitService" />
+		<property name="constantService" ref="org.hisp.dhis.constant.ConstantService" />
+		<property name="categoryService" ref="org.hisp.dhis.dataelement.DataElementCategoryService" />
+		<property name="dataValueService" ref="org.hisp.dhis.datavalue.DataValueService" />
+		<property name="currentUserService" ref="org.hisp.dhis.user.CurrentUserService" />
+		<property name="i18nService" ref="org.hisp.dhis.i18n.I18nService" />
+		<property name="messageService" ref="org.hisp.dhis.message.MessageService" />
+		<property name="configurationService" ref="org.hisp.dhis.configuration.ConfigurationService" />
+		<property name="selectionTreeManager" ref="org.hisp.dhis.oust.manager.SelectionTreeManager" />
+	</bean>
+    
 </beans>
