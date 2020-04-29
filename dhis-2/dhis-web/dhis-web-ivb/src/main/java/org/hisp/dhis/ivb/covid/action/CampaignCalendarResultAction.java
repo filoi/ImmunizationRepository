@@ -447,6 +447,7 @@ public class CampaignCalendarResultAction
         	ouIdsByComma = getCommaDelimitedString( organisationUnitIds );
         }
         //System.out.println(ouIdsByComma);
+        
         //Campaigns 
         lookup = lookupService.getLookupByName( "CAMPAIGN_DATASET_UID" );
         DataSet dataSet = dataSetService.getDataSet( lookup.getValue() );
@@ -508,8 +509,8 @@ public class CampaignCalendarResultAction
         try{ postponedColor = lookup.getValue().split("@!@")[1];}catch(Exception e) {}
         try{ bothMatchColor = lookup.getValue().split("@!@")[2];}catch(Exception e) {}
         
-        SimpleDateFormat mdf = new SimpleDateFormat("MMM-yy");
-        Map<Integer, Map<String, List<GenericDataVO>>> dataMap = new HashMap<>();
+        SimpleDateFormat mdf = new SimpleDateFormat("MMM-yyyy");
+        dataMap = new HashMap<>();
         for( int ouId : organisationUnitIds ) {
         	dataMap.put(ouId, new HashMap<>());
         	for(Section section : dataSetSections ) {
@@ -522,8 +523,10 @@ public class CampaignCalendarResultAction
         		Date plannedDate = null;
         		String plannedVal = "";
         		try { plannedVal = dvDataMap.get(ouId+"_"+plannedDeId).getStrVal1();}catch(Exception e) {}
+        		System.out.println( "Planned: "+ouId+"_"+plannedDeId + " = " + plannedVal);
         		if( !plannedVal.trim().equals("") ) {
         			try{ plannedDate = getStartDateByString( plannedVal );}catch(Exception e) {}
+        			System.out.println( "Planned Date = "+ plannedDate );
         			if( plannedDate == null ) {
         				GenericDataVO dvo = new GenericDataVO();
         				dvo.setStrVal1( section.getCode() );
@@ -531,23 +534,16 @@ public class CampaignCalendarResultAction
         				if(dataMap.get(ouId).get("NONE") == null)
         					dataMap.get(ouId).put("NONE", new ArrayList<>() );
         				dataMap.get(ouId).get("NONE").add( dvo );
-        			}
-        			else {
-        				String monthName = mdf.format( plannedDate ); 
-        				GenericDataVO dvo = new GenericDataVO();
-        				dvo.setStrVal1( section.getCode() );
-        				dvo.setStrVal2( plannedColor );
-        				if(dataMap.get(ouId).get(monthName) == null)
-        					dataMap.get(ouId).put(monthName, new ArrayList<>() );
-        				dataMap.get(ouId).get(monthName).add( dvo );
-        			}
+        			}        			
         		}
         		
         		Date postponedDate = null;
         		String postponedVal = "";
         		try { postponedVal = dvDataMap.get(ouId+"_"+postponedDeId).getStrVal1();}catch(Exception e) {}
+        		System.out.println( "Postponed: "+ ouId+"_"+postponedDeId + " = " + postponedVal);
         		if( !postponedVal.trim().equals("") ) {
         			try{ postponedDate = getStartDateByString( postponedVal );}catch(Exception e) {}
+        			System.out.println( "Postponed Date = "+ postponedDate );
         			if( postponedDate == null ) {
         				GenericDataVO dvo = new GenericDataVO();
         				dvo.setStrVal1( section.getCode() );
@@ -555,16 +551,7 @@ public class CampaignCalendarResultAction
         				if(dataMap.get(ouId).get("NONE") == null)
         					dataMap.get(ouId).put("NONE", new ArrayList<>() );
         				dataMap.get(ouId).get("NONE").add( dvo );
-        			}
-        			else {
-        				String monthName = mdf.format( postponedDate ); 
-        				GenericDataVO dvo = new GenericDataVO();
-        				dvo.setStrVal1( section.getCode() );
-        				dvo.setStrVal2( postponedColor );
-        				if(dataMap.get(ouId).get(monthName) == null)
-        					dataMap.get(ouId).put(monthName, new ArrayList<>() );
-        				dataMap.get(ouId).get(monthName).add( dvo );
-        			}
+        			}        			
         		}
         		
         		if( plannedDate != null && postponedDate != null && plannedDate.equals(postponedDate) ) {
@@ -576,11 +563,31 @@ public class CampaignCalendarResultAction
     					dataMap.get(ouId).put(monthName, new ArrayList<>() );
     				dataMap.get(ouId).get(monthName).add( dvo );
         		}
+        		else {
+        			if( plannedDate != null ) {
+        				String monthName = mdf.format( plannedDate ); 
+        				GenericDataVO dvo = new GenericDataVO();
+        				dvo.setStrVal1( section.getCode() );
+        				dvo.setStrVal2( plannedColor );
+        				if(dataMap.get(ouId).get(monthName) == null)
+        					dataMap.get(ouId).put(monthName, new ArrayList<>() );
+        				dataMap.get(ouId).get(monthName).add( dvo );
+        			}
+        			
+        			if( postponedDate != null ) {
+        				String monthName = mdf.format( postponedDate ); 
+        				GenericDataVO dvo = new GenericDataVO();
+        				dvo.setStrVal1( section.getCode() );
+        				dvo.setStrVal2( postponedColor );
+        				if(dataMap.get(ouId).get(monthName) == null)
+        					dataMap.get(ouId).put(monthName, new ArrayList<>() );
+        				dataMap.get(ouId).get(monthName).add( dvo );
+        			}
+        		}
         	}
         }
         
-        //Selected Months
-        SimpleDateFormat dateFormat = new SimpleDateFormat( "yyyy-MM-dd" );
+        //Selected Months        
         try
         {
             if( introStartDate.length() == 4 ){
@@ -616,6 +623,14 @@ public class CampaignCalendarResultAction
         	fromCal.add(Calendar.MONTH, 1);
         }
         
+        
+        for(Integer ouId : dataMap.keySet() ) {
+        	for(String mName : dataMap.get(ouId).keySet() ) {
+        		for(GenericDataVO dvo : dataMap.get(ouId).get(mName) ) {
+        			System.out.println( ouId + ", "+ mName + " = " + dvo.getStrVal1()+" and "+dvo.getStrVal2());
+        		}
+        	}
+        }
         /*
         DataElementCategoryOptionCombo optionCombo = categoryService.getDefaultDataElementCategoryOptionCombo();
         for( OrganisationUnit orgUnit : orgUnitList )
