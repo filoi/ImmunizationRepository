@@ -1,6 +1,98 @@
+<!doctype html>
+
+<script type="text/javascript" src="freeze_table/tableFreezer.js"></script>
+
 #set( $reportWarning = "Y" )
 
+<style >   
+	.table-condensed>thead>tr>th, .table-condensed>tbody>tr>th,
+		.table-condensed>tfoot>tr>th, .table-condensed>thead>tr>td,
+		.table-condensed>tbody>tr>td, .table-condensed>tfoot>tr>td,
+		.table-condensed>tr>th, .table-condensed>tr>th, .table-condensed>tr>th,
+		.table-condensed>tr>td, .table-condensed>tr>td, .table-condensed>tr>td{
+			padding: 3px 4px;
+	}
+	
+	.table-bordered > thead > tr > th, .table-bordered > tbody > tr > th, 
+	.table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, 
+	.table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td {
+		border: 1px solid #ddd;
+	}
+
+	td{
+		max-width: none!important;
+	}
+	
+	td, th {
+		font-size: 11px;
+		padding: 3px 4px;
+	}
+
+	.table tr th {
+		text-align: center;
+		background: #F0F0F0;
+		padding: 3px 4px;
+	}
+	
+	.freeze_header{
+		border-collapse: separate !important;
+	}
+	
+	.freeze_header thead tr th {
+		padding:5px;
+		color:/* #092E72; */#0a2f76;
+		text-align:center;
+		position: relative !important; 
+		top: 0px;
+		border:none;
+		border-right:1px solid #ccc;
+		border-left:1px solid #ccc;
+		background-clip: padding-box;
+	}
+								
+	th.freeze_left_column{
+		position: relative !important; 
+		top: 0px;
+		z-index: 100;
+		border:1px solid #ccc;
+	}
+							  
+	td.freeze_left_column{
+	    position: relative !important;
+	    left: 0px;
+	    background-color: white;
+	    background-clip: padding-box;
+	    border-top:1px solid #ccc;
+	    border-right: 1px solid #ccc;
+	    border-bottom: 1px solid #ccc;
+	    border-left: 1px solid #ccc; 
+	}
+												
+	.freeze_header tbody tr td,  .freeze_header thead tr th{
+		border-left:none !important;
+		border-bottom:none !important;
+	}
+				
+	thead th.freeze_left_column{
+		z-index: 899!important;
+	}					
+</style>
+
+
 <script type="text/javascript">
+    $(document).ready(function() {
+		$("#outputTable").tableFreezer({					
+			"freeze" : 'head_left_column',
+			show_scroll_x : true,
+			show_scroll_y : true,					
+			scrollHeightRemove: 70
+		});			
+	});
+</script>
+
+<body>
+<script type="text/javascript">
+
 jQuery(function() {
     $('#toUser').show();
     $('#recipients').select2({
@@ -113,163 +205,87 @@ $(function() {
 
  <div id="htmlContent" style="width:98%;margin:auto;" >   
 
-		  <div style="margin:auto;" >        
+	<div style="margin:auto; margin-top:-50px;" >        
         <h2>Campaign Tracker</h2>
 		<h3>Campaigns: 
 			#foreach( $dataSetSection in $dataSetSections )
 				$dataSetSection.code &nbsp; 
 			#end
 		</h3>
-               
-		
-		<!--<table cellspacing="0" cellpadding="0" style="display:none;margin:auto;table-layout:fixed;width:100%;">
-			<thead>
-				<tr width="100%" bgcolor="#A9D0F5">
-					<th align="left">ISO code</th>
-					<th align="left">$i18n.getString( "who_region" )</th>
-					<th align="left">$i18n.getString( "country" )</th>
-					<th align="left">$i18n.getString( "income_level" )</th>
-					<th align="left">$i18n.getString( "gavi_eligibility_status" )</th>
-					<th align="left">$i18n.getString( "vaccines" )</th>
-					<th align="left">$i18n.getString( "intro_year" )</th>
-					#foreach( $dataElementGroup in $dataElementGroups )
-						<th align="left">$!dataElementGroup.displayName</th>
-						<th align="left">Comment of $!dataElementGroup.displayName</th>
-					#end
-				</tr>
-			</thead>
-			<tbody id="list">
-				#foreach( $orgUnit in $orgUnitList )
-					#set( $sectionResultMap = $orgUnitResultMap.get( $orgUnit ) )
-					#set( $sectionCommentMap = $orgUnitCommentMap.get( $orgUnit ) )
-					
-					#set( $mark = false )
-					#foreach( $dataSetSection in $dataSetSections )
-						#if( $mark )
-							#set( $mark = false )
-						#else
-							#set( $mark = true )
-						#end
-						#set( $valueResultMap = $sectionResultMap.get( $dataSetSection.name ) )
-						#set( $valueCommentMap = $sectionCommentMap.get( $dataSetSection.name ) )
-						
-						#if($valueResultMap.get( $introYearDEGroup.id ) && $valueResultMap.get( $introYearDEGroup.id ) != " ")
-						<tr width="100%" #if( $mark ) bgcolor="#E0ECF8" #else bgcolor = "#FFFFFF" #end>
-							<td align="left">$!orgUnit.code</td>
-							<td align="left">$!orgUnit.getParent().shortName</td>
-							<td align="left">$!orgUnit.name</td>
-							<td align="left">$!countryGeneralInfoMap.get( "$!orgUnit.id:3" )</td>
-							<td align="left">$!countryGeneralInfoMap.get( "$!orgUnit.id:4" )</td>
-							<td align="left">
-							<a href="loadSingleCoutryEntryForm.action?dataSetSectionId=$dataSetSection.id&orgUnitUid=$orgUnit.uid">	
-								$!dataSetSection.displayName
-							</a>
-							</td>
-							<td align="left">$!valueResultMap.get( $!introYearDEGroup.id )</td>
-							#foreach( $dataElementGroup in $dataElementGroups )								
-                                <td align="left">$!valueResultMap.get( $!dataElementGroup.id )</td>
-                                <td align="left">$!valueCommentMap.get( $!dataElementGroup.id )</td>
-							#end
-						</tr>
-						#end
-					#end
-				#end
-			</tbody>
-		</table>
-		<br/><br/><br/>
-		<table style="margin:auto;display:none;color: #9F6000;background-color: #FEEFB3;border: 1px solid;" width="100%">
-			<tr>
-				<td colspan="6">$i18n.getString( "report_inline_security_warning" )</td>
-			</tr>
-		</table>-->
 	</div>
 	<br/>
 	
-	<!--<div style="width:95%;margin:auto;" >
-		<table style="table-layout:fixed; width:100%">
-            <tr><td colspan="6"><h3>Vaccine Introductions</h3></td></tr>
-            <tr>
-                <td colspan="6">Vaccines: 
-                    #foreach( $dataSetSection in $dataSetSections )
-                        $dataSetSection.code &nbsp; 
-                    #end
-                </td>
-            </tr>
-            <tr><td colspan="6">Introduction Dates: $introStartDate to $introEndDate</td></tr>
-        </table>
-        
-        <br/>-->
-        
-        <table class="altrowstable listTable" id="alternatecolor" cellspacing="0" cellpadding="0" style="margin:auto;table-layout:fixed;width:100%;">
-            <thead>
-                <tr width="100%" bgcolor="#A9D0F5">					
-                    #if( $isoCode == "ON" ) <th onclick="sorting()" align="left" style="vertical-align: middle;">$i18n.getString( "iso_code" )</th>#end 
-                    #if( $whoRegion == "ON" ) <th onclick="sorting()" align="left">$i18n.getString( "who_region" ) <img src="images/asc.gif" class="asc" style="display:none;float:right;"/><img src="images/desc.gif" class="desc" style="display:none;float:right;"/></th> #end
-                  	#if( $unicefRegion == "ON" )  <th align="left" style="vertical-align: middle;">$i18n.getString( "unicef_region" )</th>#end
-                    <th onclick="sorting()" align="left">$i18n.getString( "country" ) <img src="images/asc.gif" class="asc" style="display:none;float:right;"/><img src="images/desc.gif" class="desc" style="display:none;float:right;"/></th>
-                    #if( $incomeLevel == "ON" )   <th onclick="sorting()" align="left" style="vertical-align: middle;">$i18n.getString( "income_level" )</th>#end 
-                  	#if( $gaviEligibleStatus == "ON" )  <th onclick="sorting()" align="left" style="vertical-align: middle;">$i18n.getString( "gavi_eligibility_status" )</th>#end 
-                    <th onclick="sorting()" align="left">Campaign Vaccine <img src="images/asc.gif" class="asc" style="display:none;float:right;"/><img src="images/desc.gif" class="desc" style="display:none;float:right;"/></th>
+	<table align="center" id="outputTable" border="0" cellspacing="0" cellpadding="0" class="table table-bordered table-condensed freeze_header">	
+    	<thead>
+                <tr >					
+                    #if( $isoCode == "ON" ) <th class="freeze_left_column">$i18n.getString( "iso_code" )</th>#end 
+                    #if( $whoRegion == "ON" ) <th class="freeze_left_column">$i18n.getString( "who_region" )</th> #end
+                  	#if( $unicefRegion == "ON" )  <th class="freeze_left_column">$i18n.getString( "unicef_region" )</th>#end
+                    <th class="freeze_left_column">$i18n.getString( "country" )</th>
+                    #if( $incomeLevel == "ON" )   <th class="freeze_left_column">$i18n.getString( "income_level" )</th>#end 
+                  	#if( $gaviEligibleStatus == "ON" )  <th class="freeze_left_column">$i18n.getString( "gavi_eligibility_status" )</th>#end 
+                  	<th class="freeze_left_column">Sub-national</th>
+                    <th class="freeze_left_column">Campaign Vaccine</th>
                     #foreach( $colObj in $colList )
-                        <th onclick="sorting()" align="left">$!colObj.name</th>
+                        <th>$!colObj.name</th>
                     #end
                 </tr>
             </thead>
             <tbody id="list">
                 #foreach( $orgUnit in $orgUnitList )                                       
                     #set( $mark = false )
-                    #foreach( $dataSetSection in $dataSetSections )
-                        #if( $mark )
-                            #set( $mark = false )
-                        #else
-                            #set( $mark = true )
-                        #end
-                        #set( $key1 = "${orgUnit.id}_${dataSetSection.id}")
-                        #set( $vaccineResultMap = "" )
-                        #set( $vaccineResultMap = $dataMap.get( $key1 ) )
-                        #if($dataMap.get( $key1 ) && $dataMap.get( $key1 ) != " ")
-					   		<tr width="100%" #if( $mark ) bgcolor="white" #else bgcolor = "white" #end>
-                            	#if( $isoCode == "ON" ) <td style="vertical-align: middle;">$orgUnit.code</td> #end
-                            	#if( $whoRegion == "ON" ) <td align="left">$!orgUnit.getParent().shortName</td> #end
-                            	#if( $unicefRegion == "ON" ) <td style="vertical-align: middle;">$orgUnit.getGroupInGroupSet( $unicefRegionsGroupSet ).getShortName()</td> #end
-                            	<td align="left">$!orgUnit.name</td>
-                            	#set( $headergetter = "" )
-                            	#set( $headergetter = "$orgUnit.id:3" )
-                            	#if( $incomeLevel == "ON" )
-                            		#if('$!countryGeneralInfoMap.get($headergetter)' != 'null' )
-                                		<td style="vertical-align: middle;">$!countryGeneralInfoMap.get($headergetter)</td>
-                            		#else   
-                                		<td style="vertical-align: middle;">&nbsp;</td>
-                            		#end
-                            	#end
+                    #set( $key1 = "${orgUnit.id}_NATIONAL")
+                    #set( $vaccineResultList = "" )
+                    #set( $vaccineResultList = $dataMap.get( $key1 ) )
+                    #if($dataMap.get( $key1 ) && $dataMap.get( $key1 ) != " ")
+                       	#foreach( $cvo in $vaccineResultList )
+                       		#set( $cMap = "")
+                       		#set( $cMap = $cvo.colDataMap )
+		                    #if( $mark )
+		                    	#set( $mark = false )
+		                    #else
+		                    	#set( $mark = true )
+		                    #end
+
+				   			<tr width="100%" #if( $mark ) bgcolor="white" #else bgcolor = "white" #end>
+                        		#if( $isoCode == "ON" ) <td class="freeze_left_column">$orgUnit.code</td> #end
+                        		#if( $whoRegion == "ON" ) <td class="freeze_left_column">$!orgUnit.getParent().shortName</td> #end
+                        		#if( $unicefRegion == "ON" ) <td class="freeze_left_column">$orgUnit.getGroupInGroupSet( $unicefRegionsGroupSet ).getShortName()</td> #end
+                        		<td align="left">$!orgUnit.name</td>
+                        		#set( $headergetter = "" )
+                        		#set( $headergetter = "$orgUnit.id:3" )
+                        		#if( $incomeLevel == "ON" )
+                        			#if('$!countryGeneralInfoMap.get($headergetter)' != 'null' )
+                            			<td class="freeze_left_column">$!countryGeneralInfoMap.get($headergetter)</td>
+                        			#else   
+                            			<td class="freeze_left_column">&nbsp;</td>
+                        			#end
+                        		#end
 
 	                            #set( $headergetter = "" )
 	                            #set( $headergetter = "$orgUnit.id:4" )   
 	                            #if( $gaviEligibleStatus == "ON" )                         
 	                            	#if('$!countryGeneralInfoMap.get($headergetter)' != 'null' )
-	                                	<td style="vertical-align: middle;">$!countryGeneralInfoMap.get($headergetter)</td>   
+	                                	<td class="freeze_left_column">$!countryGeneralInfoMap.get($headergetter)</td>   
 	                            	#else
-	                                	<td style="vertical-align: middle;">&nbsp;</td>
+	                                	<td class="freeze_left_column">&nbsp;</td>
 	                            	#end
 	                            #end
-                            
-	                            <td align="left">
-		                            <a href="loadSingleCoutryEntryForm.action?dataSetSectionId=$dataSetSection.id&orgUnitUid=$orgUnit.uid"> 
-		                                $!dataSetSection.code
-		                            </a>
-	                            </td>                            
-	                            #foreach( $colObj in $colList )
-	                            	#set( $comment = "" )
-	                            	#set( $comment = $!vaccineResultMap.get( $!colObj.code ).strVal2 )
-	                                #set( $value = "" )
-	                                #set( $value = $!vaccineResultMap.get( $!colObj.code ).strVal1 )
-	                                #if( $!colObj.code == "COL_4")
-	                                	<td align="left">$!comment</td>
-	                                #else
-	                                	<td align="left" #if(${comment} != '') title="$!{comment}" #end>$!value</td>
-	                                #end	
-	                            #end
-                        	</tr>
+                        
+                        		<td class="freeze_left_column">National</td>
+	                            <td class="freeze_left_column">$!cMap.get( "COL_0" ).strVal1</td>        
+                            	#foreach( $colObj in $colList )
+                            		#set( $comment = "" )
+                            		#set( $comment = $!$cMap.get( $!colObj.code ).strVal2 )
+                                	#set( $value = "" )
+                                	#set( $value = $!$cMap.get( $!colObj.code ).strVal1 )
+                                	#if( $!colObj.code == "COL_4")
+                                		<td align="left">$!comment</td>
+                                	#else
+                                		<td align="left" #if(${comment} != '') title="$!{comment}" #end>$!value</td>
+                                	#end	
+                            	#end
+                    		</tr>
                         #end
                     #end
                 #end
@@ -382,16 +398,17 @@ $(function() {
 	
 	$(document).ready(function()
 	{
-		altRows('alternatecolor');
+		//altRows('alternatecolor');
 		
-		$('table').tablesorter({
+		/*$('table').tablesorter({
 	
-      headers: {
-         3: {
-            sorter: 'customDates'
-         }
-      }
-   	});
+      		headers: {
+         	3: {
+            	sorter: 'customDates'
+         	}
+      	}
+   		});
+   		*/
 	});
 	function sorting()
 	{

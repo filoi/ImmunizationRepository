@@ -6,25 +6,21 @@ import static org.hisp.dhis.commons.util.TextUtils.getCommaDelimitedString;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.hisp.dhis.attribute.AttributeValue;
 import org.hisp.dhis.common.comparator.IdentifiableObjectNameComparator;
 import org.hisp.dhis.configuration.ConfigurationService;
-import org.hisp.dhis.constant.Constant;
 import org.hisp.dhis.constant.ConstantService;
 import org.hisp.dhis.dataelement.DataElement;
 import org.hisp.dhis.dataelement.DataElementCategoryOptionCombo;
 import org.hisp.dhis.dataelement.DataElementCategoryService;
 import org.hisp.dhis.dataelement.DataElementGroup;
 import org.hisp.dhis.dataelement.DataElementService;
-import org.hisp.dhis.dataset.DataSet;
 import org.hisp.dhis.dataset.Section;
 import org.hisp.dhis.dataset.SectionService;
 import org.hisp.dhis.datavalue.DataValue;
@@ -42,6 +38,9 @@ import org.hisp.dhis.organisationunit.OrganisationUnitGroupService;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroupSet;
 import org.hisp.dhis.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.oust.manager.SelectionTreeManager;
+import org.hisp.dhis.program.ProgramService;
+import org.hisp.dhis.program.ProgramStage;
+import org.hisp.dhis.program.ProgramStageService;
 import org.hisp.dhis.user.CurrentUserService;
 import org.hisp.dhis.user.UserGroup;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -159,6 +158,12 @@ public class CampaignTrackerResultAction
 
     @Autowired
 	private ISCReportHelper iscReportHelper;
+    
+    @Autowired
+    private ProgramService programService;
+    
+    @Autowired
+    private ProgramStageService programStageService;
     
     // -------------------------------------------------------------------------
     // Setters
@@ -285,8 +290,8 @@ public class CampaignTrackerResultAction
 	// -------------------------------------------------------------------------
     // Getters
     // -------------------------------------------------------------------------
-    private Map<String, Map<String, GenericDataVO>> dataMap;
-	public Map<String, Map<String, GenericDataVO>> getDataMap() {
+    private Map<String, List<CampaignVO>> dataMap;
+	public Map<String, List<CampaignVO>> getDataMap() {
 		return dataMap;
 	}
 
@@ -442,18 +447,27 @@ public class CampaignTrackerResultAction
         //System.out.println(ouIdsByComma);
         //Selected Campaigns 
         dataSetSections = new ArrayList<Section>();
-        List<String> sectionNames = new ArrayList<String>();
-        for ( Integer sectionId : selectedListVaccine )
+        Set<String> sectionCodes = new HashSet<>();
+        for( Integer sectionId : selectedListVaccine )
         {
             Section section = sectionService.getSection( sectionId );
             dataSetSections.add( section );
             
-            sectionNames.add( section.getName().trim() );
+            sectionCodes.add( section.getCode().trim().toLowerCase() );
+        }
+
+        lookup = lookupService.getLookupByName( "CAMPAIGN_PROGRAM_STAGE_IDS" );
+        List<ProgramStage> programStages = new ArrayList<>();
+        for(String psId : lookup.getValue().split(",")) {
+        	ProgramStage ps = programStageService.getProgramStage( Integer.parseInt(psId) );
+        	if( ps!= null && sectionCodes.contains( ps.getName().trim().toLowerCase()) )
+        		programStages.add( ps );
         }
         
         //Selected Columns
         Map<Integer, String> deColMap = new HashMap<>();
         String deIdsByComma = "-1";
+        String psDeIdsByComma = "-1";
         lookup = lookupService.getLookupByName( "CAMPAIGN_COLUMNS_INFO" );
         String campaignColInfo = lookup.getValue();
         colList = new ArrayList<GenericTypeObj>();
@@ -463,269 +477,66 @@ public class CampaignTrackerResultAction
 	        	colObj.setCode( colInfo.split("@-@")[0] );
 	        	colObj.setName( colInfo.split("@-@")[1] );
 	        	colObj.setStrAttrib1( colInfo.split("@-@")[2] ); //deids
+	        	colObj.setStrAttrib2( colInfo.split("@-@")[3] ); //ps deids
 	        	colList.add( colObj );
 	        	deIdsByComma += ","+colInfo.split("@-@")[2];
+	        	psDeIdsByComma += ","+colInfo.split("@-@")[3];
 	        	for(String deIdStr : colObj.getStrAttrib1().split(",") ) {
 	        		deColMap.put(Integer.parseInt(deIdStr), colObj.getCode());
 	        	}
+	        	deColMap.put(Integer.parseInt(colObj.getStrAttrib2()), colObj.getCode());
         	}
         }
         
-        //System.out.println(deIdsByComma);
         
+        //System.out.println(deIdsByComma);
         Map<String, GenericDataVO> dvDataMap = iscReportHelper.getLatestDataValues( deIdsByComma, ouIdsByComma );
-		
+        //Map<String, GenericDataVO> edvDataMap = iscReportHelper.getLatestDataValues( psDeIdsByComma, ouIdsByComma );
+		Set<Integer> deIds = deColMap.keySet();
         dataMap = new HashMap<>();
         for( int ouId : organisationUnitIds ) {
+        	String key1 = ouId+"_NATIONAL";
+        	dataMap.put(key1, new ArrayList<>());
         	for(Section section : dataSetSections ) {
-        		String key = ouId+"_"+section.getId();
+        		int flag = 0;
+        		Map<String, GenericDataVO> vacDataMap = null;
+        		
+        		//String key = ouId+"_"+section.getId();
         		for( DataElement de : section.getDataElements()) {
-        			String key2 = ouId+"_"+de.getId();
-        			String colCode = "NONE";
-        			colCode = deColMap.get(de.getId());
-        			if( dvDataMap.get(key2)!= null ) {
-        				if( dataMap.get(key) == null )
-        					dataMap.put(key, new HashMap<>());
-        				dataMap.get(key).put(colCode, dvDataMap.get(key2));
-						//System.out.println(key + " + " + colCode +" = " +dvDataMap.get(key2).getStrVal1());
+        			if( deIds.contains( de.getId() ) ){
+	        			String dvKey = ouId+"_"+de.getId();
+	        			String colCode = "NONE";
+	        			colCode = deColMap.get(de.getId());
+	        			if( dvDataMap.get(dvKey)!= null ) {
+	        				if( vacDataMap == null )
+	        					vacDataMap = new HashMap<>();
+	        				flag = 1;
+	        				vacDataMap.put(colCode, dvDataMap.get(dvKey));
+							//System.out.println(key + " + " + colCode +" = " +dvDataMap.get(key2).getStrVal1());
+	        			}
         			}
+        		}
+        		
+        		if( flag == 1) {
+        			CampaignVO cvo = new CampaignVO();
+        			GenericDataVO dvo = new GenericDataVO();
+            		dvo.setStrVal1(section.getCode() );
+            		vacDataMap.put("COL_0", dvo);
+            		cvo.setColDataMap( vacDataMap );
+            		dataMap.get(key1).add( cvo );
         		}
         	}
         }
         
-        /*
-        Constant tabularDataElementGroupId = constantService.getConstantByName( TABULAR_REPORT_DATAELEMENTGROUP_ID );
-        List<DataElement> headerDataElements = new ArrayList<DataElement>( dataElementService.getDataElementsByGroupId( (int) tabularDataElementGroupId.getValue() ) );
-        List<Integer >headerDataElementIds = new ArrayList<Integer>( getIdentifiers( headerDataElements ) );
-        String headerDataElementIdsByComma = "-1";
-        if ( headerDataElementIds.size() > 0 ){
-            headerDataElementIdsByComma = getCommaDelimitedString( headerDataElementIds );
+        System.out.println("Data---------------->");
+        for( String key1 : dataMap.keySet() ) {
+        	for( CampaignVO cvo : dataMap.get(key1)) {
+        		for(String key2 : cvo.getColDataMap().keySet() ) {
+        			System.out.println( key1 + ", " + key2 + " = " + cvo.getColDataMap().get(key2).getStrVal1() );
+        		}
+        	}
         }
-        */
-        
-        
-        /*
-        DataElementCategoryOptionCombo optionCombo = categoryService.getDefaultDataElementCategoryOptionCombo();
-
-        dataElementGroups = new ArrayList<DataElementGroup>();
-        for( String deGroupUid : dataElementGroupUIDs ) {
-        	dataElementGroups.add( dataElementService.getDataElementGroup( deGroupUid ) );
-        }
-        */
-        //dataElementGroups = new ArrayList<DataElementGroup>( dataElementService.getDataElementGroupsByUid( dataElementGroupUIDs ) );
-
-        /*
-        Constant introYearGroupConstant = constantService.getConstantByName( INTRO_YEAR_DE_GROUP );
-        introYearDEGroup = dataElementService.getDataElementGroup( (int) introYearGroupConstant.getValue() );
-        List<DataElement> introYearDEs = new ArrayList<DataElement>( introYearDEGroup.getMembers() );
-
-        Constant vaccineAttributeConstant = constantService.getConstantByName( VACCINE_ATTRIBUTE );
-		*/
        
-
-		/*
-		 * // Getting start and end period from introStartDate && introEndDate Date
-		 * sDate = null; Date eDate = null;
-		 * 
-		 * if( introStartDate != null && !introStartDate.trim().equals( "" ) ) { sDate =
-		 * getStartDateByString( introStartDate ); }
-		 * 
-		 * if( introEndDate != null && !introEndDate.trim().equals( "" ) ) { eDate =
-		 * getEndDateByString( introEndDate ); }
-		 */
-        
-        //Date sDate = getStartDateByString( introStartDate );
-        //Date eDate = getEndDateByString( introEndDate );
-       
-        /*
-        // Filter2: Getting orgunit list whose intro year is between the
-        // selected start year and end year
-        orgUnitResultMap = new HashMap<OrganisationUnit, Map<String, Map<Integer, String>>>();
-        orgUnitCommentMap = new HashMap<OrganisationUnit, Map<String, Map<Integer, String>>>();
-        Iterator<OrganisationUnit> orgUnitIterator = orgUnitList.iterator();
-        
-        while ( orgUnitIterator.hasNext() )
-        {
-            OrganisationUnit orgUnit = orgUnitIterator.next();
-
-            Map<String, Map<Integer, String>> sectionResultMap = orgUnitResultMap.get( orgUnit );
-            Map<String, Map<Integer, String>> sectionCommentMap = orgUnitCommentMap.get( orgUnit );
-            
-            if ( sectionResultMap == null || sectionResultMap.size() <= 0 )
-            {
-                sectionResultMap = new HashMap<String, Map<Integer,String>>();
-            }
-            if ( sectionCommentMap == null || sectionCommentMap.size() <= 0 )
-            {
-                sectionCommentMap = new HashMap<String, Map<Integer,String>>();
-            }
-
-            int flag = 0;
-            for ( DataElement dataElement : introYearDEs )
-            {
-                Set<AttributeValue> dataElementAttributeValues = dataElement.getAttributeValues();
-                if ( dataElementAttributeValues != null && dataElementAttributeValues.size() > 0 )
-                {
-                    for ( AttributeValue deAttributeValue : dataElementAttributeValues )
-                    {
-                        if ( deAttributeValue.getAttribute().getId() == vaccineAttributeConstant.getValue()
-                            && deAttributeValue.getValue() != null && sectionNames.contains( deAttributeValue.getValue().trim() ) )
-                        {
-                            DataValue dv = dataValueService.getLatestDataValue( dataElement, optionCombo, orgUnit );
-                            if ( dv != null && dv.getValue() != null )
-                            {
-                                String value = dv.getValue();
-                                String comment = dv.getComment();
-                                Map<Integer, String> valueResultMap = sectionResultMap.get( deAttributeValue.getValue().trim() );
-                                if ( valueResultMap == null || valueResultMap.size() <= 0 )
-                                {
-                                    valueResultMap = new HashMap<Integer, String>();
-                                }
-
-                                Map<Integer, String> valueCommentMap = sectionCommentMap.get( deAttributeValue.getValue().trim() );
-                                if ( valueCommentMap == null || valueCommentMap.size() <= 0 )
-                                {
-                                	valueCommentMap = new HashMap<Integer, String>();
-                                }
-                                
-                                Date valueDate = getStartDateByString( value );
-                                if( valueDate != null && (sDate == null || eDate == null) )
-                                {
-                                    valueResultMap.put( introYearDEGroup.getId(), value );
-                                    sectionResultMap.put( deAttributeValue.getValue().trim(), valueResultMap );
-                                    orgUnitResultMap.put( orgUnit, sectionResultMap );
-                                    
-                                    valueCommentMap.put( introYearDEGroup.getId(), comment );
-                                    sectionCommentMap.put(deAttributeValue.getValue().trim(), valueCommentMap );
-                                    orgUnitCommentMap.put( orgUnit, sectionCommentMap );
-                                    flag = 1;
-                                }
-                                else
-                                {
-                                    if( valueDate!= null && sDate.getTime() <= valueDate.getTime() && valueDate.getTime() <= eDate.getTime())
-                                    {
-                                        valueResultMap.put( introYearDEGroup.getId(), value );
-                                        sectionResultMap.put( deAttributeValue.getValue().trim(), valueResultMap );
-                                        orgUnitResultMap.put( orgUnit, sectionResultMap );
-                                        
-                                        valueCommentMap.put( introYearDEGroup.getId(), comment );
-                                        sectionCommentMap.put(deAttributeValue.getValue().trim(), valueCommentMap );
-                                        orgUnitCommentMap.put( orgUnit, sectionCommentMap );
-
-                                        if ( valueDate.equals( sDate ) || valueDate.equals( eDate ) || (valueDate.after( sDate ) && valueDate.before( eDate )) )
-                                        {
-                                            flag = 1;
-                                        }
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                Map<Integer, String> valueResultMap = sectionResultMap.get( deAttributeValue.getValue().trim() );
-                                if ( valueResultMap == null || valueResultMap.size() <= 0 )
-                                {
-                                    valueResultMap = new HashMap<Integer, String>();
-                                }
-                                valueResultMap.put( introYearDEGroup.getId(), " " );
-                                sectionResultMap.put( deAttributeValue.getValue().trim(), valueResultMap );
-                                orgUnitResultMap.put( orgUnit, sectionResultMap );                                
-
-                                Map<Integer, String> valueCommnetMap = sectionCommentMap.get( deAttributeValue.getValue().trim() );
-                                if ( valueCommnetMap == null || valueCommnetMap.size() <= 0 )
-                                {
-                                	valueCommnetMap = new HashMap<Integer, String>();
-                                }
-                                valueCommnetMap.put( introYearDEGroup.getId(), " " );
-                                sectionCommentMap.put( deAttributeValue.getValue().trim(), valueCommnetMap );
-                                orgUnitCommentMap.put( orgUnit, sectionCommentMap );                                
-
-                            }
-                          
-                        }
-                    }
-                }
-            }
-
-            if ( flag != 0 )
-            {
-                for ( DataElementGroup dataElementGroup : dataElementGroups )
-                {
-                    List<DataElement> dataElements = new ArrayList<DataElement>( dataElementGroup.getMembers() );
-                    for ( DataElement dataElement : dataElements )
-                    {
-                        Set<AttributeValue> dataElementAttributeValues = dataElement.getAttributeValues();
-                        if ( dataElementAttributeValues != null && dataElementAttributeValues.size() > 0 )
-                        {
-                            for ( AttributeValue deAttributeValue : dataElementAttributeValues )
-                            {
-                                if ( deAttributeValue.getAttribute().getId() == vaccineAttributeConstant.getValue()
-                                    && deAttributeValue.getValue() != null && sectionNames.contains( deAttributeValue.getValue().trim() ) )
-                                {
-                                    DataValue dv = dataValueService.getLatestDataValue( dataElement, optionCombo, orgUnit );
-                                   
-                                        if ( dv != null && dv.getValue() != null )
-                                        {
-                                            String value = dv.getValue();
-                                            String comment = dv.getComment();
-                                            Map<Integer, String> valueResultMap = sectionResultMap.get( deAttributeValue.getValue().trim() );
-                                            if ( valueResultMap == null || valueResultMap.size() <= 0 )
-                                            {
-                                               valueResultMap = new HashMap<Integer, String>();
-                                            }                                        
-                                            valueResultMap.put( dataElementGroup.getId(), value );
-                                            sectionResultMap.put( deAttributeValue.getValue().trim(), valueResultMap );
-                                            orgUnitResultMap.put( orgUnit, sectionResultMap );
-                                            
-                                            Map<Integer, String> valueCommentMap = sectionCommentMap.get( deAttributeValue.getValue().trim() );
-                                            if ( valueCommentMap == null || valueCommentMap.size() <= 0 )
-                                            {
-                                            	valueCommentMap = new HashMap<Integer, String>();
-                                            }                                        
-                                            valueCommentMap.put( dataElementGroup.getId(), comment );
-                                            sectionCommentMap.put( deAttributeValue.getValue().trim(), valueCommentMap );
-                                            orgUnitCommentMap.put( orgUnit, sectionCommentMap );                                        
-
-                                        }
-                                       else
-                                        {
-                                            Map<Integer, String> valueResultMap = sectionResultMap.get( deAttributeValue.getValue().trim() );
-                                            if ( valueResultMap == null || valueResultMap.size() <= 0 )
-                                            {
-                                                valueResultMap = new HashMap<Integer, String>();
-                                            }
-                                            valueResultMap.put( dataElementGroup.getId()," " );
-                                            sectionResultMap.put( deAttributeValue.getValue().trim(), valueResultMap );
-                                            orgUnitResultMap.put( orgUnit, sectionResultMap );                                        
-
-                                            Map<Integer, String> valueCommentMap = sectionCommentMap.get( deAttributeValue.getValue().trim() );
-                                            if ( valueCommentMap == null || valueCommentMap.size() <= 0 )
-                                            {
-                                            	valueCommentMap = new HashMap<Integer, String>();
-                                            }
-                                            valueCommentMap.put( dataElementGroup.getId()," " );
-                                            sectionCommentMap.put( deAttributeValue.getValue().trim(), valueCommentMap );
-                                            orgUnitCommentMap.put( orgUnit, sectionCommentMap );                                        
-
-                                        }
-                                    
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            else
-            {
-            	if( sDate == null && eDate == null ) {}
-            	else {
-            		orgUnitIterator.remove();
-            	}
-            }
-        }
-        
-        if( sDate == null && eDate == null )
-        	dateSelection = "N";
-        */
         DataElementCategoryOptionCombo optionCombo = categoryService.getDefaultDataElementCategoryOptionCombo();
         for( OrganisationUnit orgUnit : orgUnitList )
         {
