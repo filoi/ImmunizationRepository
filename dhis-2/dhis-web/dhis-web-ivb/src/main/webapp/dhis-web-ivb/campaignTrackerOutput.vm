@@ -232,9 +232,9 @@ $(function() {
                 </tr>
             </thead>
             <tbody id="list">
-                #foreach( $orgUnit in $orgUnitList )                                       
-                    #set( $mark = false )
-                    #set( $key1 = "${orgUnit.id}_NATIONAL")
+                #foreach( $orgUnit in $orgUnitList )
+                	#foreach( $subNat in $subNatNames )
+                    #set( $key1 = "${orgUnit.id}_${subNat}")
                     #set( $vaccineResultList = "" )
                     #set( $vaccineResultList = $dataMap.get( $key1 ) )
                     #if($dataMap.get( $key1 ) && $dataMap.get( $key1 ) != " ")
@@ -272,7 +272,7 @@ $(function() {
 	                            	#end
 	                            #end
                         
-                        		<td class="freeze_left_column">National</td>
+                        		<td class="freeze_left_column">$!subNat</td>
 	                            <td class="freeze_left_column">$!cMap.get( "COL_0" ).strVal1</td>        
                             	#foreach( $colObj in $colList )
                             		#set( $comment = "" )
@@ -282,11 +282,12 @@ $(function() {
                                 	#if( $!colObj.code == "COL_4")
                                 		<td align="left">$!comment</td>
                                 	#else
-                                		<td align="left" #if(${comment} != '') title="$!{comment}" #end>$!value</td>
+                                		<td align="left">$!value</td>
                                 	#end	
                             	#end
                     		</tr>
                         #end
+                    #end
                     #end
                 #end
             </tbody>

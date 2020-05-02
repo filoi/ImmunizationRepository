@@ -20,6 +20,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hisp.dhis.datavalue.DataValue;
+import org.hisp.dhis.ivb.covid.action.CampaignVO;
 import org.hisp.dhis.ivb.util.GenericDataVO;
 import org.hisp.dhis.ivb.util.IVBUtil;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
@@ -342,6 +343,50 @@ public class ISCReportHelper
         }
         
         return latestDataValues;
+    }
+    
+    //programstageid +"_" + OrgUnitId as key and 
+    //	value is hashmap where key is programstage instance id and value is CampaignVO
+    public Map<String, Map<Integer, CampaignVO>> getEventData( String psIdsByComma, String deIdsByComma, String ouIdsByComma )
+    {
+    	Map<String, Map<Integer, CampaignVO>> eventDataMap = new HashMap<>();
+        
+        try
+        {
+            String query = "SELECT t2.programstageid, t1.programstageinstanceid, t2.organisationunitid, t1.dataelementid, t1.value FROM trackedentitydatavalue as t1 " + 
+            					" INNER JOIN programstageinstance as t2 ON t1.programstageinstanceid = t2.programstageinstanceid " + 
+            					" WHERE t2.programstageid IN ("+ psIdsByComma +") AND t2.organisationunitid IN ("+ ouIdsByComma +") AND t1.dataelementid IN ("+ deIdsByComma +")"; 
+
+            System.out.println("getEventData Query= "+query);
+            SqlRowSet rs = jdbcTemplate.queryForRowSet( query );
+            
+            while( rs.next() ){
+                Integer psId = rs.getInt( 1 );
+                Integer psInstId = rs.getInt( 2 );
+            	Integer ouId = rs.getInt( 3 );
+                Integer deId = rs.getInt( 4 );
+                String value = rs.getString( 5 );
+
+                String baseKey = psId+"_"+ouId;
+                if( eventDataMap.get( baseKey) == null )
+                	eventDataMap.put(baseKey, new HashMap<>());
+                
+                if( eventDataMap.get( baseKey).get(psInstId) == null )
+                	eventDataMap.get( baseKey).put(psInstId, new CampaignVO());
+                
+                if( eventDataMap.get( baseKey).get(psInstId).getColDataMap() == null )
+                	eventDataMap.get( baseKey).get(psInstId).setColDataMap( new HashMap<>());
+                
+                GenericDataVO dvo = new GenericDataVO();
+                dvo.setStrVal1(value);
+                eventDataMap.get( baseKey).get(psInstId).getColDataMap().put(deId+"", dvo);
+            }
+        }
+        catch( Exception e ){
+        	e.printStackTrace();
+        }
+        
+        return eventDataMap;
     }
    
 }

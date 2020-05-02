@@ -299,8 +299,13 @@ public class CampaignTrackerResultAction
 	public List<GenericTypeObj> getColList() {
 		return colList;
 	}
-	
-    public String getDataElementType()
+
+	private List<String> subNatNames;
+    public List<String> getSubNatNames() {
+		return subNatNames;
+	}
+
+	public String getDataElementType()
     {
         return dataElementType;
     }
@@ -457,17 +462,24 @@ public class CampaignTrackerResultAction
         }
 
         lookup = lookupService.getLookupByName( "CAMPAIGN_PROGRAM_STAGE_IDS" );
+        String psIdsByComma = "-1";
         List<ProgramStage> programStages = new ArrayList<>();
         for(String psId : lookup.getValue().split(",")) {
         	ProgramStage ps = programStageService.getProgramStage( Integer.parseInt(psId) );
-        	if( ps!= null && sectionCodes.contains( ps.getName().trim().toLowerCase()) )
+        	if( ps!= null && sectionCodes.contains( ps.getName().trim().toLowerCase()) ) {
         		programStages.add( ps );
+        		psIdsByComma += ","+ps.getId();
+        	}
         }
+        
+        lookup = lookupService.getLookupByName( "CAMPAIGN_SUBNATIONAL_DEID" );
+        int subNationalDeId = Integer.parseInt( lookup.getValue() );
         
         //Selected Columns
         Map<Integer, String> deColMap = new HashMap<>();
         String deIdsByComma = "-1";
         String psDeIdsByComma = "-1";
+        psDeIdsByComma += "," +subNationalDeId;
         lookup = lookupService.getLookupByName( "CAMPAIGN_COLUMNS_INFO" );
         String campaignColInfo = lookup.getValue();
         colList = new ArrayList<GenericTypeObj>();
@@ -491,11 +503,14 @@ public class CampaignTrackerResultAction
         
         //System.out.println(deIdsByComma);
         Map<String, GenericDataVO> dvDataMap = iscReportHelper.getLatestDataValues( deIdsByComma, ouIdsByComma );
-        //Map<String, GenericDataVO> edvDataMap = iscReportHelper.getLatestDataValues( psDeIdsByComma, ouIdsByComma );
-		Set<Integer> deIds = deColMap.keySet();
+        Map<String, Map<Integer, CampaignVO>> eventDataMap = iscReportHelper.getEventData( psIdsByComma, psDeIdsByComma, ouIdsByComma );
+        System.out.println( dvDataMap.size() +" and "+eventDataMap.size() );
+        
+        //Arranging Aggregated Data
+        Set<Integer> deIds = deColMap.keySet();
         dataMap = new HashMap<>();
         for( int ouId : organisationUnitIds ) {
-        	String key1 = ouId+"_NATIONAL";
+        	String key1 = ouId+"_National";
         	dataMap.put(key1, new ArrayList<>());
         	for(Section section : dataSetSections ) {
         		int flag = 0;
@@ -512,6 +527,8 @@ public class CampaignTrackerResultAction
 	        					vacDataMap = new HashMap<>();
 	        				flag = 1;
 	        				vacDataMap.put(colCode, dvDataMap.get(dvKey));
+	        				if( colCode.trim().equals("COL_4") )
+	        					vacDataMap.put("COL_3", dvDataMap.get(dvKey));
 							//System.out.println(key + " + " + colCode +" = " +dvDataMap.get(key2).getStrVal1());
 	        			}
         			}
@@ -528,7 +545,63 @@ public class CampaignTrackerResultAction
         	}
         }
         
-        System.out.println("Data---------------->");
+        Set<String> subNationalNames = new HashSet<>();
+        subNationalNames.add("National");
+        
+        //Arranging Event Data
+        for( int ouId : organisationUnitIds ) {
+        	for(ProgramStage ps : programStages ) {
+        		String eBaseKey = ps.getId()+"_"+ouId;
+        		if( eventDataMap.get(eBaseKey) == null ) {
+        			System.out.println("Data Unavailable for the key "+ eBaseKey);
+        			continue;
+        		}
+        		else {
+        			System.out.println("Data available for the key "+ eBaseKey);
+        		}
+        		for(Integer psInsId : eventDataMap.get(eBaseKey).keySet()) {
+        			String subNationName = "National";
+        			try { subNationName = eventDataMap.get(eBaseKey).get(psInsId).getColDataMap().get(subNationalDeId+"").getStrVal1();}catch(Exception e) {}
+        			int flag = 0;
+            		String key1 = ouId+"_"+subNationName;
+            		System.out.println( key1 );
+            		if( dataMap.get(key1) == null)
+            			dataMap.put(key1, new ArrayList<>());
+            		Map<String, GenericDataVO> vacDataMap = null;
+            		for( DataElement de : ps.getAllDataElements()) {
+            			if( deIds.contains( de.getId() ) ){
+    	        			String colCode = "NONE";
+    	        			colCode = deColMap.get(de.getId());
+    	        			GenericDataVO dvo = null;
+    	        			try { dvo = eventDataMap.get(eBaseKey).get(psInsId).getColDataMap().get(de.getId()+"");}catch(Exception e) {}
+    	        			if( dvo != null ) {
+    	        				if( vacDataMap == null )
+    	        					vacDataMap = new HashMap<>();
+    	        				flag = 1;
+    	        				if( colCode.trim().equals("COL_4") )
+    	        					dvo.setStrVal2(dvo.getStrVal1());
+    	        				vacDataMap.put(colCode, dvo);
+    	        				subNationalNames.add(subNationName);
+    	        			}
+            			}
+            		}
+            		if( flag == 1) {
+            			CampaignVO cvo = new CampaignVO();
+            			GenericDataVO dvo = new GenericDataVO();
+                		dvo.setStrVal1(ps.getName() );
+                		vacDataMap.put("COL_0", dvo);
+                		cvo.setColDataMap( vacDataMap );
+                		dataMap.get(key1).add( cvo );
+                		System.out.println("Data Row added for PS instanceid : "+ psInsId );
+            		}
+        		}
+        	}
+        }		
+       
+        subNatNames = new ArrayList<>();
+        subNatNames.addAll( subNationalNames );
+        Collections.sort( subNatNames );
+        
         for( String key1 : dataMap.keySet() ) {
         	for( CampaignVO cvo : dataMap.get(key1)) {
         		for(String key2 : cvo.getColDataMap().keySet() ) {
