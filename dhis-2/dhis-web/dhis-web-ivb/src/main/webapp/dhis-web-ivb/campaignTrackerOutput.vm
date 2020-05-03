@@ -203,7 +203,7 @@ $(function() {
 	</div>
   
 
- <div id="htmlContent" style="width:98%;margin:auto;" >   
+ <div id="htmlContent1" style="width:98%;margin:auto;" >   
 
 	<div style="margin:auto; margin-top:-50px;" >        
         <h2>Campaign Tracker</h2>
@@ -301,9 +301,120 @@ $(function() {
 											<td align="left" title="$!value">$!value.substring(0,20)...</td>
 										#else
 											<td align="left">$!value</td>
-										#end
+										#end									
 									#else
                                 		<td align="left">$!value</td>
+                                	#end	
+                            	#end
+                    		</tr>
+                        #end
+                    #end
+                    #end
+                #end
+            </tbody>
+        </table>
+        <br/><br/><br/>
+        <table style="margin:auto;display:none;color: #9F6000;background-color: #FEEFB3;border: 1px solid;" width="100%">
+            <tr>
+                <td colspan="5">$i18n.getString( "report_inline_security_warning" )</td>
+            </tr>
+        </table>
+	</div>
+	
+	
+	 <div id="htmlContent" style="width:98%;margin:auto;display:none;" >   
+
+		<div style="margin:auto;" >        
+			<h3>Campaign Tracker</h3>
+			<h4>Campaigns: 
+				#foreach( $dataSetSection in $dataSetSections )
+					$dataSetSection.code &nbsp; 
+				#end
+			</h3>
+		</div>
+		<br/>
+	
+	<table align="center" id="outputTable1" border="0" cellspacing="0" cellpadding="0">	
+    	<thead>
+                <tr >					
+                    #if( $isoCode == "ON" ) <th style="min-width:30px; width:30px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">$i18n.getString( "iso_code" )</th>#end 
+                    #if( $whoRegion == "ON" ) <th style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">$i18n.getString( "who_region" )</th> #end
+                  	#if( $unicefRegion == "ON" )  <th style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">$i18n.getString( "unicef_region" )</th>#end
+                    <th style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">$i18n.getString( "country" )</th>
+                    #if( $incomeLevel == "ON" )   <th style="border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">$i18n.getString( "income_level" )</th>#end 
+                  	#if( $gaviEligibleStatus == "ON" )  <th style="border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">$i18n.getString( "gavi_eligibility_status" )</th>#end 
+                  	<th style="min-width:60px; width:60px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">Sub-national</th>
+                    <th style="border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">Campaign Vaccine</th>
+                    #foreach( $colObj in $colList )
+						#set( $styleProp = "" )					
+						#if( $!colObj.code == "COL_1" || $!colObj.code == "COL_2" || $!colObj.code == "COL_5" || $!colObj.code == "COL_6" ||
+							 $!colObj.code == "COL_7" || $!colObj.code == "COL_8" || $!colObj.code == "COL_10" )
+							#set( $styleProp = "style='min-width:60px; width:60px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;'" )	
+						#elseif( $!colObj.code == "COL_3" || $!colObj.code == "COL_9" || $!colObj.code == "COL_11" || $!colObj.code == "COL_12" )
+							#set( $styleProp = "style='min-width:80px; width:80px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;'" )
+						#elseif( $!colObj.code == "COL_4" || $!colObj.code == "COL_13" )
+							#set( $styleProp = "style='min-width:120px; width:120px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;'" )							
+						#else
+							#set( $styleProp = "style='border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;'" )
+						#end
+                        <th $styleProp>$!colObj.name</th>
+                    #end
+                </tr>
+            </thead>
+            <tbody id="list">
+                #foreach( $orgUnit in $orgUnitList )
+                	#foreach( $subNat in $subNatNames )
+                    #set( $key1 = "${orgUnit.id}_${subNat}")
+                    #set( $vaccineResultList = "" )
+                    #set( $vaccineResultList = $dataMap.get( $key1 ) )
+                    #if($dataMap.get( $key1 ) && $dataMap.get( $key1 ) != " ")
+                       	#foreach( $cvo in $vaccineResultList )
+                       		#set( $cMap = "")
+                       		#set( $cMap = $cvo.colDataMap )
+		                    #if( $mark )
+		                    	#set( $mark = false )
+		                    #else
+		                    	#set( $mark = true )
+		                    #end
+
+				   			<tr width="100%" #if( $mark ) bgcolor="white" #else bgcolor = "white" #end>
+                        		#if( $isoCode == "ON" ) <td style="border: 1px solid #ccc;vertical-align: middle;">$orgUnit.code</td> #end
+                        		#if( $whoRegion == "ON" ) <td style="border: 1px solid #ccc;vertical-align: middle;">$!orgUnit.getParent().shortName</td> #end
+                        		#if( $unicefRegion == "ON" ) <td style="border: 1px solid #ccc;vertical-align: middle;">$orgUnit.getGroupInGroupSet( $unicefRegionsGroupSet ).getShortName()</td> #end
+                        		<td align="left" style="border: 1px solid #ccc;vertical-align: middle;">$!orgUnit.name</td>
+                        		#set( $headergetter = "" )
+                        		#set( $headergetter = "$orgUnit.id:3" )
+                        		#if( $incomeLevel == "ON" )
+                        			#if('$!countryGeneralInfoMap.get($headergetter)' != 'null' )
+                            			<td style="border: 1px solid #ccc;vertical-align: middle;">$!countryGeneralInfoMap.get($headergetter)</td>
+                        			#else   
+                            			<td style="border: 1px solid #ccc;vertical-align: middle;">&nbsp;</td>
+                        			#end
+                        		#end
+
+	                            #set( $headergetter = "" )
+	                            #set( $headergetter = "$orgUnit.id:4" )   
+	                            #if( $gaviEligibleStatus == "ON" )                         
+	                            	#if('$!countryGeneralInfoMap.get($headergetter)' != 'null' )
+	                                	<td style="border: 1px solid #ccc;vertical-align: middle;">$!countryGeneralInfoMap.get($headergetter)</td>   
+	                            	#else
+	                                	<td style="border: 1px solid #ccc;vertical-align: middle;">&nbsp;</td>
+	                            	#end
+	                            #end
+                        
+                        		<td style="border: 1px solid #ccc;vertical-align: middle;">$!subNat</td>
+	                            <td style="border: 1px solid #ccc;vertical-align: middle;">$!cMap.get( "COL_0" ).strVal1</td>        
+                            	#foreach( $colObj in $colList )
+                            		#set( $comment = "" )
+                            		#set( $comment = $!$cMap.get( $!colObj.code ).strVal2 )
+                                	#set( $value = "" )
+                                	#set( $value = $!$cMap.get( $!colObj.code ).strVal1 )
+                                	#if( $!colObj.code == "COL_4")
+										<td align="left" style="border: 1px solid #ccc;vertical-align: middle;">$!comment</td>
+                                	#elseif( $!colObj.code == "COL_13" )
+										<td align="left" style="border: 1px solid #ccc;vertical-align: middle;">$!value</td>
+									#else
+                                		<td align="left" style="border: 1px solid #ccc;vertical-align: middle;">$!value</td>
                                 	#end	
                             	#end
                     		</tr>

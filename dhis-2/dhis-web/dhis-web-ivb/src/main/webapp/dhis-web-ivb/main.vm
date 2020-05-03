@@ -638,6 +638,7 @@
 				<ul>
 					<li><a href="../dhis-web-maintenance-datadictionary/index.action"><b>Data Elements / Indicators</b>&nbsp;</a></li>
 					<li><a href="../dhis-web-maintenance-dataset/index.action"><b>Data Sets</b>&nbsp;</a></li>
+					<li><a href="../dhis-web-event-capture/index.html"><b>Event Capture Data Entry</b>&nbsp;</a></li>
 					<li><a href="../dhis-web-maintenance-user/index.action"><b>Users</b>&nbsp;</a></li>
 					<li><a href="../dhis-web-maintenance-organisationunit/index.action"><b>Organisation Units</b>&nbsp;</a></li>
 					<li><a href="manualReportSchedulingForm.action"><b>$i18n.getString( "manual_scheduling" )</b></a></li>

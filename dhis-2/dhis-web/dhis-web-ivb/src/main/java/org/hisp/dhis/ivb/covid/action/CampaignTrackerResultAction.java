@@ -3,6 +3,8 @@ package org.hisp.dhis.ivb.covid.action;
 import static org.hisp.dhis.common.IdentifiableObjectUtils.getIdentifiers;
 import static org.hisp.dhis.commons.util.TextUtils.getCommaDelimitedString;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -10,6 +12,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -299,6 +302,11 @@ public class CampaignTrackerResultAction
 	public List<GenericTypeObj> getColList() {
 		return colList;
 	}
+	
+	private NumberFormat nf;
+	public NumberFormat getNf() {
+		return nf;
+	}
 
 	private List<String> subNatNames;
     public List<String> getSubNatNames() {
@@ -504,7 +512,10 @@ public class CampaignTrackerResultAction
         //System.out.println(deIdsByComma);
         Map<String, GenericDataVO> dvDataMap = iscReportHelper.getLatestDataValues( deIdsByComma, ouIdsByComma );
         Map<String, Map<Integer, CampaignVO>> eventDataMap = iscReportHelper.getEventData( psIdsByComma, psDeIdsByComma, ouIdsByComma );
-        System.out.println( dvDataMap.size() +" and "+eventDataMap.size() );
+        //System.out.println( dvDataMap.size() +" and "+eventDataMap.size() );
+        
+        nf = NumberFormat.getInstance(Locale.US);
+        DecimalFormat df = new DecimalFormat( "#,###,###,##0" );
         
         //Arranging Aggregated Data
         Set<Integer> deIds = deColMap.keySet();
@@ -529,6 +540,14 @@ public class CampaignTrackerResultAction
 	        				vacDataMap.put(colCode, dvDataMap.get(dvKey));
 	        				if( colCode.trim().equals("COL_4") )
 	        					vacDataMap.put("COL_3", dvDataMap.get(dvKey));
+	        				else if( colCode.trim().equals("COL_8") ) {
+	        					String val = "";
+	        					try{ val = dvDataMap.get(dvKey).getStrVal1();}catch(Exception e) {}
+	        					try{ val = df.format(Double.parseDouble(val));}catch(Exception e) {}
+	        					if( !val.trim().equals("") )
+	        						dvDataMap.get(dvKey).setStrVal1( val );
+	        					vacDataMap.put(colCode, dvDataMap.get(dvKey));
+	        				}
 							//System.out.println(key + " + " + colCode +" = " +dvDataMap.get(key2).getStrVal1());
 	        			}
         			}
@@ -553,18 +572,18 @@ public class CampaignTrackerResultAction
         	for(ProgramStage ps : programStages ) {
         		String eBaseKey = ps.getId()+"_"+ouId;
         		if( eventDataMap.get(eBaseKey) == null ) {
-        			System.out.println("Data Unavailable for the key "+ eBaseKey);
+        			//System.out.println("Data Unavailable for the key "+ eBaseKey);
         			continue;
         		}
         		else {
-        			System.out.println("Data available for the key "+ eBaseKey);
+        			//System.out.println("Data available for the key "+ eBaseKey);
         		}
         		for(Integer psInsId : eventDataMap.get(eBaseKey).keySet()) {
         			String subNationName = "National";
         			try { subNationName = eventDataMap.get(eBaseKey).get(psInsId).getColDataMap().get(subNationalDeId+"").getStrVal1();}catch(Exception e) {}
         			int flag = 0;
             		String key1 = ouId+"_"+subNationName;
-            		System.out.println( key1 );
+            		//System.out.println( key1 );
             		if( dataMap.get(key1) == null)
             			dataMap.put(key1, new ArrayList<>());
             		Map<String, GenericDataVO> vacDataMap = null;
@@ -580,6 +599,13 @@ public class CampaignTrackerResultAction
     	        				flag = 1;
     	        				if( colCode.trim().equals("COL_4") )
     	        					dvo.setStrVal2(dvo.getStrVal1());
+    	        				else if( colCode.trim().equals("COL_8") ) {
+    	        					String val = "";
+    	        					try{ val = dvo.getStrVal1();}catch(Exception e) {}
+    	        					try{ val = df.format(Double.parseDouble(val));}catch(Exception e) {}
+    	        					if( !val.trim().equals("") )
+    	        						dvo.setStrVal1( val );
+    	        				}
     	        				vacDataMap.put(colCode, dvo);
     	        				subNationalNames.add(subNationName);
     	        			}
@@ -592,7 +618,7 @@ public class CampaignTrackerResultAction
                 		vacDataMap.put("COL_0", dvo);
                 		cvo.setColDataMap( vacDataMap );
                 		dataMap.get(key1).add( cvo );
-                		System.out.println("Data Row added for PS instanceid : "+ psInsId );
+                		//System.out.println("Data Row added for PS instanceid : "+ psInsId );
             		}
         		}
         	}
@@ -602,6 +628,7 @@ public class CampaignTrackerResultAction
         subNatNames.addAll( subNationalNames );
         Collections.sort( subNatNames );
         
+		/*
         for( String key1 : dataMap.keySet() ) {
         	for( CampaignVO cvo : dataMap.get(key1)) {
         		for(String key2 : cvo.getColDataMap().keySet() ) {
@@ -609,6 +636,7 @@ public class CampaignTrackerResultAction
         		}
         	}
         }
+		*/
        
         DataElementCategoryOptionCombo optionCombo = categoryService.getDefaultDataElementCategoryOptionCombo();
         for( OrganisationUnit orgUnit : orgUnitList )
