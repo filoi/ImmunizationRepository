@@ -357,7 +357,7 @@ public class ISCReportHelper
             					" INNER JOIN programstageinstance as t2 ON t1.programstageinstanceid = t2.programstageinstanceid " + 
             					" WHERE t2.programstageid IN ("+ psIdsByComma +") AND t2.organisationunitid IN ("+ ouIdsByComma +") AND t1.dataelementid IN ("+ deIdsByComma +")"; 
 
-            System.out.println("getEventData Query= "+query);
+            //System.out.println("getEventData Query= "+query);
             SqlRowSet rs = jdbcTemplate.queryForRowSet( query );
             
             while( rs.next() ){

@@ -521,9 +521,12 @@ public class CampaignTrackerResultAction
         Set<Integer> deIds = deColMap.keySet();
         dataMap = new HashMap<>();
         for( int ouId : organisationUnitIds ) {
-        	String key1 = ouId+"_National";
-        	dataMap.put(key1, new ArrayList<>());
+        	//String key1 = ouId+"_National";
+			//dataMap.put(key1, new ArrayList<>());
         	for(Section section : dataSetSections ) {
+        		String key1 = ouId+"_"+section.getCode();
+        		if( dataMap.get(key1) == null)
+        			dataMap.put(key1, new ArrayList<>());
         		int flag = 0;
         		Map<String, GenericDataVO> vacDataMap = null;
         		
@@ -556,7 +559,7 @@ public class CampaignTrackerResultAction
         		if( flag == 1) {
         			CampaignVO cvo = new CampaignVO();
         			GenericDataVO dvo = new GenericDataVO();
-            		dvo.setStrVal1(section.getCode() );
+            		dvo.setStrVal1("National");
             		vacDataMap.put("COL_0", dvo);
             		cvo.setColDataMap( vacDataMap );
             		dataMap.get(key1).add( cvo );
@@ -582,7 +585,8 @@ public class CampaignTrackerResultAction
         			String subNationName = "National";
         			try { subNationName = eventDataMap.get(eBaseKey).get(psInsId).getColDataMap().get(subNationalDeId+"").getStrVal1();}catch(Exception e) {}
         			int flag = 0;
-            		String key1 = ouId+"_"+subNationName;
+            		//String key1 = ouId+"_"+subNationName;
+        			String key1 = ouId+"_"+ps.getName();
             		//System.out.println( key1 );
             		if( dataMap.get(key1) == null)
             			dataMap.put(key1, new ArrayList<>());
@@ -614,7 +618,7 @@ public class CampaignTrackerResultAction
             		if( flag == 1) {
             			CampaignVO cvo = new CampaignVO();
             			GenericDataVO dvo = new GenericDataVO();
-                		dvo.setStrVal1(ps.getName() );
+                		dvo.setStrVal1(subNationName );
                 		vacDataMap.put("COL_0", dvo);
                 		cvo.setColDataMap( vacDataMap );
                 		dataMap.get(key1).add( cvo );

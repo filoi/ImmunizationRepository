@@ -224,8 +224,8 @@ $(function() {
                     <th style="min-width:50px; width:50px;" class="freeze_left_column">$i18n.getString( "country" )</th>
                     #if( $incomeLevel == "ON" )   <th class="freeze_left_column">$i18n.getString( "income_level" )</th>#end 
                   	#if( $gaviEligibleStatus == "ON" )  <th class="freeze_left_column">$i18n.getString( "gavi_eligibility_status" )</th>#end 
-                  	<th style="min-width:60px; width:60px;" class="freeze_left_column">Sub-national</th>
-                    <th class="freeze_left_column">Campaign Vaccine</th>
+                  	<th class="freeze_left_column">Campaign Vaccine</th>
+                  	<th style="min-width:60px; width:60px;" class="freeze_left_column">Sub-national</th>                    
                     #foreach( $colObj in $colList )
 						#set( $styleProp = "" )					
 						#if( $!colObj.code == "COL_1" || $!colObj.code == "COL_2" || $!colObj.code == "COL_5" || $!colObj.code == "COL_6" ||
@@ -244,8 +244,8 @@ $(function() {
             </thead>
             <tbody id="list">
                 #foreach( $orgUnit in $orgUnitList )
-                	#foreach( $subNat in $subNatNames )
-                    #set( $key1 = "${orgUnit.id}_${subNat}")
+                	#foreach( $section in $dataSetSections )
+                    #set( $key1 = "${orgUnit.id}_${section.code}")
                     #set( $vaccineResultList = "" )
                     #set( $vaccineResultList = $dataMap.get( $key1 ) )
                     #if($dataMap.get( $key1 ) && $dataMap.get( $key1 ) != " ")
@@ -283,7 +283,7 @@ $(function() {
 	                            	#end
 	                            #end
                         
-                        		<td class="freeze_left_column">$!subNat</td>
+                        		<td class="freeze_left_column">$!section.code</td>
 	                            <td class="freeze_left_column">$!cMap.get( "COL_0" ).strVal1</td>        
                             	#foreach( $colObj in $colList )
                             		#set( $comment = "" )
@@ -343,8 +343,8 @@ $(function() {
                     <th style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">$i18n.getString( "country" )</th>
                     #if( $incomeLevel == "ON" )   <th style="border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">$i18n.getString( "income_level" )</th>#end 
                   	#if( $gaviEligibleStatus == "ON" )  <th style="border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">$i18n.getString( "gavi_eligibility_status" )</th>#end 
-                  	<th style="min-width:60px; width:60px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">Sub-national</th>
                     <th style="border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">Campaign Vaccine</th>
+                  	<th style="min-width:60px; width:60px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">Sub-national</th>
                     #foreach( $colObj in $colList )
 						#set( $styleProp = "" )					
 						#if( $!colObj.code == "COL_1" || $!colObj.code == "COL_2" || $!colObj.code == "COL_5" || $!colObj.code == "COL_6" ||
@@ -363,8 +363,8 @@ $(function() {
             </thead>
             <tbody id="list">
                 #foreach( $orgUnit in $orgUnitList )
-                	#foreach( $subNat in $subNatNames )
-                    #set( $key1 = "${orgUnit.id}_${subNat}")
+                	#foreach( $section in $dataSetSections )
+                    #set( $key1 = "${orgUnit.id}_${section.code}")
                     #set( $vaccineResultList = "" )
                     #set( $vaccineResultList = $dataMap.get( $key1 ) )
                     #if($dataMap.get( $key1 ) && $dataMap.get( $key1 ) != " ")
@@ -402,7 +402,7 @@ $(function() {
 	                            	#end
 	                            #end
                         
-                        		<td style="border: 1px solid #ccc;vertical-align: middle;">$!subNat</td>
+                        		<td style="border: 1px solid #ccc;vertical-align: middle;">$!section.code</td>
 	                            <td style="border: 1px solid #ccc;vertical-align: middle;">$!cMap.get( "COL_0" ).strVal1</td>        
                             	#foreach( $colObj in $colList )
                             		#set( $comment = "" )
@@ -533,15 +533,16 @@ $(function() {
 	{
 		//altRows('alternatecolor');
 		
-		/*$('table').tablesorter({
+		$('table').tablesorter({
 	
       		headers: {
-         	3: {
-            	sorter: 'customDates'
-         	}
+         		5: { sorter: 'customDates' },
+         		6: { sorter: 'customDates' },
+         		9: { sorter: 'customDates' },
+         		10: { sorter: 'customDates' }         		
       	}
    		});
-   		*/
+   		
 	});
 	function sorting()
 	{
