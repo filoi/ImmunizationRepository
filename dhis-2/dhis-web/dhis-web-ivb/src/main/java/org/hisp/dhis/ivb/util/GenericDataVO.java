@@ -13,7 +13,16 @@ public class GenericDataVO
 	private String strVal1;
 	private String strVal2;
 	
+	private Integer intVal1;
 	
+	
+	
+	public Integer getIntVal1() {
+		return intVal1;
+	}
+	public void setIntVal1(Integer intVal1) {
+		this.intVal1 = intVal1;
+	}
 	public String getStrVal1() {
 		return strVal1;
 	}

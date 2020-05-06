@@ -252,13 +252,8 @@ $(function() {
                        	#foreach( $cvo in $vaccineResultList )
                        		#set( $cMap = "")
                        		#set( $cMap = $cvo.colDataMap )
-		                    #if( $mark )
-		                    	#set( $mark = false )
-		                    #else
-		                    	#set( $mark = true )
-		                    #end
-
-				   			<tr width="100%" #if( $mark ) bgcolor="white" #else bgcolor = "white" #end>
+		                    
+				   			<tr width="100%">
                         		#if( $isoCode == "ON" ) <td class="freeze_left_column">$orgUnit.code</td> #end
                         		#if( $whoRegion == "ON" ) <td class="freeze_left_column">$!orgUnit.getParent().shortName</td> #end
                         		#if( $unicefRegion == "ON" ) <td class="freeze_left_column">$orgUnit.getGroupInGroupSet( $unicefRegionsGroupSet ).getShortName()</td> #end
@@ -282,8 +277,13 @@ $(function() {
 	                                	<td class="freeze_left_column">&nbsp;</td>
 	                            	#end
 	                            #end
-                        
-                        		<td class="freeze_left_column">$!section.code</td>
+                        		#if( $!cMap.get( "COL_0" ).intVal1 == 1 )
+                        			<td class="freeze_left_column"><a href="loadSingleCoutryEntryForm.action?dataSetSectionId=$section.id&orgUnitUid=$orgUnit.uid">$!section.code</a></td>
+                        		#elseif	( $!cMap.get( "COL_0" ).intVal1 == 2 )
+                        			<td class="freeze_left_column"><a href="../dhis-web-event-capture/index.html">$!section.code</a></td>
+                        		#else
+	                        		<td class="freeze_left_column">$!section.code</td>
+                        		#end	
 	                            <td class="freeze_left_column">$!cMap.get( "COL_0" ).strVal1</td>        
                             	#foreach( $colObj in $colList )
                             		#set( $comment = "" )

@@ -540,6 +540,7 @@ public class CampaignTrackerResultAction
 	        				if( vacDataMap == null )
 	        					vacDataMap = new HashMap<>();
 	        				flag = 1;
+	        				
 	        				vacDataMap.put(colCode, dvDataMap.get(dvKey));
 	        				if( colCode.trim().equals("COL_4") )
 	        					vacDataMap.put("COL_3", dvDataMap.get(dvKey));
@@ -560,6 +561,7 @@ public class CampaignTrackerResultAction
         			CampaignVO cvo = new CampaignVO();
         			GenericDataVO dvo = new GenericDataVO();
             		dvo.setStrVal1("National");
+            		dvo.setIntVal1(1);
             		vacDataMap.put("COL_0", dvo);
             		cvo.setColDataMap( vacDataMap );
             		dataMap.get(key1).add( cvo );
@@ -619,6 +621,7 @@ public class CampaignTrackerResultAction
             			CampaignVO cvo = new CampaignVO();
             			GenericDataVO dvo = new GenericDataVO();
                 		dvo.setStrVal1(subNationName );
+                		dvo.setIntVal1(2);
                 		vacDataMap.put("COL_0", dvo);
                 		cvo.setColDataMap( vacDataMap );
                 		dataMap.get(key1).add( cvo );
