@@ -163,7 +163,14 @@ jQuery(function() {
 
 	<table style="width:98%;">
 		<tr>
-			<td align="left"><font size="3"><b>Campaign Calendar</b></font></td>		
+			<td align="left"><font size="3"><b>Campaign Calendar</b></font></td>
+			<td align="right">
+				<table align="right">
+					<td style="color:#ffffff;background-color:$!plannedColor">Planned</td>
+					<td style="color:#ffffff;background-color:$!postponedColor">Postponed</td>
+					<td style="color:#ffffff;background-color:$!bothMatchColor">Matched</td>
+				</table>
+			</td>	
 			<td align="right" style="vertical-align:middle;">
 				<input type="button" onclick="location.href='campaignCalendarForm.action'" value="Change Selections"/>
 				<input type="submit" value="Download As Excel"/>&nbsp;
@@ -177,40 +184,46 @@ jQuery(function() {
     	<table align="center" id="regionalDBTable" border="0" cellspacing="0" cellpadding="0" style="width:100%;" class="table table-bordered table-condensed freeze_header">
            <thead>
                 <tr >
-					<th class="freeze_left_column" >$i18n.getString( "who_region" )</th>
-					<th class="freeze_left_column" >$i18n.getString( "country" )</th>					
-					
+					<th class="freeze_left_column" style="min-width:50px; width:50px;">$i18n.getString( "who_region" )</th>
+					<th class="freeze_left_column" style="min-width:50px; width:50px;">$i18n.getString( "country" )</th>					
+					<th class="freeze_left_column" style="min-width:50px; width:50px;">Sub-national</th>
 					#foreach( $monthName in $monthNames )						
-						<th align="center" style="vertical-align: middle;">$monthName</th>
+						<th align="center" style="min-width:40px; width:40px;vertical-align: middle;">$monthName</th>
 					#end
 					<th class="freeze_left_column" style="min-width:50px; width:50px">Campaigns - no dates yet</th>
                 </tr>
             </thead>
 			<tbody>
 				#foreach( $orgUnit in $orgUnitList )
-					#set( $ouDvObj = "" )
-					#set( $ouDvObj = $dataMap.get( $!{orgUnit.id} ) )
-					<tr >
-						<td class="freeze_left_column">$!orgUnit.getParent().shortName</td>
-						<td class="freeze_left_column">$!orgUnit.name</td>
-						#foreach( $monthName in $monthNames )
+					#foreach( $subNatName in $subNatNames )
+						#set( $key1 = "${orgUnit.id}_$subNatName")
+						#set( $ouDvObj = "" )
+						#set( $ouDvObj = $dataMap.get( $key1 ) )
+						#if($dataMap.get( $key1 ) && $dataMap.get( $key1 ) != " ")
+						<tr >
+							<td class="freeze_left_column">$!orgUnit.getParent().shortName</td>
+							<td class="freeze_left_column">$!orgUnit.name</td>
+							<td class="freeze_left_column">$subNatName</td>
+							#foreach( $monthName in $monthNames )
+								#set( $monDvList = "" )
+								#set( $monDvList = $!ouDvObj.get("${monthName}" ) )
+								<td align="center" style="vertical-align: middle;">
+									#foreach( $monDv in $monDvList )								    
+										<div style="display:block;color:#ffffff;background:$monDv.strVal2;">&nbsp;$!monDv.strVal1&nbsp;</div>
+									#end
+								</td>
+							#end
 							#set( $monDvList = "" )
-							#set( $monDvList = $!ouDvObj.get("${monthName}" ) )
+							#set( $monDvList = $!ouDvObj.get("NONE" ) )
 							<td align="center" style="vertical-align: middle;">
-								#foreach( $monDv in $monDvList )								    
+								#foreach( $monDv in $monDvList )
 									<div style="display:block;color:#ffffff;background:$monDv.strVal2;">&nbsp;$!monDv.strVal1&nbsp;</div>
 								#end
 							</td>
+						</tr>
 						#end
-						#set( $monDvList = "" )
-						#set( $monDvList = $!ouDvObj.get("NONE" ) )
-						<td align="center" style="vertical-align: middle;">
-							#foreach( $monDv in $monDvList )
-								<div style="display:block;color:#ffffff;background:$monDv.strVal2;">&nbsp;$!monDv.strVal1&nbsp;</div>
-							#end
-						</td>
-					</tr>
-				#end				
+					#end
+				#end					
     		</tbody>
 		</table>
            		
@@ -222,59 +235,73 @@ jQuery(function() {
         </table>
 	</div>    	
 
-    <div id="htmlContent" style="width:98%;margin:10px;">    
-    	<table align="center" id="regionalDBTable1" border="0" cellspacing="0" cellpadding="0" class="">
+    <div id="htmlContent" style="width:98%;margin:10px;">
+    	<table style="width:98%;">
+			<tr>
+				<td align="left"><font size="3"><b>Campaign Calendar</b></font></td>
+				<td align="left">&nbsp;</td>
+				<td align="left">&nbsp;</td>			
+				<td style="color:#ffffff;background-color:$!plannedColor">Planned</td>
+				<td style="color:#ffffff;background-color:$!postponedColor">Postponed</td>
+				<td style="color:#ffffff;background-color:$!bothMatchColor">Matched</td>
+			</tr>	
+		</table>  
+    	<table align="center" id="regionalDBTable1" style="width:100%;" border="0" cellspacing="0" cellpadding="0" class="">
            <thead>
                 <tr style="border: none;">
-					<th style="border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">$i18n.getString( "who_region" )</th>
-					<th style="border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">$i18n.getString( "country" )</th>					
-					
+					<th style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">$i18n.getString( "who_region" )</th>
+					<th style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">$i18n.getString( "country" )</th>					
+					<th style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">Sub-national</th>
 					#foreach( $monthName in $monthNames )						
-						<th align="center" style="vertical-align: middle;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">$monthName</th>
+						<th align="center" style="min-width:40px; width:40px;vertical-align: middle;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">$monthName</th>
 					#end
-					<th style="border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">Campaigns - no dates yet</th>
+					<th style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">Campaigns - no dates yet</th>
                 </tr>
             </thead>
 			<tbody>
 				#foreach( $orgUnit in $orgUnitList )
-					#set( $ouDvObj = "" )
-					#set( $ouDvObj = $dataMap.get( $!{orgUnit.id} ) )
-					<tr >
-						<td style="vertical-align: middle;border: 1px solid #ccc;">$!orgUnit.getParent().shortName</td>
-						<td style="vertical-align: middle;border: 1px solid #ccc;">$!orgUnit.name</td>
-						#foreach( $monthName in $monthNames )
+					#foreach( $subNatName in $subNatNames )
+						#set( $key1 = "${orgUnit.id}_$subNatName")
+						#set( $ouDvObj = "" )
+						#set( $ouDvObj = $dataMap.get( $key1 ) )
+						#if($dataMap.get( $key1 ) && $dataMap.get( $key1 ) != " ")
+						<tr >
+							<td style="vertical-align: middle;border: 1px solid #ccc;">$!orgUnit.getParent().shortName</td>
+							<td style="vertical-align: middle;border: 1px solid #ccc;">$!orgUnit.name</td>
+							<td style="vertical-align: middle;border: 1px solid #ccc;">$subNatName</td>
+							#foreach( $monthName in $monthNames )
+								#set( $monDvList = "" )
+								#set( $monDvList = $!ouDvObj.get("${monthName}" ) )
+								<td align="center" style="vertical-align: middle;border: 1px solid #ccc;">
+									#if($ouDvObj.get( "${monthName}" ) && $ouDvObj.get( "${monthName}" ) != " ")
+										<table>
+										#foreach( $monDv in $monDvList )								    
+											<tr><td style="color:#ffffff;background-color:$monDv.strVal2;">&nbsp;$!monDv.strVal1&nbsp;</td></tr>
+										#end
+										</table>
+									#else
+										&nbsp;
+									#end
+								</td>
+							#end
 							#set( $monDvList = "" )
-							#set( $monDvList = $!ouDvObj.get("${monthName}" ) )
+							#set( $monDvList = $!ouDvObj.get("NONE" ) )
 							<td align="center" style="vertical-align: middle;border: 1px solid #ccc;">
-								#if($ouDvObj.get( "${monthName}" ) && $ouDvObj.get( "${monthName}" ) != " ")
+								#if($ouDvObj.get( "NONE" ) && $ouDvObj.get( "NONE" ) != " ")
 									<table>
-									#foreach( $monDv in $monDvList )								    
+									#foreach( $monDv in $monDvList )
 										<tr><td style="color:#ffffff;background-color:$monDv.strVal2;">&nbsp;$!monDv.strVal1&nbsp;</td></tr>
 									#end
 									</table>
 								#else
 									&nbsp;
-								#end
+								#end	
 							</td>
+						</tr>
 						#end
-						#set( $monDvList = "" )
-						#set( $monDvList = $!ouDvObj.get("NONE" ) )
-						<td align="center" style="vertical-align: middle;border: 1px solid #ccc;">
-							#if($ouDvObj.get( "NONE" ) && $ouDvObj.get( "NONE" ) != " ")
-								<table>
-								#foreach( $monDv in $monDvList )
-									<tr><td style="color:#ffffff;background-color:$monDv.strVal2;">&nbsp;$!monDv.strVal1&nbsp;</td></tr>
-								#end
-								</table>
-							#else
-								&nbsp;
-							#end	
-						</td>
-					</tr>
-				#end				
+					#end
+				#end		
     		</tbody>           
-               
-    		
 		</table>
            		
  		<br/><br/><br/>

@@ -521,6 +521,7 @@
                     <li><a href="loadSingleCoutryEntryForm.action"><b>$i18n.getString( "menu_single_coutry" )</b></a></li>
                     <!-- <li><a href="sourceWiseEntry.action"><b>$i18n.getString( "menu_source_wise" )</b></a></li> -->
                     <li><a href="loadDataElementwiseDataEntryParams.action"><b>$i18n.getString( "menu_dataelement_wise" )</b></a></li>
+                    <li><a href="../dhis-web-event-capture/index.html"><b>Event Capture Data Entry</b>&nbsp;</a></li>
                     <li><a href="loadAlertDataEntryForm.action"><b>$i18n.getString( "menu_alert_dataentry" )</b></a></li>
                     <!--<li><a href="offlineEntryForm.action"><b>$i18n.getString( "menu_download_spreadsheet_for_offline_entry" )</b></a></li>-->
 					<li><a href="uploadOfflineDataForm.action"><b>$i18n.getString( "menu_upload_offline_data" )</b></a> </li> 					
@@ -638,7 +639,7 @@
 				<ul>
 					<li><a href="../dhis-web-maintenance-datadictionary/index.action"><b>Data Elements / Indicators</b>&nbsp;</a></li>
 					<li><a href="../dhis-web-maintenance-dataset/index.action"><b>Data Sets</b>&nbsp;</a></li>
-					<li><a href="../dhis-web-event-capture/index.html"><b>Event Capture Data Entry</b>&nbsp;</a></li>
+					
 					<li><a href="../dhis-web-maintenance-user/index.action"><b>Users</b>&nbsp;</a></li>
 					<li><a href="../dhis-web-maintenance-organisationunit/index.action"><b>Organisation Units</b>&nbsp;</a></li>
 					<li><a href="manualReportSchedulingForm.action"><b>$i18n.getString( "manual_scheduling" )</b></a></li>

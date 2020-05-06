@@ -41,6 +41,8 @@ import org.hisp.dhis.organisationunit.OrganisationUnitGroupService;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroupSet;
 import org.hisp.dhis.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.oust.manager.SelectionTreeManager;
+import org.hisp.dhis.program.ProgramStage;
+import org.hisp.dhis.program.ProgramStageService;
 import org.hisp.dhis.user.CurrentUserService;
 import org.hisp.dhis.user.UserGroup;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -161,6 +163,10 @@ public class CampaignCalendarResultAction
     
     @Autowired
     private DataSetService dataSetService;
+    
+    @Autowired
+    private ProgramStageService programStageService;
+    
     // -------------------------------------------------------------------------
     // Setters
     // -------------------------------------------------------------------------
@@ -286,15 +292,35 @@ public class CampaignCalendarResultAction
 	// -------------------------------------------------------------------------
     // Getters
     // -------------------------------------------------------------------------
-    private Map<Integer, Map<String, List<GenericDataVO>>> dataMap;
-	public Map<Integer, Map<String, List<GenericDataVO>>> getDataMap() {
+    
+    String plannedColor = "#D11509";
+    String postponedColor = "#F78526";
+    String bothMatchColor = "#04A20B";
+    public String getPlannedColor() {
+		return plannedColor;
+	}
+	public String getPostponedColor() {
+		return postponedColor;
+	}
+	public String getBothMatchColor() {
+		return bothMatchColor;
+	}
+
+	private Map<String, Map<String, List<GenericDataVO>>> dataMap;
+	public Map<String, Map<String, List<GenericDataVO>>> getDataMap() {
 		return dataMap;
 	}
+
 	private List<String> monthNames = new ArrayList<>();
 	public List<String> getMonthNames() {
 		return monthNames;
 	}
 
+	private List<String> subNatNames;
+    public List<String> getSubNatNames() {
+		return subNatNames;
+	}
+	
 	private List<GenericTypeObj> colList; 
 	public List<GenericTypeObj> getColList() {
 		return colList;
@@ -453,6 +479,23 @@ public class CampaignCalendarResultAction
         DataSet dataSet = dataSetService.getDataSet( lookup.getValue() );
         dataSetSections = new ArrayList<Section>( dataSet.getSections() );
        
+        Set<String> sectionCodes = new HashSet<>();
+        for( Section section : dataSetSections ){
+            sectionCodes.add( section.getCode().trim().toLowerCase() );
+        }
+        lookup = lookupService.getLookupByName( "CAMPAIGN_PROGRAM_STAGE_IDS" );
+        String psIdsByComma = "-1";
+        List<ProgramStage> programStages = new ArrayList<>();
+        for(String psId : lookup.getValue().split(",")) {
+        	ProgramStage ps = programStageService.getProgramStage( Integer.parseInt(psId) );
+        	if( ps!= null && sectionCodes.contains( ps.getName().trim().toLowerCase()) ) {
+        		programStages.add( ps );
+        		psIdsByComma += ","+ps.getId();
+        	}
+        }
+        lookup = lookupService.getLookupByName( "CAMPAIGN_SUBNATIONAL_DEID" );
+        int subNationalDeId = Integer.parseInt( lookup.getValue() );
+
         
         //Selected Columns
         selectedOtherData = new ArrayList<>();
@@ -460,6 +503,8 @@ public class CampaignCalendarResultAction
         selectedOtherData.add("COL_5");
         Map<Integer, String> deColMap = new HashMap<>();
         String deIdsByComma = "-1";
+        String psDeIdsByComma = "-1";
+        psDeIdsByComma += "," +subNationalDeId;
         lookup = lookupService.getLookupByName( "CAMPAIGN_COLUMNS_INFO" );
         String campaignColInfo = lookup.getValue();
         colList = new ArrayList<GenericTypeObj>();
@@ -469,11 +514,14 @@ public class CampaignCalendarResultAction
 	        	colObj.setCode( colInfo.split("@-@")[0] );
 	        	colObj.setName( colInfo.split("@-@")[1] );
 	        	colObj.setStrAttrib1( colInfo.split("@-@")[2] ); //deids
+	        	colObj.setStrAttrib2( colInfo.split("@-@")[3] ); //ps deids
 	        	colList.add( colObj );
 	        	deIdsByComma += ","+colInfo.split("@-@")[2];
+	        	psDeIdsByComma += ","+colInfo.split("@-@")[3];
 	        	for(String deIdStr : colObj.getStrAttrib1().split(",") ) {
 	        		deColMap.put(Integer.parseInt(deIdStr), colObj.getCode());
 	        	}
+	        	deColMap.put(Integer.parseInt(colObj.getStrAttrib2()), colObj.getCode());
         	}
         }
         
@@ -489,21 +537,37 @@ public class CampaignCalendarResultAction
     				sectionDeMap.get( section.getId() ).put(deColMap.get(de.getId()), de.getId());
     			}
     		}
-        }	
+        }
+        
+        Map<Integer, Map<String, Integer>> psDeMap = new HashMap<>();
+        for(ProgramStage ps : programStages ) {
+    		for( DataElement de : ps.getAllDataElements()) {
+    			if( deIds.contains(de.getId()) ) {
+    				if( psDeMap.get( ps.getId() ) == null)
+    					psDeMap.put(ps.getId(), new HashMap<>());
+    				psDeMap.get( ps.getId() ).put(deColMap.get(de.getId()), de.getId());
+    			}
+    		}
+        }
+        
+        /*
         for(Integer sectionId : sectionDeMap.keySet() ) {
         	for(String colKey : sectionDeMap.get(sectionId).keySet()) {
         		System.out.println(sectionId + " and " + colKey + "  = " + sectionDeMap.get(sectionId).get(colKey) );
         	}
         }
+        */
         //System.out.println(deIdsByComma);
        
         Map<String, GenericDataVO> dvDataMap = iscReportHelper.getLatestDataValues( deIdsByComma, ouIdsByComma );
 		
         //Color Codes
         lookup = lookupService.getLookupByName( "CAMPAIGN_CALENDAR_COLOR_CODES" );
+        /*
         String plannedColor = "#D11509";
         String postponedColor = "#F78526";
         String bothMatchColor = "#04A20B";
+        */
         
         try{ plannedColor = lookup.getValue().split("@!@")[0];}catch(Exception e) {}
         try{ postponedColor = lookup.getValue().split("@!@")[1];}catch(Exception e) {}
@@ -511,8 +575,10 @@ public class CampaignCalendarResultAction
         
         SimpleDateFormat mdf = new SimpleDateFormat("MMM-yyyy");
         dataMap = new HashMap<>();
+        //Arranging aggregated data
         for( int ouId : organisationUnitIds ) {
-        	dataMap.put(ouId, new HashMap<>());
+        	String key1 = ouId+"_National";
+        	//dataMap.put(key1, new HashMap<>());
         	for(Section section : dataSetSections ) {
         		
         		int plannedDeId = 0;
@@ -523,34 +589,38 @@ public class CampaignCalendarResultAction
         		Date plannedDate = null;
         		String plannedVal = "";
         		try { plannedVal = dvDataMap.get(ouId+"_"+plannedDeId).getStrVal1();}catch(Exception e) {}
-        		System.out.println( "Planned: "+ouId+"_"+plannedDeId + " = " + plannedVal);
+        		//System.out.println( "Planned: "+ouId+"_"+plannedDeId + " = " + plannedVal);
         		if( !plannedVal.trim().equals("") ) {
         			try{ plannedDate = getStartDateByString( plannedVal );}catch(Exception e) {}
-        			System.out.println( "Planned Date = "+ plannedDate );
+        			//System.out.println( "Planned Date = "+ plannedDate );
         			if( plannedDate == null ) {
         				GenericDataVO dvo = new GenericDataVO();
         				dvo.setStrVal1( section.getCode() );
         				dvo.setStrVal2( plannedColor );
-        				if(dataMap.get(ouId).get("NONE") == null)
-        					dataMap.get(ouId).put("NONE", new ArrayList<>() );
-        				dataMap.get(ouId).get("NONE").add( dvo );
+        				if( dataMap.get(key1) == null )
+        					dataMap.put(key1, new HashMap<>());
+        				if(dataMap.get(key1).get("NONE") == null)
+        					dataMap.get(key1).put("NONE", new ArrayList<>() );
+        				dataMap.get(key1).get("NONE").add( dvo );
         			}        			
         		}
         		
         		Date postponedDate = null;
         		String postponedVal = "";
         		try { postponedVal = dvDataMap.get(ouId+"_"+postponedDeId).getStrVal1();}catch(Exception e) {}
-        		System.out.println( "Postponed: "+ ouId+"_"+postponedDeId + " = " + postponedVal);
+        		//System.out.println( "Postponed: "+ ouId+"_"+postponedDeId + " = " + postponedVal);
         		if( !postponedVal.trim().equals("") ) {
         			try{ postponedDate = getStartDateByString( postponedVal );}catch(Exception e) {}
-        			System.out.println( "Postponed Date = "+ postponedDate );
+        			//System.out.println( "Postponed Date = "+ postponedDate );
         			if( postponedDate == null ) {
         				GenericDataVO dvo = new GenericDataVO();
         				dvo.setStrVal1( section.getCode() );
         				dvo.setStrVal2( postponedColor );
-        				if(dataMap.get(ouId).get("NONE") == null)
-        					dataMap.get(ouId).put("NONE", new ArrayList<>() );
-        				dataMap.get(ouId).get("NONE").add( dvo );
+        				if( dataMap.get(key1) == null )
+        					dataMap.put(key1, new HashMap<>());
+        				if(dataMap.get(key1).get("NONE") == null)
+        					dataMap.get(key1).put("NONE", new ArrayList<>() );
+        				dataMap.get(key1).get("NONE").add( dvo );
         			}        			
         		}
         		
@@ -559,9 +629,11 @@ public class CampaignCalendarResultAction
     				GenericDataVO dvo = new GenericDataVO();
     				dvo.setStrVal1( section.getCode() );
     				dvo.setStrVal2( bothMatchColor );
-    				if(dataMap.get(ouId).get(monthName) == null)
-    					dataMap.get(ouId).put(monthName, new ArrayList<>() );
-    				dataMap.get(ouId).get(monthName).add( dvo );
+    				if( dataMap.get(key1) == null )
+    					dataMap.put(key1, new HashMap<>());
+    				if(dataMap.get(key1).get(monthName) == null)
+    					dataMap.get(key1).put(monthName, new ArrayList<>() );
+    				dataMap.get(key1).get(monthName).add( dvo );
         		}
         		else {
         			if( plannedDate != null ) {
@@ -569,9 +641,11 @@ public class CampaignCalendarResultAction
         				GenericDataVO dvo = new GenericDataVO();
         				dvo.setStrVal1( section.getCode() );
         				dvo.setStrVal2( plannedColor );
-        				if(dataMap.get(ouId).get(monthName) == null)
-        					dataMap.get(ouId).put(monthName, new ArrayList<>() );
-        				dataMap.get(ouId).get(monthName).add( dvo );
+        				if( dataMap.get(key1) == null )
+        					dataMap.put(key1, new HashMap<>());
+        				if(dataMap.get(key1).get(monthName) == null)
+        					dataMap.get(key1).put(monthName, new ArrayList<>() );
+        				dataMap.get(key1).get(monthName).add( dvo );
         			}
         			
         			if( postponedDate != null ) {
@@ -579,13 +653,117 @@ public class CampaignCalendarResultAction
         				GenericDataVO dvo = new GenericDataVO();
         				dvo.setStrVal1( section.getCode() );
         				dvo.setStrVal2( postponedColor );
-        				if(dataMap.get(ouId).get(monthName) == null)
-        					dataMap.get(ouId).put(monthName, new ArrayList<>() );
-        				dataMap.get(ouId).get(monthName).add( dvo );
+        				if( dataMap.get(key1) == null )
+        					dataMap.put(key1, new HashMap<>());
+        				if(dataMap.get(key1).get(monthName) == null)
+        					dataMap.get(key1).put(monthName, new ArrayList<>() );
+        				dataMap.get(key1).get(monthName).add( dvo );
         			}
         		}
         	}
         }
+
+        
+        //Arranging event data
+        Set<String> subNationalNames = new HashSet<>();
+        subNationalNames.add("National");
+        Map<String, Map<Integer, CampaignVO>> eventDataMap = iscReportHelper.getEventData( psIdsByComma, psDeIdsByComma, ouIdsByComma );
+        for( int ouId : organisationUnitIds ) {
+        	for(ProgramStage ps : programStages ) {
+        		String eBaseKey = ps.getId()+"_"+ouId;
+        		if( eventDataMap.get(eBaseKey) == null ) {
+        			continue;
+        		}
+        		for(Integer psInsId : eventDataMap.get(eBaseKey).keySet()) {
+        			String subNationName = "National";
+        			try { subNationName = eventDataMap.get(eBaseKey).get(psInsId).getColDataMap().get(subNationalDeId+"").getStrVal1();}catch(Exception e) {}
+        			subNationalNames.add(subNationName);
+        			String key1 = ouId+"_"+subNationName;
+            		//if( dataMap.get(key1) == null)
+            		//	dataMap.put(key1, new HashMap<>());
+	        		int plannedDeId = 0;
+	        		try{ plannedDeId = psDeMap.get( ps.getId() ).get("COL_1"); }catch(Exception e) {}
+	        		int postponedDeId = 0;
+	        		try{ postponedDeId = psDeMap.get( ps.getId() ).get("COL_5");}catch(Exception e) {}
+        		
+	        		Date plannedDate = null;
+	        		String plannedVal = "";
+	        		try { plannedVal = eventDataMap.get(eBaseKey).get(psInsId).getColDataMap().get(plannedDeId+"").getStrVal1();}catch(Exception e) {}
+	        		//System.out.println( "Planned: "+eBaseKey+"_"+plannedDeId + " = " + plannedVal);
+	        		if( !plannedVal.trim().equals("") ) {
+	        			try{ plannedDate = getStartDateByString( plannedVal );}catch(Exception e) {}
+	        			//System.out.println( "Planned Date = "+ plannedDate );
+	        			if( plannedDate == null ) {
+	        				GenericDataVO dvo = new GenericDataVO();
+	        				dvo.setStrVal1( ps.getName() );
+	        				dvo.setStrVal2( plannedColor );
+	        				if( dataMap.get(key1) == null )
+	        					dataMap.put(key1, new HashMap<>());
+	        				if(dataMap.get(key1).get("NONE") == null)
+	        					dataMap.get(key1).put("NONE", new ArrayList<>() );
+	        				dataMap.get(key1).get("NONE").add( dvo );
+	        			}        			
+	        		}
+        		
+	        		Date postponedDate = null;
+	        		String postponedVal = "";
+	        		try { postponedVal = eventDataMap.get(eBaseKey).get(psInsId).getColDataMap().get(postponedDeId+"").getStrVal1();}catch(Exception e) {}
+	        		//System.out.println( "Postponed: "+ eBaseKey+"_"+postponedDeId + " = " + postponedVal);
+	        		if( !postponedVal.trim().equals("") ) {
+	        			try{ postponedDate = getStartDateByString( postponedVal );}catch(Exception e) {}
+	        			//System.out.println( "Postponed Date = "+ postponedDate );
+	        			if( postponedDate == null ) {
+	        				GenericDataVO dvo = new GenericDataVO();
+	        				dvo.setStrVal1( ps.getName() );
+	        				dvo.setStrVal2( postponedColor );
+	        				if( dataMap.get(key1) == null )
+	        					dataMap.put(key1, new HashMap<>());
+	        				if(dataMap.get(key1).get("NONE") == null)
+	        					dataMap.get(key1).put("NONE", new ArrayList<>() );
+	        				dataMap.get(key1).get("NONE").add( dvo );
+	        			}        			
+	        		}
+        		
+	        		if( plannedDate != null && postponedDate != null && plannedDate.equals(postponedDate) ) {
+	        			String monthName = mdf.format( postponedDate ); 
+	    				GenericDataVO dvo = new GenericDataVO();
+	    				dvo.setStrVal1( ps.getName() );
+	    				dvo.setStrVal2( bothMatchColor );
+	    				if( dataMap.get(key1) == null )
+        					dataMap.put(key1, new HashMap<>());
+	    				if(dataMap.get(key1).get(monthName) == null)
+	    					dataMap.get(key1).put(monthName, new ArrayList<>() );
+	    				dataMap.get(key1).get(monthName).add( dvo );
+	        		}
+	        		else {
+	        			if( plannedDate != null ) {
+	        				String monthName = mdf.format( plannedDate ); 
+	        				GenericDataVO dvo = new GenericDataVO();
+	        				dvo.setStrVal1( ps.getName() );
+	        				dvo.setStrVal2( plannedColor );
+	        				if( dataMap.get(key1) == null )
+	        					dataMap.put(key1, new HashMap<>());
+	        				if(dataMap.get(key1).get(monthName) == null)
+	        					dataMap.get(key1).put(monthName, new ArrayList<>() );
+	        				dataMap.get(key1).get(monthName).add( dvo );
+	        			}
+        			
+	        			if( postponedDate != null ) {
+	        				String monthName = mdf.format( postponedDate ); 
+	        				GenericDataVO dvo = new GenericDataVO();
+	        				dvo.setStrVal1( ps.getName() );
+	        				dvo.setStrVal2( postponedColor );
+	        				if( dataMap.get(key1) == null )
+	        					dataMap.put(key1, new HashMap<>());
+	        				if(dataMap.get(key1).get(monthName) == null)
+	        					dataMap.get(key1).put(monthName, new ArrayList<>() );
+	        				dataMap.get(key1).get(monthName).add( dvo );
+	        			}
+	        		}
+        		}
+        	}
+        }
+
         
         //Selected Months        
         try
@@ -623,14 +801,20 @@ public class CampaignCalendarResultAction
         	fromCal.add(Calendar.MONTH, 1);
         }
         
-        
-        for(Integer ouId : dataMap.keySet() ) {
-        	for(String mName : dataMap.get(ouId).keySet() ) {
-        		for(GenericDataVO dvo : dataMap.get(ouId).get(mName) ) {
-        			System.out.println( ouId + ", "+ mName + " = " + dvo.getStrVal1()+" and "+dvo.getStrVal2());
+        subNationalNames.remove("National");
+        subNatNames = new ArrayList<>();
+        subNatNames.addAll( subNationalNames );
+        Collections.sort( subNatNames );
+        subNatNames.add(0, "National");
+        /*
+        for(String baseKey : dataMap.keySet() ) {
+        	for(String mName : dataMap.get(baseKey).keySet() ) {
+        		for(GenericDataVO dvo : dataMap.get(baseKey).get(mName) ) {
+        			System.out.println( baseKey + ", "+ mName + " = " + dvo.getStrVal1()+" and "+dvo.getStrVal2());
         		}
         	}
         }
+        */
         /*
         DataElementCategoryOptionCombo optionCombo = categoryService.getDefaultDataElementCategoryOptionCombo();
         for( OrganisationUnit orgUnit : orgUnitList )
