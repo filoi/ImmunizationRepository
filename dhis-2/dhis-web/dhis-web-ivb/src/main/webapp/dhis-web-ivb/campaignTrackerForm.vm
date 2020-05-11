@@ -187,6 +187,7 @@ $(function() {
 		 			<input type="checkbox" name="unicefRegion" checked /> $i18n.getString( "unicef_region" )<br/>
 		 			<input type="checkbox" name="incomeLevel" /> $i18n.getString( "income_level" )<br/>
 		 			<input type="checkbox" name="gaviEligibleStatus" /> $i18n.getString( "gavi_eligibility_status" )<br/>
+		 			<input type="checkbox" name="showComment" /> Include comments<br/>
 				 </td>				 
 			 </tr>
 			 <tr style="margin-bottom: 15px;">

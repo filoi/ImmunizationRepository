@@ -345,6 +345,54 @@ public class ISCReportHelper
         return latestDataValues;
     }
     
+    
+    public Map<String, GenericDataVO> getLatestDataValuesForCampaignReport( String deIdsByComma, String ouIdsByComma )
+    {
+        Map<String, GenericDataVO> latestDataValues = new HashMap<String, GenericDataVO>();
+        
+        try
+        {
+            String query = "SELECT dv.sourceid, dv.dataelementid, dv.periodid, dv.value, dv.comment, dv.storedby, dv.lastupdated " +
+                    " FROM " +
+                        "( " +
+                            " SELECT periodid,dataelementid,sourceid FROM " + 
+                                "(SELECT MAX(p.startdate) AS startdate,dv.dataelementid,dv.sourceid FROM datavalue dv " +
+                                    " INNER JOIN period p ON p.periodid=dv.periodid " +
+                                        " WHERE dv.dataelementid IN ( "+ deIdsByComma +") AND dv.sourceid IN (" + ouIdsByComma + ")  " + 
+                                        " GROUP BY dv.dataelementid,dv.sourceid " +
+                                 ")asd " +
+                             " INNER JOIN period p ON p.startdate=asd.startdate " +
+                         ")asd1 " +
+                     " INNER JOIN datavalue dv ON dv.sourceid=asd1.sourceid " +
+                     " AND dv.dataelementid=asd1.dataelementid " +
+                     " AND dv.periodid=asd1.periodid " +
+                     " WHERE dv.value IS NOT NULL";
+
+            SqlRowSet rs = jdbcTemplate.queryForRowSet( query );
+            
+            while( rs.next() ){
+                Integer ouId = rs.getInt( 1 );
+                Integer deId = rs.getInt( 2 );
+                Integer pId = rs.getInt( 3 );
+                String value = rs.getString( 4 );
+                String comment = rs.getString( 5 );
+                String storedBy = rs.getString( 6 );
+                Date lastUpdated = rs.getDate( 7 );
+
+                GenericDataVO dataVo = new GenericDataVO();
+                dataVo.setStrVal1( value );
+                dataVo.setStrVal2( comment );
+                latestDataValues.put( ouId+"_"+deId, dataVo );
+            }
+        }
+        catch( Exception e ){
+        	e.printStackTrace();
+        }
+        
+        return latestDataValues;
+    }
+    
+    
     //programstageid +"_" + OrgUnitId as key and 
     //	value is hashmap where key is programstage instance id and value is CampaignVO
     public Map<String, Map<Integer, CampaignVO>> getEventData( String psIdsByComma, String deIdsByComma, String ouIdsByComma )

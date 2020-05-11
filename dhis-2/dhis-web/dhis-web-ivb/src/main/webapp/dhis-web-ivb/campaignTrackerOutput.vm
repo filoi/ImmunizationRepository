@@ -283,8 +283,13 @@ $(function() {
                         			<td class="freeze_left_column"><a href="../dhis-web-event-capture/index.html">$!section.code</a></td>
                         		#else
 	                        		<td class="freeze_left_column">$!section.code</td>
-                        		#end	
-	                            <td class="freeze_left_column">$!cMap.get( "COL_0" ).strVal1</td>        
+                        		#end
+                        		#set( $subNatName = " ")
+                        		#set( $subNatName = $!cMap.get( "COL_0" ).strVal1 )
+                        		#if( $subNatName == "NONE" )
+                        			#set( $subNatName = " ")
+                        		#end
+	                            <td class="freeze_left_column">$subNatName</td>        
                             	#foreach( $colObj in $colList )
                             		#set( $comment = "" )
                             		#set( $comment = $!$cMap.get( $!colObj.code ).strVal2 )
@@ -302,8 +307,10 @@ $(function() {
 										#else
 											<td align="left">$!value</td>
 										#end									
-									#else
+									#elseif( $!colObj.code == "COL_3" )
                                 		<td align="left">$!value</td>
+                                	#else
+                                		<td align="left" #if(${comment} != '') style="color:green;" title="$!{comment}" #end>$!value</td>	
                                 	#end	
                             	#end
                     		</tr>
@@ -358,6 +365,9 @@ $(function() {
 							#set( $styleProp = "style='border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;'" )
 						#end
                         <th $styleProp>$!colObj.name</th>
+                        #if( $showComment == "ON" && $!colObj.code != "COL_3" && $!colObj.code != "COL_4" && $!colObj.code != "COL_13" )
+                        	<th style='border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;'>$!colObj.name Comment</th>
+                        #end
                     #end
                 </tr>
             </thead>
@@ -415,7 +425,10 @@ $(function() {
 										<td align="left" style="border: 1px solid #ccc;vertical-align: middle;">$!value</td>
 									#else
                                 		<td align="left" style="border: 1px solid #ccc;vertical-align: middle;">$!value</td>
-                                	#end	
+                                	#end
+                                	#if( $showComment == "ON" && $!colObj.code != "COL_3" && $!colObj.code != "COL_4" && $!colObj.code != "COL_13" )
+                        				<td style="border: 1px solid #ccc;vertical-align: middle;">$!comment</td>
+                        			#end
                             	#end
                     		</tr>
                         #end
