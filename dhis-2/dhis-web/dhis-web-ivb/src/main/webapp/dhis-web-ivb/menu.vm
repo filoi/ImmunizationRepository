@@ -214,7 +214,7 @@ function loadDataEntryByDataSetSection( dataSetSectionId )
 	</tr>
 	#end
 	
-		#set( $sections = $dataSetSectionMap.get( 'ftsiQDRwVBV' ) )
+		#set( $sections = $dataSetSectionMap.get( 'mGnST9cIzUe' ) )
 	#if( $sections.size() > 1)	
 	<tr #if( $!currentDataSet == '$!section.id' ) style="background-color:#A9D0F5;" #end>
 		<td>
@@ -224,8 +224,8 @@ function loadDataEntryByDataSetSection( dataSetSectionId )
 							#set( $sectionsId1 = $section.id )
 						#end
 					#end
-					<li #if( $!currentDataSet == ${sectionsId1} || $currentDataSet == 'ftsiQDRwVBV') class="open" #else class="closed" #end>
-					<a href="javascript:loadDataEntryByDataSet('ftsiQDRwVBV')" id="ftsiQDRwVBV" #if( $currentDataSet == 'ftsiQDRwVBV') style="background-color:#A9D0F5;" #end>$i18n.getString( "$!sections.get(0).getDataSet().getShortName()" )</a>				
+					<li #if( $!currentDataSet == ${sectionsId1} || $currentDataSet == 'mGnST9cIzUe') class="open" #else class="closed" #end>
+					<a href="javascript:loadDataEntryByDataSet('mGnST9cIzUe')" id="mGnST9cIzUe" #if( $currentDataSet == 'mGnST9cIzUe') style="background-color:#A9D0F5;" #end>$i18n.getString( "$!sections.get(0).getDataSet().getShortName()" )</a>				
 					#foreach( $section in $sections )
 					<ul >
 						<li><a #if( $!currentDataSet == $!section.id ) style="background-color:#A9D0F5;" #end href="javascript:loadDataEntryByDataSetSection('$!section.id')" id="$!section.id">$i18n.getString( "$!section.name" )</a></li>
@@ -236,10 +236,10 @@ function loadDataEntryByDataSetSection( dataSetSectionId )
 		</td>
 	</tr>
 	#else
-	<tr #if( $!currentDataSet == 'ftsiQDRwVBV' ) style="background-color:#A9D0F5;" #end>
+	<tr #if( $!currentDataSet == 'mGnST9cIzUe' ) style="background-color:#A9D0F5;" #end>
 		<td>
 	        &nbsp;&nbsp;
-	        <a href="javascript:loadDataEntryByDataSet('ftsiQDRwVBV')" id="ftsiQDRwVBV">$i18n.getString( "$!sections.get(0).getDataSet().getShortName()" )</a><br/>
+	        <a href="javascript:loadDataEntryByDataSet('mGnST9cIzUe')" id="mGnST9cIzUe">$i18n.getString( "$!sections.get(0).getDataSet().getShortName()" )</a><br/>
 		</td>
 	</tr>
 	#end
