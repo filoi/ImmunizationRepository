@@ -303,7 +303,12 @@ public class CampaignTrackerResultAction
 	// -------------------------------------------------------------------------
     // Getters
     // -------------------------------------------------------------------------
-    private Map<String, List<CampaignVO>> dataMap;
+    private String curDateStr;    
+    public String getCurDateStr() {
+		return curDateStr;
+	}
+
+	private Map<String, List<CampaignVO>> dataMap;
 	public Map<String, List<CampaignVO>> getDataMap() {
 		return dataMap;
 	}
@@ -702,6 +707,8 @@ public class CampaignTrackerResultAction
             }
         }
         
+        Date curDate = new Date();
+        curDateStr = format.formatDate( curDate );
         
         /*
         List<Integer> orgunitIds = new ArrayList<Integer>( getIdentifiers( orgUnitList ) );

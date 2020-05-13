@@ -163,12 +163,12 @@ jQuery(function() {
 
 	<table style="width:98%;">
 		<tr>
-			<td align="left"><font size="3"><b>Campaign Calendar</b></font></td>
+			<td align="left"><font size="3"><b>Campaign Calendar</b> - current as of $!curDateStr</font></td>
 			<td align="right">
 				<table align="right">
-					<td style="color:#ffffff;background-color:$!plannedColor">Planned</td>
-					<td style="color:#ffffff;background-color:$!postponedColor">Postponed</td>
-					<td style="color:#ffffff;background-color:$!bothMatchColor">Matched</td>
+					<td style="color:#000000;background-color:$!plannedColor">Original Planned Date</td>
+					<td style="color:#000000;background-color:$!postponedColor">New Postponed Date</td>
+					<td style="color:#000000;background-color:$!bothMatchColor">On-Track</td>
 				</table>
 			</td>	
 			<td align="right" style="vertical-align:middle;">
@@ -186,11 +186,12 @@ jQuery(function() {
                 <tr >
 					<th class="freeze_left_column" style="min-width:50px; width:50px;">$i18n.getString( "who_region" )</th>
 					<th class="freeze_left_column" style="min-width:50px; width:50px;">$i18n.getString( "country" )</th>					
-					<th class="freeze_left_column" style="min-width:50px; width:50px;">Sub-national</th>
+					<th class="freeze_left_column" style="min-width:50px; width:50px;">Campaign Identifier</th>
+					<th class="freeze_left_column" style="min-width:50px; width:50px">Campaigns - no dates yet</th>
 					#foreach( $monthName in $monthNames )						
 						<th align="center" style="min-width:40px; width:40px;vertical-align: middle;">$monthName</th>
 					#end
-					<th class="freeze_left_column" style="min-width:50px; width:50px">Campaigns - no dates yet</th>
+					
                 </tr>
             </thead>
 			<tbody>
@@ -203,23 +204,24 @@ jQuery(function() {
 						<tr >
 							<td class="freeze_left_column">$!orgUnit.getParent().shortName</td>
 							<td class="freeze_left_column">$!orgUnit.name</td>
-							<td class="freeze_left_column">$subNatName</td>
+							<td class="freeze_left_column">$subNatName</td>							
+							#set( $monDvList = "" )
+							#set( $monDvList = $!ouDvObj.get("NONE" ) )
+							<td align="center" style="vertical-align: middle;">
+								#foreach( $monDv in $monDvList )
+									<div style="display:block;color:#000000;background:$monDv.strVal2;">&nbsp;$!monDv.strVal1&nbsp;</div>
+								#end
+							</td>
+
 							#foreach( $monthName in $monthNames )
 								#set( $monDvList = "" )
 								#set( $monDvList = $!ouDvObj.get("${monthName}" ) )
 								<td align="center" style="vertical-align: middle;">
 									#foreach( $monDv in $monDvList )								    
-										<div style="display:block;color:#ffffff;background:$monDv.strVal2;">&nbsp;$!monDv.strVal1&nbsp;</div>
+										<div style="display:block;color:#000000;background:$monDv.strVal2;">&nbsp;$!monDv.strVal1&nbsp;</div>
 									#end
 								</td>
 							#end
-							#set( $monDvList = "" )
-							#set( $monDvList = $!ouDvObj.get("NONE" ) )
-							<td align="center" style="vertical-align: middle;">
-								#foreach( $monDv in $monDvList )
-									<div style="display:block;color:#ffffff;background:$monDv.strVal2;">&nbsp;$!monDv.strVal1&nbsp;</div>
-								#end
-							</td>
 						</tr>
 						#end
 					#end
@@ -238,12 +240,11 @@ jQuery(function() {
     <div id="htmlContent" style="width:98%;margin:10px;display:none;">
     	<table style="width:98%;">
 			<tr>
-				<td align="left"><font size="3"><b>Campaign Calendar</b></font></td>
-				<td align="left">&nbsp;</td>
+				<td align="left" colspan="3"><font size="3"><b>Campaign Calendar</b> - current as of $!curDateStr</font></td>
 				<td align="left">&nbsp;</td>			
-				<td style="color:#ffffff;background-color:$!plannedColor">Planned</td>
-				<td style="color:#ffffff;background-color:$!postponedColor">Postponed</td>
-				<td style="color:#ffffff;background-color:$!bothMatchColor">Matched</td>
+				<td style="color:#000000;background-color:$!plannedColor">Original Planned Date</td>
+				<td style="color:#000000;background-color:$!postponedColor">New Postponed Date</td>
+				<td style="color:#000000;background-color:$!bothMatchColor">On-Track</td>
 			</tr>	
 		</table>  
     	<table align="center" id="regionalDBTable1" style="width:100%;" border="0" cellspacing="0" cellpadding="0" class="">
@@ -251,11 +252,11 @@ jQuery(function() {
                 <tr style="border: none;">
 					<th style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">$i18n.getString( "who_region" )</th>
 					<th style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">$i18n.getString( "country" )</th>					
-					<th style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">Sub-national</th>
+					<th style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">Campaign Identifier</th>
+					<th style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">Campaigns - no dates yet</th>
 					#foreach( $monthName in $monthNames )						
 						<th align="center" style="min-width:40px; width:40px;vertical-align: middle;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">$monthName</th>
-					#end
-					<th style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">Campaigns - no dates yet</th>
+					#end					
                 </tr>
             </thead>
 			<tbody>
@@ -269,6 +270,19 @@ jQuery(function() {
 							<td style="vertical-align: middle;border: 1px solid #ccc;">$!orgUnit.getParent().shortName</td>
 							<td style="vertical-align: middle;border: 1px solid #ccc;">$!orgUnit.name</td>
 							<td style="vertical-align: middle;border: 1px solid #ccc;">$subNatName</td>
+							#set( $monDvList = "" )
+							#set( $monDvList = $!ouDvObj.get("NONE" ) )
+							<td align="center" style="vertical-align: middle;border: 1px solid #ccc;">
+								#if($ouDvObj.get( "NONE" ) && $ouDvObj.get( "NONE" ) != " ")
+									<table>
+									#foreach( $monDv in $monDvList )
+										<tr><td style="color:#000000;background-color:$monDv.strVal2;">&nbsp;$!monDv.strVal1&nbsp;</td></tr>
+									#end
+									</table>
+								#else
+									&nbsp;
+								#end	
+							</td>
 							#foreach( $monthName in $monthNames )
 								#set( $monDvList = "" )
 								#set( $monDvList = $!ouDvObj.get("${monthName}" ) )
@@ -276,7 +290,7 @@ jQuery(function() {
 									#if($ouDvObj.get( "${monthName}" ) && $ouDvObj.get( "${monthName}" ) != " ")
 										<table>
 										#foreach( $monDv in $monDvList )								    
-											<tr><td style="color:#ffffff;background-color:$monDv.strVal2;">&nbsp;$!monDv.strVal1&nbsp;</td></tr>
+											<tr><td style="color:#000000;background-color:$monDv.strVal2;">&nbsp;$!monDv.strVal1&nbsp;</td></tr>
 										#end
 										</table>
 									#else
@@ -284,19 +298,7 @@ jQuery(function() {
 									#end
 								</td>
 							#end
-							#set( $monDvList = "" )
-							#set( $monDvList = $!ouDvObj.get("NONE" ) )
-							<td align="center" style="vertical-align: middle;border: 1px solid #ccc;">
-								#if($ouDvObj.get( "NONE" ) && $ouDvObj.get( "NONE" ) != " ")
-									<table>
-									#foreach( $monDv in $monDvList )
-										<tr><td style="color:#ffffff;background-color:$monDv.strVal2;">&nbsp;$!monDv.strVal1&nbsp;</td></tr>
-									#end
-									</table>
-								#else
-									&nbsp;
-								#end	
-							</td>
+							
 						</tr>
 						#end
 					#end

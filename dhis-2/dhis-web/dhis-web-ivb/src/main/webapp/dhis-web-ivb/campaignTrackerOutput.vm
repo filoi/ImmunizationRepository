@@ -206,7 +206,7 @@ $(function() {
  <div id="htmlContent1" style="width:98%;margin:auto;" >   
 
 	<div style="margin:auto; margin-top:-50px;" >        
-        <h2>Campaign Tracker</h2>
+        <h2>Campaign Tracker - current as of $!curDateStr</h2>
 		<h3>Campaigns: 
 			#foreach( $dataSetSection in $dataSetSections )
 				$dataSetSection.code &nbsp; 
@@ -225,7 +225,7 @@ $(function() {
                     #if( $incomeLevel == "ON" )   <th class="freeze_left_column">$i18n.getString( "income_level" )</th>#end 
                   	#if( $gaviEligibleStatus == "ON" )  <th class="freeze_left_column">$i18n.getString( "gavi_eligibility_status" )</th>#end 
                   	<th class="freeze_left_column">Campaign Vaccine</th>
-                  	<th style="min-width:60px; width:60px;" class="freeze_left_column">Sub-national</th>                    
+                  	<th style="min-width:60px; width:60px;" class="freeze_left_column">Campaign Identifier</th>                    
                     #foreach( $colObj in $colList )
 						#set( $styleProp = "" )					
 						#if( $!colObj.code == "COL_1" || $!colObj.code == "COL_2" || $!colObj.code == "COL_5" || $!colObj.code == "COL_6" ||
@@ -332,7 +332,7 @@ $(function() {
 	 <div id="htmlContent" style="width:98%;margin:auto;display:none;" >   
 
 		<div style="margin:auto;" >        
-			<h3>Campaign Tracker</h3>
+			<h3>Campaign Tracker - current as of $!curDateStr</h3>
 			<h4>Campaigns: 
 				#foreach( $dataSetSection in $dataSetSections )
 					$dataSetSection.code &nbsp; 
@@ -351,7 +351,7 @@ $(function() {
                     #if( $incomeLevel == "ON" )   <th style="border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">$i18n.getString( "income_level" )</th>#end 
                   	#if( $gaviEligibleStatus == "ON" )  <th style="border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">$i18n.getString( "gavi_eligibility_status" )</th>#end 
                     <th style="border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">Campaign Vaccine</th>
-                  	<th style="min-width:60px; width:60px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">Sub-national</th>
+                  	<th style="min-width:60px; width:60px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">Campaign Identifier</th>
                     #foreach( $colObj in $colList )
 						#set( $styleProp = "" )					
 						#if( $!colObj.code == "COL_1" || $!colObj.code == "COL_2" || $!colObj.code == "COL_5" || $!colObj.code == "COL_6" ||
@@ -413,7 +413,12 @@ $(function() {
 	                            #end
                         
                         		<td style="border: 1px solid #ccc;vertical-align: middle;">$!section.code</td>
-	                            <td style="border: 1px solid #ccc;vertical-align: middle;">$!cMap.get( "COL_0" ).strVal1</td>        
+                        		#set( $subNatName = " ")
+                        		#set( $subNatName = $!cMap.get( "COL_0" ).strVal1 )
+                        		#if( $subNatName == "NONE" )
+                        			#set( $subNatName = " ")
+                        		#end
+	                            <td style="border: 1px solid #ccc;vertical-align: middle;">$subNatName</td>        
                             	#foreach( $colObj in $colList )
                             		#set( $comment = "" )
                             		#set( $comment = $!$cMap.get( $!colObj.code ).strVal2 )

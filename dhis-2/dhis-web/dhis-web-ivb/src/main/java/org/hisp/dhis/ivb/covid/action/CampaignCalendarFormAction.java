@@ -3,6 +3,7 @@ package org.hisp.dhis.ivb.covid.action;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -16,6 +17,7 @@ import org.hisp.dhis.dataset.Section;
 import org.hisp.dhis.dataset.SectionService;
 import org.hisp.dhis.i18n.I18nService;
 import org.hisp.dhis.ivb.util.IVBUtil;
+import org.hisp.dhis.lookup.Lookup;
 import org.hisp.dhis.lookup.LookupService;
 import org.hisp.dhis.message.MessageService;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
@@ -251,10 +253,15 @@ public class CampaignCalendarFormAction implements Action
         	displayRestrictedDesCheckBox = "N";
         }
         */
-        
         SimpleDateFormat mf = new SimpleDateFormat("yyyy-MM");
-        Calendar cal = Calendar.getInstance();
-        fromMonth = mf.format( cal.getTime() );
+
+        Lookup lookup = lookupService.getLookupByName( "CAMPAIGN_FROM_DATE" );
+        String fromDateStr = lookup.getValue();
+        Date fromDate = new Date();
+        try { fromDate = mf.parse(fromDateStr); }catch(Exception e) {}
+        fromMonth = mf.format( fromDate );
+        
+        Calendar cal = Calendar.getInstance();       
         cal.add(Calendar.MONTH, 11);
         toMonth = mf.format( cal.getTime() );
         

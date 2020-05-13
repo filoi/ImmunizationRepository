@@ -292,6 +292,10 @@ public class CampaignCalendarResultAction
 	// -------------------------------------------------------------------------
     // Getters
     // -------------------------------------------------------------------------
+    private String curDateStr;    
+    public String getCurDateStr() {
+		return curDateStr;
+	}
     
     String plannedColor = "#D11509";
     String postponedColor = "#F78526";
@@ -852,6 +856,10 @@ public class CampaignCalendarResultAction
         }
         headerDataValueMap = ivbUtil.getLatestDataValuesForTabularReport( headerDataElementIdsByComma, orgUnitIdsByComma );
         */
+        
+        Date curDate = new Date();
+        curDateStr = format.formatDate( curDate );
+
         
         userName = currentUserService.getCurrentUser().getUsername();
         if ( i18nService.getCurrentLocale() == null )
