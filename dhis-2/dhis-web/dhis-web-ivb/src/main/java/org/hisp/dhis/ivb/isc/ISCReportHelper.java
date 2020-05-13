@@ -366,7 +366,9 @@ public class ISCReportHelper
                      " INNER JOIN datavalue dv ON dv.sourceid=asd1.sourceid " +
                      " AND dv.dataelementid=asd1.dataelementid " +
                      " AND dv.periodid=asd1.periodid " +
-                     " WHERE dv.value IS NOT NULL";
+                     " WHERE dv.value IS NOT NULL AND dv.value <> ''";
+            
+            System.out.println(query);
 
             SqlRowSet rs = jdbcTemplate.queryForRowSet( query );
             
