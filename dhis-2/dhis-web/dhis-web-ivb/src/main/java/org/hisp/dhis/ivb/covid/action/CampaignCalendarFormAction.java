@@ -119,6 +119,19 @@ public class CampaignCalendarFormAction implements Action
     // -------------------------------------------------------------------------
     // Getters & Setters
     // -------------------------------------------------------------------------
+    private Integer resultPage = 0;
+    public Integer getResultPage() {
+		return resultPage;
+	}
+	public void setResultPage(Integer resultPage) {
+		this.resultPage = resultPage;
+	}
+	
+	private String resultActionName = "campaignCalendarByStatus.action";
+    public String getResultActionName() {
+		return resultActionName;
+	}
+    
     private String fromMonth;
     private String toMonth;
     
@@ -185,6 +198,10 @@ public class CampaignCalendarFormAction implements Action
         }
         selectionManager.clearSelectedOrganisationUnits();
 
+        if( resultPage == 1 )
+        	resultActionName = "campaignCalendarResult.action";
+        else
+        	resultActionName = "campaignCalendarByStatus.action";
         /*
         Set<Section> sections = new HashSet<Section>();
         Constant vaccineAttributeConstant = constantService.getConstantByName( "VACCINE_ATTRIBUTE" );

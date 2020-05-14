@@ -487,7 +487,7 @@ public class GenerateVaccineIntroReportAction
         orgUnitResultMap = new HashMap<OrganisationUnit, Map<String, Map<Integer, String>>>();
         orgUnitCommentMap = new HashMap<OrganisationUnit, Map<String, Map<Integer, String>>>();
         Iterator<OrganisationUnit> orgUnitIterator = orgUnitList.iterator();
-        
+        //System.out.println("1");
         while ( orgUnitIterator.hasNext() )
         {
             OrganisationUnit orgUnit = orgUnitIterator.next();
@@ -507,15 +507,19 @@ public class GenerateVaccineIntroReportAction
             int flag = 0;
             for ( DataElement dataElement : introYearDEs )
             {
+            	//System.out.println("2 "+dataElement.getName());
                 Set<AttributeValue> dataElementAttributeValues = dataElement.getAttributeValues();
                 if ( dataElementAttributeValues != null && dataElementAttributeValues.size() > 0 )
                 {
+                	//System.out.println("3");
                     for ( AttributeValue deAttributeValue : dataElementAttributeValues )
                     {
+                    	//System.out.println("4");
                         if ( deAttributeValue.getAttribute().getId() == vaccineAttributeConstant.getValue()
                             && deAttributeValue.getValue() != null && sectionNames.contains( deAttributeValue.getValue().trim() ) )
                         {
-                            DataValue dv = dataValueService.getLatestDataValue( dataElement, optionCombo, orgUnit );
+                        	//System.out.println("5");
+                        	DataValue dv = dataValueService.getLatestDataValue( dataElement, optionCombo, orgUnit );
                             if ( dv != null && dv.getValue() != null )
                             {
                                 String value = dv.getValue();
@@ -531,7 +535,7 @@ public class GenerateVaccineIntroReportAction
                                 {
                                 	valueCommentMap = new HashMap<Integer, String>();
                                 }
-                                
+                                //System.out.println("6");
                                 Date valueDate = getStartDateByString( value );
                                 if( valueDate != null && (sDate == null || eDate == null) )
                                 {
@@ -543,10 +547,12 @@ public class GenerateVaccineIntroReportAction
                                     sectionCommentMap.put(deAttributeValue.getValue().trim(), valueCommentMap );
                                     orgUnitCommentMap.put( orgUnit, sectionCommentMap );
                                     flag = 1;
+                                    //System.out.println("7");
                                 }
                                 else
                                 {
-                                    if( valueDate!= null && sDate.getTime() <= valueDate.getTime() && valueDate.getTime() <= eDate.getTime())
+                                	//System.out.println("8");
+                                	if( valueDate!= null && sDate.getTime() <= valueDate.getTime() && valueDate.getTime() <= eDate.getTime())
                                     {
                                         valueResultMap.put( introYearDEGroup.getId(), value );
                                         sectionResultMap.put( deAttributeValue.getValue().trim(), valueResultMap );
@@ -560,11 +566,14 @@ public class GenerateVaccineIntroReportAction
                                         {
                                             flag = 1;
                                         }
+                                        //System.out.println("9");
                                     }
+                                	
                                 }
                             }
                             else
                             {
+                            	//System.out.println("10");
                                 Map<Integer, String> valueResultMap = sectionResultMap.get( deAttributeValue.getValue().trim() );
                                 if ( valueResultMap == null || valueResultMap.size() <= 0 )
                                 {
@@ -592,11 +601,13 @@ public class GenerateVaccineIntroReportAction
 
             if ( flag != 0 )
             {
+            	//System.out.println("11");
                 for ( DataElementGroup dataElementGroup : dataElementGroups )
                 {
                     List<DataElement> dataElements = new ArrayList<DataElement>( dataElementGroup.getMembers() );
                     for ( DataElement dataElement : dataElements )
                     {
+                    	System.out.println("12");
                         Set<AttributeValue> dataElementAttributeValues = dataElement.getAttributeValues();
                         if ( dataElementAttributeValues != null && dataElementAttributeValues.size() > 0 )
                         {
@@ -605,6 +616,7 @@ public class GenerateVaccineIntroReportAction
                                 if ( deAttributeValue.getAttribute().getId() == vaccineAttributeConstant.getValue()
                                     && deAttributeValue.getValue() != null && sectionNames.contains( deAttributeValue.getValue().trim() ) )
                                 {
+                                	//System.out.println("13 "+dataElement.getName() + );
                                     DataValue dv = dataValueService.getLatestDataValue( dataElement, optionCombo, orgUnit );
                                    
                                         if ( dv != null && dv.getValue() != null )
@@ -660,6 +672,7 @@ public class GenerateVaccineIntroReportAction
             }
             else
             {
+            	//System.out.println("15");
             	if( sDate == null && eDate == null ) {}
             	else {
             		orgUnitIterator.remove();

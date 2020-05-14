@@ -139,7 +139,7 @@ $(function() {
 <br/>
 
 <div style="font-size:16px; width:93%; margin:auto;" class="ui-widget-header ui-corner-all"><b>Campaign Calendar</b></div>
-<form id="vacIntroReportForm" method="get" action="campaignCalendarResult.action" onsubmit="return generateHTMLreport()">
+<form id="vacIntroReportForm" method="get" action="$!resultActionName" onsubmit="return generateHTMLreport()">
     <input type="hidden" name="orgUnitId" id="orgUnitId"/>
     <div id="reportFilterDiv" >
         <table style="width:95%;margin:auto;table-layout:fixed;" cellpadding="4" cellspacing="2">

@@ -144,8 +144,7 @@ public class CampaignTrackerFormAction
     // -------------------------------------------------------------------------
     // Getters & Setters
     // -------------------------------------------------------------------------
-    
-    private String language;
+	private String language;
 
     public String getLanguage()
     {
@@ -169,7 +168,8 @@ public class CampaignTrackerFormAction
 	 * public List<Section> getVaccineList() { return vaccineList; }
 	 */
     
-    private List<Section> campaignList;
+    
+	private List<Section> campaignList;
     public List<Section> getCampaignList() {
 		return campaignList;
 	}
