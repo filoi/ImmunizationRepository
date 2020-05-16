@@ -624,6 +624,8 @@ public class CampaignCalendarByStatusAction
         				GenericDataVO dvo = new GenericDataVO();
         				dvo.setStrVal1( section.getCode() );
         				dvo.setStrVal2( plannedColor );
+        				dvo.setStrVal3("pattern1");
+        				dvo.setIntVal1(1);
         				cvo.getColDataMap().put("NONE1", dvo);
         				flag = 1;
         			}
@@ -640,6 +642,8 @@ public class CampaignCalendarByStatusAction
         				GenericDataVO dvo = new GenericDataVO();
         				dvo.setStrVal1( section.getCode() );
         				dvo.setStrVal2( postponedColor );
+        				dvo.setStrVal3("pattern2");
+        				dvo.setIntVal1(2);
         				cvo.getColDataMap().put("NONE2", dvo);
         				flag = 1;
         			}        			
@@ -650,6 +654,8 @@ public class CampaignCalendarByStatusAction
     				GenericDataVO dvo = new GenericDataVO();
     				dvo.setStrVal1( section.getCode() );
     				dvo.setStrVal2( bothMatchColor );
+    				dvo.setStrVal3("pattern3");
+    				dvo.setIntVal1(3);
     				cvo.getColDataMap().put(monthName, dvo);
     				flag = 1;
         		}
@@ -659,6 +665,8 @@ public class CampaignCalendarByStatusAction
         				GenericDataVO dvo = new GenericDataVO();
         				dvo.setStrVal1( section.getCode() );
         				dvo.setStrVal2( plannedColor );
+        				dvo.setStrVal3("pattern1");
+        				dvo.setIntVal1(1);
         				cvo.getColDataMap().put(monthName, dvo);
         				flag = 1;
         			}
@@ -668,6 +676,8 @@ public class CampaignCalendarByStatusAction
         				GenericDataVO dvo = new GenericDataVO();
         				dvo.setStrVal1( section.getCode() );
         				dvo.setStrVal2( postponedColor );
+        				dvo.setStrVal3("pattern2");
+        				dvo.setIntVal1(2);
         				cvo.getColDataMap().put(monthName, dvo);
         				flag = 1;
         			}
@@ -726,6 +736,8 @@ public class CampaignCalendarByStatusAction
 	        				GenericDataVO dvo = new GenericDataVO();
 	        				dvo.setStrVal1( ps.getName() );
 	        				dvo.setStrVal2( plannedColor );
+	        				dvo.setStrVal3("pattern1");
+	        				dvo.setIntVal1(1);
 	        				cvo.getColDataMap().put("NONE1", dvo);
 	        				flag = 1;	        				
 	        			}        			
@@ -742,6 +754,8 @@ public class CampaignCalendarByStatusAction
 	        				GenericDataVO dvo = new GenericDataVO();
 	        				dvo.setStrVal1( ps.getName() );
 	        				dvo.setStrVal2( postponedColor );
+	        				dvo.setStrVal3("pattern2");
+	        				dvo.setIntVal1(2);
 	        				cvo.getColDataMap().put("NONE2", dvo);
 	        				flag = 1;	        				
 	        			}        			
@@ -752,6 +766,8 @@ public class CampaignCalendarByStatusAction
 	    				GenericDataVO dvo = new GenericDataVO();
 	    				dvo.setStrVal1( ps.getName() );
 	    				dvo.setStrVal2( bothMatchColor );
+	    				dvo.setStrVal3("pattern3");
+	    				dvo.setIntVal1(3);
 	    				cvo.getColDataMap().put(monthName, dvo);	    				
 	        		}
 	        		else {
@@ -760,6 +776,8 @@ public class CampaignCalendarByStatusAction
 	        				GenericDataVO dvo = new GenericDataVO();
 	        				dvo.setStrVal1( ps.getName() );
 	        				dvo.setStrVal2( plannedColor );
+	        				dvo.setStrVal3("pattern1");
+	        				dvo.setIntVal1(1);
 	        				cvo.getColDataMap().put(monthName, dvo);	        				
 	        			}
         			
@@ -768,6 +786,8 @@ public class CampaignCalendarByStatusAction
 	        				GenericDataVO dvo = new GenericDataVO();
 	        				dvo.setStrVal1( ps.getName() );
 	        				dvo.setStrVal2( postponedColor );
+	        				dvo.setStrVal3("pattern2");
+	        				dvo.setIntVal1(2);
 	        				cvo.getColDataMap().put(monthName, dvo);
 	        			}
 	        		}

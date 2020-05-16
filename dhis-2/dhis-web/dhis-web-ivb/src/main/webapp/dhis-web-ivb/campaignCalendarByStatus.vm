@@ -226,7 +226,7 @@ jQuery(function() {
 										#if( $temp1 != "" )
 											<div style="display:block;">&nbsp;$temp1&nbsp;</div>
 										#end
-										#if( $temp1 2= "" )
+										#if( $temp2 != "" )
 											<div style="display:block;">&nbsp;$!temp2&nbsp;</div>
 										#end																				
 									</td>
