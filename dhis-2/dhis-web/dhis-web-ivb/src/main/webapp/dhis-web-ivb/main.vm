@@ -535,8 +535,8 @@
 					<li><a href="#"><b>Covid-19 Campaign Tracker</b></a>
 						<ul>
 							<li><a href="campaignTrackerForm.action"><b>Campaign Tracker</b></a></li>
-							<li><a href="campaignCalendarForm.action?resultPage=0"><b>Campaign Calendar - Status</b></a></li>
-							<li><a href="campaignCalendarForm.action?resultPage=1"><b>Campaign Calendar - Dates</b></a></li>
+							<li><a href="campaignCalendarForm.action?resultPage=0"><b>Campaign Calendar</b></a></li>
+							<!--<li><a href="campaignCalendarForm.action?resultPage=1"><b>Campaign Calendar - Dates</b></a></li>-->
 						</ul>
 					</li>	
 					<li><a href="tabularReportForm.action"><b>$i18n.getString( "tabular_report" )</b></a></li>

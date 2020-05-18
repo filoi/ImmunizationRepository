@@ -78,6 +78,19 @@
 	}					
 </style>
 
+<style>
+	.pattern1{
+		background-image: repeating-linear-gradient(45deg,$statusColor,#ccc 1%);
+	}
+	
+	.pattern2{
+		background-image: repeating-linear-gradient(90deg,$statusColor,#ccc 1%);
+	}
+	
+	.pattern3{
+		background-image: repeating-linear-gradient(180deg,$statusColor,#ccc 1%);
+	}
+</style>
 <script type="text/javascript">
     $(document).ready(function() {
 		$("#regionalDBTable").tableFreezer({					
@@ -164,13 +177,6 @@ jQuery(function() {
 	<table style="width:98%;">
 		<tr>
 			<td align="left"><font size="3"><b>Campaign Calendar</b> - current as of $!curDateStr</font></td>
-			<td align="right">
-				<table align="right">
-					<td style="color:#000000;background-color:$!plannedColor">Original Planned Date</td>
-					<td style="color:#000000;background-color:$!postponedColor">New Postponed Date</td>
-					<td style="color:#000000;background-color:$!bothMatchColor">On-Track</td>
-				</table>
-			</td>	
 			<td align="right" style="vertical-align:middle;">
 				<input type="button" onclick="location.href='campaignCalendarForm.action'" value="Change Selections"/>
 				<input type="submit" value="Download As Excel"/>&nbsp;
@@ -179,18 +185,37 @@ jQuery(function() {
 			</td>
 		</tr>	
 	</table>
-    <hr/>         
+	<table style="width:98%;margin-right:10px;" align="right">
+		<tr>
+			<td align="right">
+				<table align="right">
+					#foreach( $statusMapKey in $statusColorMap.keySet() )
+						#set( $tempStatusColor = "#FFFFFF" )
+						#set( $tempStatusColor = $statusColorMap.get("$statusMapKey") )
+						<td style="color:#000000;background-color:$!tempStatusColor">$statusMapKey</td>
+					#end
+					<td>&nbsp;</td>
+					<td style="color:#000000;background-color:$!plannedColor">Original Planned Date</td>
+					<td style="color:#000000;background-color:$!postponedColor">New Postponed Date</td>
+					<td style="color:#000000;background-color:$!bothMatchColor">On-Track</td>
+				</table>
+			</td>
+		</tr>	
+	</table>
+	
+
+	
     <div id="htmlContent1" style="width:98%;margin:10px;">    
     	<table align="center" id="regionalDBTable" border="0" cellspacing="0" cellpadding="0" style="width:100%;" class="table table-bordered table-condensed freeze_header">
            <thead>
                 <tr >
-					<th class="freeze_left_column" style="min-width:50px; width:50px;">$i18n.getString( "who_region" )</th>
-					<th class="freeze_left_column" style="min-width:50px; width:50px;">$i18n.getString( "country" )</th>					
+					<th class="freeze_left_column" style="min-width:65px; width:65px;">$i18n.getString( "who_region" )</th>
+					<th class="freeze_left_column" style="min-width:65px; width:65px;">$i18n.getString( "country" )</th>					
 					<th class="freeze_left_column" style="min-width:50px; width:50px;">Campaign Identifier</th>
-					<th class="freeze_left_column" style="min-width:50px; width:50px;">Status</th>
-					<th class="freeze_left_column" style="min-width:50px; width:50px">Campaigns - no dates yet</th>
+					<th class="freeze_left_column" style="min-width:100px; width:100px;">Status</th>
+					<th class="freeze_left_column" style="min-width:60px; width:60px">Campaigns - no dates yet</th>
 					#foreach( $monthName in $monthNames )						
-						<th align="center" style="min-width:40px; width:40px;vertical-align: middle;">$monthName</th>
+						<th align="center" style="min-width:50px; width:50px;vertical-align: middle;">$monthName</th>
 					#end
 					
                 </tr>
@@ -219,15 +244,25 @@ jQuery(function() {
 									#set( $temp2 = "" )
 									#set( $temp2 =  $!cMap.get( "NONE2" ).strVal1 )
 									#set( $styleProp = "style='vertical-align: middle;'")
-									#if( $temp1 != "" || $temp2 != "" )
+									#if( $temp1 != "" || $temp2 != "" )									
 										#set( $styleProp = "style='vertical-align: middle;color:#000000;background:$statusColor;'")
 									#end
-									<td align="center" $styleProp >										
+									<td class="freeze_left_column" align="center" $styleProp>										
 										#if( $temp1 != "" )
-											<div style="display:block;">&nbsp;$temp1&nbsp;</div>
+											#set( $patternColor = "#FCFDFD" )					
+											#set( $patternColor = $!cMap.get( "NONE1" ).strVal2 )
+											#set( $styleProp1 = "")
+											#set( $styleProp1 = "style='display:block;width:100%; background:$patternColor;'")											
+											##set( $styleProp1 = "style='background-image: repeating-linear-gradient(90deg,$statusColor 5%,$patternColor);'")
+											<div $styleProp1>&nbsp;$temp1&nbsp;</div>
 										#end
 										#if( $temp2 != "" )
-											<div style="display:block;">&nbsp;$!temp2&nbsp;</div>
+											#set( $patternColor = "#FCFDFD" )					
+											#set( $patternColor = $!cMap.get( "NONE2" ).strVal2 )
+											#set( $styleProp1 = "")
+											#set( $styleProp1 = "style='display:block;width:100%; background:$patternColor;'")
+											##set( $styleProp1 = "style='background-image: repeating-linear-gradient(90deg,$statusColor 5%,$patternColor);'")
+											<div $styleProp1>&nbsp;$!temp2&nbsp;</div>
 										#end																				
 									</td>
 		
@@ -235,10 +270,31 @@ jQuery(function() {
 										#set( $temp1 = "" )
 										#set( $temp1 =  $!cMap.get( "${monthName}" ).strVal1 )
 										#set( $styleProp = "style='vertical-align: middle;'")
+										#set( $styleProp1 = "")
+										#set( $patternColor = "#FCFDFD" )										
+										#set( $patternColor = $!cMap.get( "${monthName}" ).strVal2 )
+										
+										#set( $patternClass = "" )										
+										#set( $patternClass = $!cMap.get( "${monthName}" ).strVal3 )
+
 										#if( $temp1 != "" )
 											#set( $styleProp = "style='vertical-align: middle;color:#000000;background:$statusColor;'")
+											#set( $styleProp1 = "style='display:block;width:100%; background:$patternColor;'")
+											##set( $styleProp1 = "style='vertical-align: middle;color:#000000;background:$statusColor;background-image: repeating-linear-gradient(-180deg, transparent 0 1px, #E9F4F5 1px 2px);'" )
+											##set( $styleProp1 = "style='vertical-align: middle;color:#000000;background:$statusColor;background-image: linear-gradient(45deg, transparent 50%,  rgba(255,255,255,.5) 50%; background-size: 5px 5px;'")
+											
+											#if( $patternClass == "pattern1" )
+												##set( $styleProp1 = "style='vertical-align: middle;display:block;height:15px;color:#fff;background-image: repeating-linear-gradient(45deg,$statusColor,#000 1%);'")
+											#elseif( $patternClass == "pattern2" )
+												##set( $styleProp1 = "style='vertical-align: middle;display:block;height:15px;color:#fff;background-image: repeating-linear-gradient(60deg,$statusColor,#000 1%);'")
+											#elseif( $patternClass == "pattern3" )
+												##set( $styleProp1 = "style='vertical-align: middle;display:block;height:15px;color:#fff;background-image: repeating-linear-gradient(180deg,$statusColor,#000 5%);'")
+											#else
+												##set( $styleProp1 = "style='vertical-align: middle;display:block;height:15px;color:#fff;'")
+											#end
+											
 										#end
-										<td align="center" $styleProp>&nbsp;$!temp1&nbsp;</td>
+										<td align="center" $styleProp ><span $styleProp1>&nbsp;$!temp1&nbsp;</span></td>
 									#end
 								</tr>
 							#end	
@@ -260,27 +316,117 @@ jQuery(function() {
     	<table style="width:98%;">
 			<tr>
 				<td align="left" colspan="3"><font size="3"><b>Campaign Calendar</b> - current as of $!curDateStr</font></td>
+				<td align="left">&nbsp;</td>
+				#foreach( $statusMapKey in $statusColorMap.keySet() )
+					#set( $tempStatusColor = "#FFFFFF" )
+					#set( $tempStatusColor = $statusColorMap.get("$statusMapKey") )
+					<td style="white-space: normal;color:#000000;background-color:$!tempStatusColor">$statusMapKey</td>
+				#end
 				<td align="left">&nbsp;</td>			
-				<td style="color:#000000;background-color:$!plannedColor">Original Planned Date</td>
-				<td style="color:#000000;background-color:$!postponedColor">New Postponed Date</td>
-				<td style="color:#000000;background-color:$!bothMatchColor">On-Track</td>
+				<td style="word-wrap: break-word;color:#000000;background-color:$!plannedColor">Original Planned Date</td>
+				<td style="word-wrap: break-word;color:#000000;background-color:$!postponedColor">New Postponed Date</td>
+				<td style="word-wrap: break-word;color:#000000;background-color:$!bothMatchColor">On-Track</td>
 			</tr>	
 		</table>  
     	<table align="center" id="regionalDBTable1" style="width:100%;" border="0" cellspacing="0" cellpadding="0" class="">
            <thead>
                 <tr style="border: none;">
-					<th style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">$i18n.getString( "who_region" )</th>
-					<th style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">$i18n.getString( "country" )</th>					
+					<th style="min-width:65px; width:65px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">$i18n.getString( "who_region" )</th>
+					<th style="min-width:65px; width:5px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">$i18n.getString( "country" )</th>					
 					<th style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">Campaign Identifier</th>
-					<th style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">Campaigns - no dates yet</th>
-					<th style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">Status</th>
+					<th style="min-width:100px; width:100px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">Status</th>
+					<th style="white-space: normal;min-width:60px; width:60px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">Campaigns - no dates yet</th>
 					#foreach( $monthName in $monthNames )						
-						<th align="center" style="min-width:40px; width:40px;vertical-align: middle;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">$monthName</th>
+						<th align="center" style="min-width:50px; width:50px;vertical-align: middle;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">$monthName</th>
 					#end					
                 </tr>
             </thead>
 			<tbody>
-					
+				#foreach( $orgUnit in $orgUnitList )
+					#foreach( $subNatName in $subNatNames )
+						#set( $key1 = "${orgUnit.id}_$subNatName")
+						#set( $ouCvoList = "" )
+						#set( $ouCvoList = $dataMap.get( $key1 ) )
+						#if($dataMap.get( $key1 ) && $dataMap.get( $key1 ) != " ")
+							#foreach( $cvo in $ouCvoList )
+								#set( $cMap = "")
+                       			#set( $cMap = $cvo.colDataMap )
+								<tr >
+									<td style="border: 1px solid #ccc;vertical-align: middle;font-size: 11px;">$!orgUnit.getParent().shortName</td>
+									<td style="border: 1px solid #ccc;vertical-align: middle;font-size: 11px;">$!orgUnit.name</td>
+									<td style="border: 1px solid #ccc;vertical-align: middle;font-size: 11px;">$subNatName</td>
+									#set( $statusVal = "" )
+									#set( $statusVal = $!cMap.get( "STATUS" ).strVal1 )
+									#set( $statusColor = "")
+									#set( $statusColor = $statusColorMap.get("$statusVal") )
+									<td style="border: 1px solid #ccc;vertical-align: middle;font-size: 11px;color:#000000;background:$statusColor;">$!statusVal</td>
+									#set( $temp1 = "" )
+									#set( $temp1 =  $!cMap.get( "NONE1" ).strVal1 )									
+									#set( $temp2 = "" )
+									#set( $temp2 =  $!cMap.get( "NONE2" ).strVal1 )
+									#set( $styleProp = "style='border: 1px solid #ccc;vertical-align: middle;'")
+									#if( $temp1 != "" || $temp2 != "" )									
+										#set( $styleProp = "style='border: 1px solid #ccc;vertical-align: middle;font-size: 11px;color:#000000;background:$statusColor;'")
+									#end
+									<td  align="center" $styleProp>
+										<table style="border: 1px solid #ccc;">
+										#if( $temp1 != "" )
+											#set( $patternColor = "#FCFDFD" )					
+											#set( $patternColor = $!cMap.get( "NONE1" ).strVal2 )
+											#set( $styleProp1 = "")
+											#set( $styleProp1 = "style='display:block;width:100%; background:$patternColor;'")											
+											##set( $styleProp1 = "style='background-image: repeating-linear-gradient(90deg,$statusColor 5%,$patternColor);'")
+											#set( $styleProp = "style='border: 1px solid #ccc;vertical-align: middle;font-size: 11px;color:$statusColor;;background:$patternColor;'")
+											<tr><td $styleProp>&nbsp;$temp1&nbsp;</td></tr>
+										#end
+										#if( $temp2 != "" )
+											#set( $patternColor = "#FCFDFD" )					
+											#set( $patternColor = $!cMap.get( "NONE2" ).strVal2 )
+											#set( $styleProp1 = "")
+											#set( $styleProp1 = "style='display:block;width:100%; background:$patternColor;'")
+											##set( $styleProp1 = "style='background-image: repeating-linear-gradient(90deg,$statusColor 5%,$patternColor);'")
+											#set( $styleProp = "style='border: 1px solid #ccc;vertical-align: middle;font-size: 11px;color:$statusColor;;background:$patternColor;'")
+											<tr><td $styleProp>&nbsp;$temp2&nbsp;</td></tr>
+										#end
+										</table>										
+									</td>
+		
+									#foreach( $monthName in $monthNames )
+										#set( $temp1 = "" )
+										#set( $temp1 =  $!cMap.get( "${monthName}" ).strVal1 )
+										#set( $styleProp = "style='border: 1px solid #ccc;vertical-align: middle;'")
+										#set( $styleProp1 = "")
+										#set( $patternColor = "#FCFDFD" )										
+										#set( $patternColor = $!cMap.get( "${monthName}" ).strVal2 )
+										
+										#set( $patternClass = "" )										
+										#set( $patternClass = $!cMap.get( "${monthName}" ).strVal3 )
+
+										#if( $temp1 != "" )
+											#set( $styleProp = "style='vertical-align: middle;color:#000000;background:$statusColor;'")
+											#set( $styleProp1 = "style='display:block;width:100%; background:$patternColor;'")
+											##set( $styleProp1 = "style='vertical-align: middle;color:#000000;background:$statusColor;background-image: repeating-linear-gradient(-180deg, transparent 0 1px, #E9F4F5 1px 2px);'" )
+											##set( $styleProp1 = "style='vertical-align: middle;color:#000000;background:$statusColor;background-image: linear-gradient(45deg, transparent 50%,  rgba(255,255,255,.5) 50%; background-size: 5px 5px;'")
+											
+											#if( $patternClass == "pattern1" )
+												##set( $styleProp1 = "style='vertical-align: middle;display:block;height:15px;color:#fff;background-image: repeating-linear-gradient(45deg,$statusColor,#000 1%);'")
+											#elseif( $patternClass == "pattern2" )
+												##set( $styleProp1 = "style='vertical-align: middle;display:block;height:15px;color:#fff;background-image: repeating-linear-gradient(60deg,$statusColor,#000 1%);'")
+											#elseif( $patternClass == "pattern3" )
+												##set( $styleProp1 = "style='vertical-align: middle;display:block;height:15px;color:#fff;background-image: repeating-linear-gradient(180deg,$statusColor,#000 5%);'")
+											#else
+												##set( $styleProp1 = "style='vertical-align: middle;display:block;height:15px;color:#fff;'")
+											#end
+											#set( $styleProp1 = "style='display:block;width:100%; background-image: repeating-linear-gradient(90deg,$patternColor, $statusColor);'")
+											#set( $styleProp = "style='border: 1px solid #ccc;vertical-align: middle;font-size: 11px;color:$statusColor;;background:$patternColor;'")
+										#end
+										<td align="center" $styleProp>&nbsp;$!temp1&nbsp;</td>
+									#end
+								</tr>
+							#end	
+						#end
+					#end
+				#end					
     		</tbody>           
 		</table>
            		
