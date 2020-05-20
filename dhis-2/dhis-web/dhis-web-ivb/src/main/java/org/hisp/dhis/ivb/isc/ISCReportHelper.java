@@ -368,7 +368,7 @@ public class ISCReportHelper
                      " AND dv.periodid=asd1.periodid " +
                      " WHERE dv.value IS NOT NULL AND dv.value <> ''";
             
-            System.out.println(query);
+            //System.out.println(query);
 
             SqlRowSet rs = jdbcTemplate.queryForRowSet( query );
             

@@ -174,6 +174,8 @@ jQuery(function() {
 
     <input type="hidden" name="htmlCode" id="htmlCode" />
 
+	#set( $fontColor = "#FFFFFF" )
+	
 	<table style="width:98%;">
 		<tr>
 			<td align="left"><font size="3"><b>Campaign Calendar</b> - current as of $!curDateStr</font></td>
@@ -195,9 +197,9 @@ jQuery(function() {
 						<td style="color:#000000;background-color:$!tempStatusColor">$statusMapKey</td>
 					#end
 					<td>&nbsp;</td>
-					<td style="color:#000000;background-color:$!plannedColor">Original Planned Date</td>
-					<td style="color:#000000;background-color:$!postponedColor">New Postponed Date</td>
-					<td style="color:#000000;background-color:$!bothMatchColor">On-Track</td>
+					<td style="display:none;color:#000000;background-color:$!plannedColor">Original Planned Date</td>
+					<td style="color:#000000;"><u>New Postponed Date</u></td>
+					<td style="display:none;color:$!fontColor;background-color:$!bothMatchColor">On-Track</td>
 				</table>
 			</td>
 		</tr>	
@@ -232,7 +234,7 @@ jQuery(function() {
                        			#set( $cMap = $cvo.colDataMap )
 								<tr >
 									<td class="freeze_left_column">$!orgUnit.getParent().shortName</td>
-									<td class="freeze_left_column">$!orgUnit.name</td>
+									<td class="freeze_left_column">$!orgUnit.shortName</td>
 									<td class="freeze_left_column">$subNatName</td>
 									#set( $statusVal = "" )
 									#set( $statusVal = $!cMap.get( "STATUS" ).strVal1 )
@@ -245,16 +247,27 @@ jQuery(function() {
 									#set( $temp2 =  $!cMap.get( "NONE2" ).strVal1 )
 									#set( $styleProp = "style='vertical-align: middle;'")
 									#if( $temp1 != "" || $temp2 != "" )									
-										#set( $styleProp = "style='vertical-align: middle;color:#000000;background:$statusColor;'")
+										#set( $styleProp = "style='vertical-align: middle;color:$!fontColor;background:$statusColor;'")
 									#end
 									<td class="freeze_left_column" align="center" $styleProp>										
 										#if( $temp1 != "" )
 											#set( $patternColor = "#FCFDFD" )					
 											#set( $patternColor = $!cMap.get( "NONE1" ).strVal2 )
 											#set( $styleProp1 = "")
-											#set( $styleProp1 = "style='display:block;width:100%; background:$patternColor;'")											
+											#set( $styleProp1 = "")
+											##set( $styleProp1 = "style='display:block;width:100%; background:$patternColor;'")											
 											##set( $styleProp1 = "style='background-image: repeating-linear-gradient(90deg,$statusColor 5%,$patternColor);'")
-											<div $styleProp1>&nbsp;$temp1&nbsp;</div>
+											#set( $patternClass = "" )										
+											#set( $patternClass = $!cMap.get( "NONE1" ).strVal3 )
+											#if( $patternClass == "pattern1" )
+												<div>$temp1</div>
+											#elseif( $patternClass == "pattern2" )
+												<div><u>$temp1</u></div>
+											#elseif( $patternClass == "pattern3" )
+												<div>$temp1</div>
+											#else
+												<div>$temp1</div>
+											#end											
 										#end
 										#if( $temp2 != "" )
 											#set( $patternColor = "#FCFDFD" )					
@@ -262,7 +275,17 @@ jQuery(function() {
 											#set( $styleProp1 = "")
 											#set( $styleProp1 = "style='display:block;width:100%; background:$patternColor;'")
 											##set( $styleProp1 = "style='background-image: repeating-linear-gradient(90deg,$statusColor 5%,$patternColor);'")
-											<div $styleProp1>&nbsp;$!temp2&nbsp;</div>
+											#set( $patternClass = "" )										
+											#set( $patternClass = $!cMap.get( "NONE2" ).strVal3 )
+											#if( $patternClass == "pattern1" )
+												<div>$temp2</div>
+											#elseif( $patternClass == "pattern2" )
+												<div><u>$temp2</u></div>
+											#elseif( $patternClass == "pattern3" )
+												<div>$temp2</div>
+											#else
+												<div>$temp2</div>
+											#end			
 										#end																				
 									</td>
 		
@@ -278,23 +301,28 @@ jQuery(function() {
 										#set( $patternClass = $!cMap.get( "${monthName}" ).strVal3 )
 
 										#if( $temp1 != "" )
-											#set( $styleProp = "style='vertical-align: middle;color:#000000;background:$statusColor;'")
+											#set( $styleProp = "style='vertical-align: middle;color:$!fontColor;background:$statusColor;'")
 											#set( $styleProp1 = "style='display:block;width:100%; background:$patternColor;'")
 											##set( $styleProp1 = "style='vertical-align: middle;color:#000000;background:$statusColor;background-image: repeating-linear-gradient(-180deg, transparent 0 1px, #E9F4F5 1px 2px);'" )
 											##set( $styleProp1 = "style='vertical-align: middle;color:#000000;background:$statusColor;background-image: linear-gradient(45deg, transparent 50%,  rgba(255,255,255,.5) 50%; background-size: 5px 5px;'")
 											
 											#if( $patternClass == "pattern1" )
+												<td align="center" $styleProp >&nbsp;$!temp1&nbsp;</td>
 												##set( $styleProp1 = "style='vertical-align: middle;display:block;height:15px;color:#fff;background-image: repeating-linear-gradient(45deg,$statusColor,#000 1%);'")
 											#elseif( $patternClass == "pattern2" )
+												<td align="center" $styleProp >&nbsp;<u>$!temp1</u>&nbsp;</u></td>
 												##set( $styleProp1 = "style='vertical-align: middle;display:block;height:15px;color:#fff;background-image: repeating-linear-gradient(60deg,$statusColor,#000 1%);'")
 											#elseif( $patternClass == "pattern3" )
+												<td align="center" $styleProp >&nbsp;$!temp1&nbsp;</td>
 												##set( $styleProp1 = "style='vertical-align: middle;display:block;height:15px;color:#fff;background-image: repeating-linear-gradient(180deg,$statusColor,#000 5%);'")
 											#else
+												<td align="center" $styleProp >&nbsp;$!temp1&nbsp;</td>
 												##set( $styleProp1 = "style='vertical-align: middle;display:block;height:15px;color:#fff;'")
 											#end
-											
+										#else
+											<td align="center">&nbsp;</td>
 										#end
-										<td align="center" $styleProp ><span $styleProp1>&nbsp;$!temp1&nbsp;</span></td>
+										
 									#end
 								</tr>
 							#end	
@@ -313,6 +341,7 @@ jQuery(function() {
 	</div>    	
 
     <div id="htmlContent" style="width:98%;margin:10px;display:none;">
+		
     	<table style="width:98%;">
 			<tr>
 				<td align="left" colspan="3"><font size="3"><b>Campaign Calendar</b> - current as of $!curDateStr</font></td>
@@ -320,12 +349,12 @@ jQuery(function() {
 				#foreach( $statusMapKey in $statusColorMap.keySet() )
 					#set( $tempStatusColor = "#FFFFFF" )
 					#set( $tempStatusColor = $statusColorMap.get("$statusMapKey") )
-					<td style="white-space: normal;color:#000000;background-color:$!tempStatusColor">$statusMapKey</td>
+					<td style="font-size: 11px;white-space: normal;color:$!fontColor;background-color:$!tempStatusColor">$statusMapKey</td>
 				#end
 				<td align="left">&nbsp;</td>			
-				<td style="word-wrap: break-word;color:#000000;background-color:$!plannedColor">Original Planned Date</td>
-				<td style="word-wrap: break-word;color:#000000;background-color:$!postponedColor">New Postponed Date</td>
-				<td style="word-wrap: break-word;color:#000000;background-color:$!bothMatchColor">On-Track</td>
+				<!--<td style="display:none;font-size: 11px;word-wrap: break-word;color:$!fontColor;background-color:$!plannedColor">Original Planned Date</td>-->
+				<td style="font-size: 11px;word-wrap: break-word;color:#000000;"><u>New Postponed Date</u></td>
+				<!--<td style="display:none;font-size: 11px;word-wrap: break-word;color:$!fontColor;background-color:$!bothMatchColor">On-Track</td>-->
 			</tr>	
 		</table>  
     	<table align="center" id="regionalDBTable1" style="width:100%;" border="0" cellspacing="0" cellpadding="0" class="">
@@ -353,7 +382,7 @@ jQuery(function() {
                        			#set( $cMap = $cvo.colDataMap )
 								<tr >
 									<td style="border: 1px solid #ccc;vertical-align: middle;font-size: 11px;">$!orgUnit.getParent().shortName</td>
-									<td style="border: 1px solid #ccc;vertical-align: middle;font-size: 11px;">$!orgUnit.name</td>
+									<td style="border: 1px solid #ccc;vertical-align: middle;font-size: 11px;">$!orgUnit.shortName</td>
 									<td style="border: 1px solid #ccc;vertical-align: middle;font-size: 11px;">$subNatName</td>
 									#set( $statusVal = "" )
 									#set( $statusVal = $!cMap.get( "STATUS" ).strVal1 )
@@ -366,29 +395,36 @@ jQuery(function() {
 									#set( $temp2 =  $!cMap.get( "NONE2" ).strVal1 )
 									#set( $styleProp = "style='border: 1px solid #ccc;vertical-align: middle;'")
 									#if( $temp1 != "" || $temp2 != "" )									
-										#set( $styleProp = "style='border: 1px solid #ccc;vertical-align: middle;font-size: 11px;color:#000000;background:$statusColor;'")
+										#set( $styleProp = "style='border: 1px solid #ccc;vertical-align: middle;font-size: 11px;color:$!fontColor;background:$statusColor;'")
 									#end
 									<td  align="center" $styleProp>
-										<table style="border: 1px solid #ccc;">
 										#if( $temp1 != "" )
-											#set( $patternColor = "#FCFDFD" )					
-											#set( $patternColor = $!cMap.get( "NONE1" ).strVal2 )
-											#set( $styleProp1 = "")
-											#set( $styleProp1 = "style='display:block;width:100%; background:$patternColor;'")											
-											##set( $styleProp1 = "style='background-image: repeating-linear-gradient(90deg,$statusColor 5%,$patternColor);'")
-											#set( $styleProp = "style='border: 1px solid #ccc;vertical-align: middle;font-size: 11px;color:$statusColor;;background:$patternColor;'")
-											<tr><td $styleProp>&nbsp;$temp1&nbsp;</td></tr>
+											#set( $patternClass = "" )										
+											#set( $patternClass = $!cMap.get( "NONE1" ).strVal3 )
+											#if( $patternClass == "pattern1" )
+												$temp1<br style="mso-data-placement:same-cell;"/>
+											#elseif( $patternClass == "pattern2" )
+												<u>$temp1</u><br style="mso-data-placement:same-cell;"/>
+											#elseif( $patternClass == "pattern3" )
+												$temp1<br style="mso-data-placement:same-cell;"/>
+											#else
+												$temp1<br style="mso-data-placement:same-cell;"/>
+											#end
 										#end
-										#if( $temp2 != "" )
-											#set( $patternColor = "#FCFDFD" )					
-											#set( $patternColor = $!cMap.get( "NONE2" ).strVal2 )
-											#set( $styleProp1 = "")
-											#set( $styleProp1 = "style='display:block;width:100%; background:$patternColor;'")
-											##set( $styleProp1 = "style='background-image: repeating-linear-gradient(90deg,$statusColor 5%,$patternColor);'")
-											#set( $styleProp = "style='border: 1px solid #ccc;vertical-align: middle;font-size: 11px;color:$statusColor;;background:$patternColor;'")
-											<tr><td $styleProp>&nbsp;$temp2&nbsp;</td></tr>
+
+										#if( $temp2 != "" )										
+											#set( $patternClass = "" )										
+											#set( $patternClass = $!cMap.get( "NONE2" ).strVal3 )
+											#if( $patternClass == "pattern1" )
+												$temp12
+											#elseif( $patternClass == "pattern2" )
+												<u>$temp2</u>
+											#elseif( $patternClass == "pattern3" )
+												$temp2
+											#else
+												$temp2
+											#end
 										#end
-										</table>										
 									</td>
 		
 									#foreach( $monthName in $monthNames )
@@ -403,24 +439,30 @@ jQuery(function() {
 										#set( $patternClass = $!cMap.get( "${monthName}" ).strVal3 )
 
 										#if( $temp1 != "" )
-											#set( $styleProp = "style='vertical-align: middle;color:#000000;background:$statusColor;'")
+											#set( $styleProp = "style='border: 1px solid #ccc;vertical-align: middle;font-size: 11px;vertical-align: middle;color:$!fontColor;background:$statusColor;'")
 											#set( $styleProp1 = "style='display:block;width:100%; background:$patternColor;'")
 											##set( $styleProp1 = "style='vertical-align: middle;color:#000000;background:$statusColor;background-image: repeating-linear-gradient(-180deg, transparent 0 1px, #E9F4F5 1px 2px);'" )
 											##set( $styleProp1 = "style='vertical-align: middle;color:#000000;background:$statusColor;background-image: linear-gradient(45deg, transparent 50%,  rgba(255,255,255,.5) 50%; background-size: 5px 5px;'")
 											
 											#if( $patternClass == "pattern1" )
 												##set( $styleProp1 = "style='vertical-align: middle;display:block;height:15px;color:#fff;background-image: repeating-linear-gradient(45deg,$statusColor,#000 1%);'")
+												<td align="center" $styleProp >&nbsp;$!temp1&nbsp;</td>
 											#elseif( $patternClass == "pattern2" )
 												##set( $styleProp1 = "style='vertical-align: middle;display:block;height:15px;color:#fff;background-image: repeating-linear-gradient(60deg,$statusColor,#000 1%);'")
+												<td align="center" $styleProp >&nbsp;<u>$!temp1</u>&nbsp;</td>
 											#elseif( $patternClass == "pattern3" )
 												##set( $styleProp1 = "style='vertical-align: middle;display:block;height:15px;color:#fff;background-image: repeating-linear-gradient(180deg,$statusColor,#000 5%);'")
+												<td align="center" $styleProp >&nbsp;$!temp1&nbsp;</td>
 											#else
 												##set( $styleProp1 = "style='vertical-align: middle;display:block;height:15px;color:#fff;'")
+												<td align="center" $styleProp >&nbsp;</td>
 											#end
-											#set( $styleProp1 = "style='display:block;width:100%; background-image: repeating-linear-gradient(90deg,$patternColor, $statusColor);'")
-											#set( $styleProp = "style='border: 1px solid #ccc;vertical-align: middle;font-size: 11px;color:$statusColor;;background:$patternColor;'")
+											##set( $styleProp1 = "style='display:block;width:100%; background-image: repeating-linear-gradient(90deg,$patternColor, $statusColor);'")
+											##set( $styleProp = "style='border: 1px solid #ccc;vertical-align: middle;font-size: 11px;color:#000000;background:$patternColor;'")
+										#else
+											<td align="center" $styleProp>&nbsp;$!temp1&nbsp;</td>
 										#end
-										<td align="center" $styleProp>&nbsp;$!temp1&nbsp;</td>
+										
 									#end
 								</tr>
 							#end	

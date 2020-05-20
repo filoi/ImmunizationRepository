@@ -699,6 +699,7 @@ public class CampaignCalendarByStatusAction
         for( int ouId : organisationUnitIds ) {
         	for(ProgramStage ps : programStages ) {
         		String eBaseKey = ps.getId()+"_"+ouId;
+        		//System.out.println( "1. " + eBaseKey );
         		if( eventDataMap.get(eBaseKey) == null ) {
         			continue;
         		}
@@ -711,6 +712,7 @@ public class CampaignCalendarByStatusAction
         			try { subNationName = eventDataMap.get(eBaseKey).get(psInsId).getColDataMap().get(subNationalDeId+"").getStrVal1();}catch(Exception e) {}
         			subNationalNames.add(subNationName);
         			String key1 = ouId+"_"+subNationName;
+        			//System.out.println( "2. " + eBaseKey + "  " + subNationName );
         			            		
             		String statusVal = "";
             		try { 
@@ -768,7 +770,8 @@ public class CampaignCalendarByStatusAction
 	    				dvo.setStrVal2( bothMatchColor );
 	    				dvo.setStrVal3("pattern3");
 	    				dvo.setIntVal1(3);
-	    				cvo.getColDataMap().put(monthName, dvo);	    				
+	    				cvo.getColDataMap().put(monthName, dvo);
+	    				flag = 1;
 	        		}
 	        		else {
 	        			if( plannedDate != null ) {
@@ -778,7 +781,8 @@ public class CampaignCalendarByStatusAction
 	        				dvo.setStrVal2( plannedColor );
 	        				dvo.setStrVal3("pattern1");
 	        				dvo.setIntVal1(1);
-	        				cvo.getColDataMap().put(monthName, dvo);	        				
+	        				cvo.getColDataMap().put(monthName, dvo);
+	        				flag = 1;
 	        			}
         			
 	        			if( postponedDate != null ) {
@@ -789,6 +793,7 @@ public class CampaignCalendarByStatusAction
 	        				dvo.setStrVal3("pattern2");
 	        				dvo.setIntVal1(2);
 	        				cvo.getColDataMap().put(monthName, dvo);
+	        				flag = 1;
 	        			}
 	        		}
 	        		
