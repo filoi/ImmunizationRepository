@@ -174,7 +174,8 @@ jQuery(function() {
 
     <input type="hidden" name="htmlCode" id="htmlCode" />
 
-	#set( $fontColor = "#FFFFFF" )
+	##set( $fontColor = "#FFFFFF" )
+	#set( $fontColor = "#000000" )
 	
 	<table style="width:98%;">
 		<tr>
@@ -194,6 +195,10 @@ jQuery(function() {
 					#foreach( $statusMapKey in $statusColorMap.keySet() )
 						#set( $tempStatusColor = "#FFFFFF" )
 						#set( $tempStatusColor = $statusColorMap.get("$statusMapKey") )
+						#if( $statusMapKey== "May postpone" )
+							#set( $statusMapKey= "Might postpone" )
+						#end
+
 						<td style="color:#000000;background-color:$!tempStatusColor">$statusMapKey</td>
 					#end
 					<td>&nbsp;</td>
@@ -215,7 +220,7 @@ jQuery(function() {
 					<th class="freeze_left_column" style="min-width:65px; width:65px;">$i18n.getString( "country" )</th>					
 					<th class="freeze_left_column" style="min-width:50px; width:50px;">Campaign Identifier</th>
 					<th class="freeze_left_column" style="min-width:100px; width:100px;">Status</th>
-					<th class="freeze_left_column" style="min-width:60px; width:60px">Campaigns - no dates yet</th>
+					<th class="freeze_left_column" style="min-width:60px; width:60px">Campaigns - no dates</th>
 					#foreach( $monthName in $monthNames )						
 						<th align="center" style="min-width:50px; width:50px;vertical-align: middle;">$monthName</th>
 					#end
@@ -240,6 +245,10 @@ jQuery(function() {
 									#set( $statusVal = $!cMap.get( "STATUS" ).strVal1 )
 									#set( $statusColor = "")
 									#set( $statusColor = $statusColorMap.get("$statusVal") )
+#if( $statusVal == "May postpone" )
+										#set( $statusVal = "Might postpone" )
+									#end
+
 									<td class="freeze_left_column" style="color:#000000;background:$statusColor;">$!statusVal</td>
 									#set( $temp1 = "" )
 									#set( $temp1 =  $!cMap.get( "NONE1" ).strVal1 )									
@@ -349,6 +358,10 @@ jQuery(function() {
 				#foreach( $statusMapKey in $statusColorMap.keySet() )
 					#set( $tempStatusColor = "#FFFFFF" )
 					#set( $tempStatusColor = $statusColorMap.get("$statusMapKey") )
+					#if( $statusMapKey== "May postpone" )
+						#set( $statusMapKey= "Might postpone" )
+					#end
+
 					<td style="font-size: 11px;white-space: normal;color:$!fontColor;background-color:$!tempStatusColor">$statusMapKey</td>
 				#end
 				<td align="left">&nbsp;</td>			
@@ -364,7 +377,7 @@ jQuery(function() {
 					<th style="min-width:65px; width:5px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">$i18n.getString( "country" )</th>					
 					<th style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">Campaign Identifier</th>
 					<th style="min-width:100px; width:100px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">Status</th>
-					<th style="white-space: normal;min-width:60px; width:60px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">Campaigns - no dates yet</th>
+					<th style="white-space: normal;min-width:60px; width:60px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">Campaigns - no dates</th>
 					#foreach( $monthName in $monthNames )						
 						<th align="center" style="min-width:50px; width:50px;vertical-align: middle;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">$monthName</th>
 					#end					
@@ -386,8 +399,12 @@ jQuery(function() {
 									<td style="border: 1px solid #ccc;vertical-align: middle;font-size: 11px;">$subNatName</td>
 									#set( $statusVal = "" )
 									#set( $statusVal = $!cMap.get( "STATUS" ).strVal1 )
+									
 									#set( $statusColor = "")
 									#set( $statusColor = $statusColorMap.get("$statusVal") )
+									#if( $statusVal == "May postpone" )
+										#set( $statusVal = "Might postpone" )
+									#end
 									<td style="border: 1px solid #ccc;vertical-align: middle;font-size: 11px;color:#000000;background:$statusColor;">$!statusVal</td>
 									#set( $temp1 = "" )
 									#set( $temp1 =  $!cMap.get( "NONE1" ).strVal1 )									
