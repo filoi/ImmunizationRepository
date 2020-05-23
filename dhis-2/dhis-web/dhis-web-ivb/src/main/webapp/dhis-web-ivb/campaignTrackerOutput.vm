@@ -200,6 +200,7 @@ $(function() {
 	<input type="hidden" name="unicefRegion" value="$!campaignSnap.unicefRegion" />
 	<input type="hidden" name="incomeLevel" value="$!campaignSnap.incomeLevel" />
 	<input type="hidden" name="gaviEligibleStatus" value="$!campaignSnap.gaviEligibleStatus" />
+	<input type="hidden" name="showComment" value="$!campaignSnap.showComment" />
 	<select name="ouIds" multiple="multiple" style="display:none;">
 		#foreach($ouId in $campaignSnap.ouIds)
 			<option value="$ouId" selected>$ouId</option>

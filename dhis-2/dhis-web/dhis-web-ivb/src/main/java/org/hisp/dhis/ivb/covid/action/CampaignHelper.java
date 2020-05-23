@@ -928,6 +928,13 @@ public class CampaignHelper
 					sheet.setColumnWidth(colCount-1, 40 * 256);
 				else
 					sheet.setColumnWidth(colCount-1, 20 * 256);
+				if( campaignSnap.getShowComment() != null && campaignSnap.getShowComment().equals("ON") && !colObj.getCode().equals("COL_3") && !colObj.getCode().equals("COL_4") && !colObj.getCode().equals("COL_13") ) {
+					cell = row.createCell( colCount++ );
+					cell.setCellStyle( tHeaderStyle );
+					cell.setCellValue( colObj.getName() +" Comment");
+
+					sheet.setColumnWidth(colCount-1, 40 * 256);
+				}
 			}
 			
 			sheet.setAutoFilter(new CellRangeAddress(rowCount-1, rowCount-1, 0, colCount-1));
@@ -1006,7 +1013,13 @@ public class CampaignHelper
                             	
 								cell = row.createCell( colCount++ );
 								cell.setCellStyle( dataStyle );
-								cell.setCellValue( value );				
+								cell.setCellValue( value );
+								
+								if( campaignSnap.getShowComment() != null && campaignSnap.getShowComment().equals("ON") && !colObj.getCode().equals("COL_3") && !colObj.getCode().equals("COL_4") && !colObj.getCode().equals("COL_13") ) {
+									cell = row.createCell( colCount++ );
+									cell.setCellStyle( dataStyle );
+									cell.setCellValue( comment );
+								}
 							}
 							
 						}
