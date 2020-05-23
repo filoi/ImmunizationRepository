@@ -1917,5 +1917,18 @@
 		<property name="selectionTreeManager" ref="org.hisp.dhis.oust.manager.SelectionTreeManager" />
 	</bean>
 
+	<bean
+		id="org.hisp.dhis.ivb.covid.action.CampaignTrackerXlAction"
+		class="org.hisp.dhis.ivb.covid.action.CampaignTrackerXlAction"
+		scope="prototype">
+	</bean>
+	
+	<bean
+		id="org.hisp.dhis.ivb.covid.action.CampaignHelper"
+		class="org.hisp.dhis.ivb.covid.action.CampaignHelper"
+		scope="prototype">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+	</bean>
+
     
 </beans>

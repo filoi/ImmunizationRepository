@@ -1,26 +1,19 @@
 package org.hisp.dhis.ivb.covid.action;
 
 import static org.hisp.dhis.common.IdentifiableObjectUtils.getIdentifiers;
-import static org.hisp.dhis.commons.util.TextUtils.getCommaDelimitedString;
 
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import org.hisp.dhis.common.comparator.IdentifiableObjectNameComparator;
 import org.hisp.dhis.configuration.ConfigurationService;
 import org.hisp.dhis.constant.ConstantService;
-import org.hisp.dhis.dataelement.DataElement;
-import org.hisp.dhis.dataelement.DataElementCategoryOptionCombo;
 import org.hisp.dhis.dataelement.DataElementCategoryService;
 import org.hisp.dhis.dataelement.DataElementGroup;
 import org.hisp.dhis.dataelement.DataElementService;
@@ -31,7 +24,6 @@ import org.hisp.dhis.datavalue.DataValueService;
 import org.hisp.dhis.i18n.I18nFormat;
 import org.hisp.dhis.i18n.I18nService;
 import org.hisp.dhis.ivb.isc.ISCReportHelper;
-import org.hisp.dhis.ivb.util.GenericDataVO;
 import org.hisp.dhis.ivb.util.GenericTypeObj;
 import org.hisp.dhis.lookup.Lookup;
 import org.hisp.dhis.lookup.LookupService;
@@ -42,7 +34,6 @@ import org.hisp.dhis.organisationunit.OrganisationUnitGroupSet;
 import org.hisp.dhis.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.oust.manager.SelectionTreeManager;
 import org.hisp.dhis.program.ProgramService;
-import org.hisp.dhis.program.ProgramStage;
 import org.hisp.dhis.program.ProgramStageService;
 import org.hisp.dhis.user.CurrentUserService;
 import org.hisp.dhis.user.UserGroup;
@@ -168,11 +159,21 @@ public class CampaignTrackerResultAction
     @Autowired
     private ProgramStageService programStageService;
     
+    @Autowired
+    private CampaignHelper campaignHelper;
     // -------------------------------------------------------------------------
     // Setters
     // -------------------------------------------------------------------------
 
     private List<Integer> selectedListVaccine;
+    public List<Integer> getSelectedListVaccine() {
+		return selectedListVaccine;
+	}
+	public void setSelectedListVaccine( List<Integer> selectedListVaccine )
+    {
+        this.selectedListVaccine = selectedListVaccine;
+    }
+    
 
     private String introStartDate;
 
@@ -184,10 +185,7 @@ public class CampaignTrackerResultAction
 
     private String orgUnitId;
 
-    public void setSelectedListVaccine( List<Integer> selectedListVaccine )
-    {
-        this.selectedListVaccine = selectedListVaccine;
-    }
+   
 
     public void setIntroStartDate( String introStartDate )
     {
@@ -296,14 +294,29 @@ public class CampaignTrackerResultAction
     }
 
     private List<String> selectedOtherData;
-    public void setSelectedOtherData(List<String> selectedOtherData) {
+    public List<String> getSelectedOtherData() {
+		return selectedOtherData;
+	}
+	public void setSelectedOtherData(List<String> selectedOtherData) {
 		this.selectedOtherData = selectedOtherData;
 	}
+    
 
 	// -------------------------------------------------------------------------
     // Getters
     // -------------------------------------------------------------------------
-    private String curDateStr;    
+	private Collection<Integer> ouIds;
+    public Collection<Integer> getOuIds() {
+		return ouIds;
+	}
+
+	private String sectionIdsByComma;
+	public String getSectionIdsByComma() {
+		return sectionIdsByComma;
+	}
+	
+	
+	private String curDateStr;    
     public String getCurDateStr() {
 		return curDateStr;
 	}
@@ -420,11 +433,36 @@ public class CampaignTrackerResultAction
 		return dateSelection;
 	}
 
+    CampaignSnapshot campaignSnap;
+	public CampaignSnapshot getCampaignSnap() {
+		return campaignSnap;
+	}
 	// --------------------------------------------------------------------------
     // Action implementation
     // --------------------------------------------------------------------------
     public String execute()
     {
+    	campaignSnap = new CampaignSnapshot();
+
+    	//Selected addl columns for orgunit info
+    	if( isoCode != null )
+        	campaignSnap.setIsoCode("ON");
+        if( whoRegion != null )
+        	campaignSnap.setWhoRegion("ON");
+        if( unicefRegion != null )
+        	campaignSnap.setUnicefRegion("ON");
+        if( incomeLevel != null )
+        	campaignSnap.setIncomeLevel("ON");
+        if( gaviEligibleStatus != null )
+        	campaignSnap.setGaviEligibleStatus("ON");
+        if( showComment != null )
+        	campaignSnap.setShowComment("ON");
+    	
+        campaignSnap.getSelCols().addAll( selectedOtherData );
+        
+        campaignSnap.getCampaignIds().addAll( selectedListVaccine );
+        
+    	/*
     	//Selected addl columns for orgunit info
         if( isoCode != null )
         	isoCode = "ON";
@@ -438,7 +476,7 @@ public class CampaignTrackerResultAction
         	gaviEligibleStatus = "ON";
         if( showComment != null )
         	showComment = "ON";
-
+		*/
         
         //Selected Orgunits
         Lookup lookup = lookupService.getLookupByName( "UNICEF_REGIONS_GROUPSET" );
@@ -470,10 +508,17 @@ public class CampaignTrackerResultAction
             orgUnitList.retainAll( lastLevelOrgUnit );
         }
         Collections.sort(orgUnitList, new IdentifiableObjectNameComparator() );
-        Collection<Integer> organisationUnitIds = new ArrayList<Integer>( getIdentifiers( orgUnitList ) );
+        Collection<Integer> ouIds = new ArrayList<Integer>( getIdentifiers( orgUnitList ) );
+        
+        campaignSnap.getOuIds().addAll( ouIds );
+        
+        campaignSnap = campaignHelper.getCampainTrackerSnap( campaignSnap );
+        
+        /*
+        
         String ouIdsByComma = "-1";
         if ( orgUnitList.size() > 0 ){
-        	ouIdsByComma = getCommaDelimitedString( organisationUnitIds );
+        	ouIdsByComma = getCommaDelimitedString( ouIds );
         }
         //System.out.println(ouIdsByComma);
         //Selected Campaigns 
@@ -543,7 +588,7 @@ public class CampaignTrackerResultAction
         dataMap = new HashMap<>();
         String subNationName = "NONE";
         Set<String> subNationalNames = new HashSet<>();
-        for( int ouId : organisationUnitIds ) {
+        for( int ouId : ouIds ) {
         	
         	//String key1 = ouId+"_National";
 			//dataMap.put(key1, new ArrayList<>());
@@ -605,7 +650,7 @@ public class CampaignTrackerResultAction
         
         
         //Arranging Event Data
-        for( int ouId : organisationUnitIds ) {
+        for( int ouId : ouIds ) {
         	for(ProgramStage ps : programStages ) {
         		String eBaseKey = ps.getId()+"_"+ouId;
         		if( eventDataMap.get(eBaseKey) == null ) {
@@ -671,15 +716,7 @@ public class CampaignTrackerResultAction
         subNatNames.addAll( subNationalNames );
         Collections.sort( subNatNames );
         
-		/*
-        for( String key1 : dataMap.keySet() ) {
-        	for( CampaignVO cvo : dataMap.get(key1)) {
-        		for(String key2 : cvo.getColDataMap().keySet() ) {
-        			System.out.println( key1 + ", " + key2 + " = " + cvo.getColDataMap().get(key2).getStrVal1() );
-        		}
-        	}
-        }
-		*/
+		
        
         DataElementCategoryOptionCombo optionCombo = categoryService.getDefaultDataElementCategoryOptionCombo();
         for( OrganisationUnit orgUnit : orgUnitList )
@@ -709,6 +746,8 @@ public class CampaignTrackerResultAction
         
         Date curDate = new Date();
         curDateStr = format.formatDate( curDate );
+        */
+        
         
         /*
         List<Integer> orgunitIds = new ArrayList<Integer>( getIdentifiers( orgUnitList ) );
@@ -718,6 +757,19 @@ public class CampaignTrackerResultAction
             orgUnitIdsByComma = getCommaDelimitedString( orgunitIds );
         }
         headerDataValueMap = ivbUtil.getLatestDataValuesForTabularReport( headerDataElementIdsByComma, orgUnitIdsByComma );
+        */
+
+        /*
+        for(OrganisationUnit orgUnit : campaignSnap.getOrgUnitList() ) {
+        	for( Section section : campaignSnap.getDsSections() ) {
+        		String key1 = orgUnit.getId()+"_"+section.getId();
+        		if( campaignSnap.getCtDataMap().get(key1) != null ) {
+	        		for( CampaignVO cvo : campaignSnap.getCtDataMap().get(key1) ) {
+	        			System.out.println( orgUnit.getShortName() + ", "+section.getName()+", "+ cvo.getColDataMap().get( "COL_0" ).getStrVal1( ));
+	        		}
+        		}
+        	}
+        }
         */
         
         userName = currentUserService.getCurrentUser().getUsername();

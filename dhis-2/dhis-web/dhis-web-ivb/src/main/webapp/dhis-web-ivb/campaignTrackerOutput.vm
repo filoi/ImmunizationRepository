@@ -193,8 +193,30 @@ $(function() {
 		<option value="$orgUnit.id"></option>
     #end
 </select>
-<form id="form1" name="form1" action="exportToWorkBook.action" method="post" onsubmit="return exportToExcel()" target="_newtab">
+<form id="form1" name="form1" action="campaignTrackerXl.action" method="post" onsubmit="return exportToExcel()" target="_newtab">
 	<input type="hidden" name="htmlCode" id="htmlCode" />
+	<input type="hidden" name="isoCode" value="$!campaignSnap.isoCode" />
+	<input type="hidden" name="whoRegion" value="$!campaignSnap.whoRegion" />
+	<input type="hidden" name="unicefRegion" value="$!campaignSnap.unicefRegion" />
+	<input type="hidden" name="incomeLevel" value="$!campaignSnap.incomeLevel" />
+	<input type="hidden" name="gaviEligibleStatus" value="$!campaignSnap.gaviEligibleStatus" />
+	<select name="ouIds" multiple="multiple" style="display:none;">
+		#foreach($ouId in $campaignSnap.ouIds)
+			<option value="$ouId" selected>$ouId</option>
+		#end
+	</select>
+	<select name="campaignIds" multiple="multiple" style="display:none;">
+		#foreach($campaignId in $campaignSnap.campaignIds)
+			<option value="$campaignId" selected>$campaignId</option>
+		#end
+	</select>
+	<select name="selCols" multiple="multiple" style="display:none;">
+		#foreach($selCol in $campaignSnap.selCols)
+			<option value="$selCol" selected>$selCol</option>
+		#end
+	</select>
+	
+	
 	<div align="right" style="width:95%;margin:auto;padding-top:8px;padding-bottom:3px;">
 		<input type="button" onclick="location.href='campaignTrackerForm.action'" value="Change Selections"/>&nbsp;
 		<input type="submit" value="Download As Excel"/>&nbsp;
@@ -203,30 +225,30 @@ $(function() {
 	</div>
   
 
- <div id="htmlContent1" style="width:98%;margin:auto;" >   
+	<div id="htmlContent1" style="width:98%;margin:auto;" >   
 
-	<div style="margin:auto; margin-top:-50px;" >        
-        <h2>Campaign Tracker - current as of $!curDateStr</h2>
-		<h3>Campaigns: 
-			#foreach( $dataSetSection in $dataSetSections )
-				$dataSetSection.code &nbsp; 
-			#end
-		</h3>
-	</div>
-	<br/>
+		<div style="margin:auto; margin-top:-50px;" >        
+	        <h2>Campaign Tracker - current as of $!campaignSnap.curDateStr</h2>
+			<h3>Campaigns: 
+				#foreach( $dataSetSection in $campaignSnap.dsSections )
+					$dataSetSection.code &nbsp; 
+				#end
+			</h3>
+		</div>
+		<br/>
 	
-	<table align="center" id="outputTable" border="0" cellspacing="0" cellpadding="0" class="table table-bordered table-condensed freeze_header">	
-    	<thead>
-                <tr >					
-                    #if( $isoCode == "ON" ) <th style="min-width:30px; width:30px;" class="freeze_left_column">$i18n.getString( "iso_code" )</th>#end 
-                    #if( $whoRegion == "ON" ) <th style="min-width:50px; width:50px;" class="freeze_left_column">$i18n.getString( "who_region" )</th> #end
-                  	#if( $unicefRegion == "ON" )  <th style="min-width:50px; width:50px;" class="freeze_left_column">$i18n.getString( "unicef_region" )</th>#end
-                    <th style="min-width:50px; width:50px;" class="freeze_left_column">$i18n.getString( "country" )</th>
-                    #if( $incomeLevel == "ON" )   <th class="freeze_left_column">$i18n.getString( "income_level" )</th>#end 
-                  	#if( $gaviEligibleStatus == "ON" )  <th class="freeze_left_column">$i18n.getString( "gavi_eligibility_status" )</th>#end 
-                  	<th class="freeze_left_column">Campaign Vaccine</th>
-                  	<th style="min-width:60px; width:60px;" class="freeze_left_column">Campaign Identifier</th>                    
-                    #foreach( $colObj in $colList )
+		<table align="center" id="outputTable" border="0" cellspacing="0" cellpadding="0" class="table table-bordered table-condensed freeze_header">	
+    		<thead>
+	            <tr >					
+	                #if( $campaignSnap.isoCode == "ON" ) <th style="min-width:30px; width:30px;" class="freeze_left_column">$i18n.getString( "iso_code" )</th>#end 
+	                #if( $campaignSnap.whoRegion == "ON" ) <th style="min-width:50px; width:50px;" class="freeze_left_column">$i18n.getString( "who_region" )</th> #end
+	              	#if( $campaignSnap.unicefRegion == "ON" )  <th style="min-width:50px; width:50px;" class="freeze_left_column">$i18n.getString( "unicef_region" )</th>#end
+	                <th style="min-width:50px; width:50px;" class="freeze_left_column">$i18n.getString( "country" )</th>
+	                #if( $campaignSnap.incomeLevel == "ON" )   <th class="freeze_left_column">$i18n.getString( "income_level" )</th>#end 
+	              	#if( $campaignSnap.gaviEligibleStatus == "ON" )  <th class="freeze_left_column">$i18n.getString( "gavi_eligibility_status" )</th>#end 
+	              	<th class="freeze_left_column">Campaign Vaccine</th>
+	              	<th style="min-width:60px; width:60px;" class="freeze_left_column">Campaign Identifier</th>                    
+	                #foreach( $colObj in $campaignSnap.colList )
 						#set( $styleProp = "" )					
 						#if( $!colObj.code == "COL_1" || $!colObj.code == "COL_2" || $!colObj.code == "COL_5" || $!colObj.code == "COL_6" ||
 							 $!colObj.code == "COL_7" || $!colObj.code == "COL_8" || $!colObj.code == "COL_10" )
@@ -238,94 +260,98 @@ $(function() {
 						#else
 							#set( $styleProp = "" )
 						#end
-                        <th $styleProp>$!colObj.name</th>
-                    #end
-                </tr>
-            </thead>
-            <tbody id="list">
-                #foreach( $orgUnit in $orgUnitList )
-                	#foreach( $section in $dataSetSections )
-                    #set( $key1 = "${orgUnit.id}_${section.code}")
-                    #set( $vaccineResultList = "" )
-                    #set( $vaccineResultList = $dataMap.get( $key1 ) )
-                    #if($dataMap.get( $key1 ) && $dataMap.get( $key1 ) != " ")
-                       	#foreach( $cvo in $vaccineResultList )
-                       		#set( $cMap = "")
-                       		#set( $cMap = $cvo.colDataMap )
-		                    
-				   			<tr width="100%">
-                        		#if( $isoCode == "ON" ) <td class="freeze_left_column">$orgUnit.code</td> #end
-                        		#if( $whoRegion == "ON" ) <td class="freeze_left_column">$!orgUnit.getParent().shortName</td> #end
-                        		#if( $unicefRegion == "ON" ) <td class="freeze_left_column">$orgUnit.getGroupInGroupSet( $unicefRegionsGroupSet ).getShortName()</td> #end
-                        		<td class="freeze_left_column" align="left">$!orgUnit.name</td>
-                        		#set( $headergetter = "" )
-                        		#set( $headergetter = "$orgUnit.id:3" )
-                        		#if( $incomeLevel == "ON" )
-                        			#if('$!countryGeneralInfoMap.get($headergetter)' != 'null' )
-                            			<td class="freeze_left_column">$!countryGeneralInfoMap.get($headergetter)</td>
-                        			#else   
-                            			<td class="freeze_left_column">&nbsp;</td>
-                        			#end
-                        		#end
-
-	                            #set( $headergetter = "" )
-	                            #set( $headergetter = "$orgUnit.id:4" )   
-	                            #if( $gaviEligibleStatus == "ON" )                         
-	                            	#if('$!countryGeneralInfoMap.get($headergetter)' != 'null' )
-	                                	<td class="freeze_left_column">$!countryGeneralInfoMap.get($headergetter)</td>   
-	                            	#else
-	                                	<td class="freeze_left_column">&nbsp;</td>
+	                    <th $styleProp>$!colObj.name</th>
+	                #end
+	            </tr>
+        	</thead>
+        	<tbody id="list">
+                #foreach( $orgUnit in $campaignSnap.orgUnitList )
+                	#foreach( $section in $campaignSnap.dsSections )
+	                    #set( $key1 = "${orgUnit.id}_${section.code}")
+	                    #set( $vaccineResultList = "" )
+	                    #set( $vaccineResultList = $campaignSnap.ctDataMap.get( $key1 ) )
+	                    ##if($campaignSnap.ctDataMap.get( $key1 ) && $campaignSnap.ctDataMap.get( $key1 ) != " ")
+	                       	#foreach( $cvo in $vaccineResultList )
+	                       		#set( $cMap = "")
+	                       		#set( $cMap = $cvo.colDataMap )
+			                    
+					   			<tr width="100%">
+	                        		#if( $campaignSnap.isoCode == "ON" ) <td class="freeze_left_column">$orgUnit.code</td> #end
+	                        		#if( $campaignSnap.whoRegion == "ON" ) <td class="freeze_left_column">$!orgUnit.getParent().shortName</td> #end
+	                        		#if( $campaignSnap.unicefRegion == "ON" ) <td class="freeze_left_column">$orgUnit.getGroupInGroupSet( $campaignSnap.unicefRegionsGroupSet ).getShortName()</td> #end
+	                        		<td class="freeze_left_column" align="left">$!orgUnit.shortName</td>
+	                        		#set( $headergetter = "" )
+	                        		#set( $headergetter = "$orgUnit.id:3" )
+	                        		#if( $campaignSnap.incomeLevel == "ON" )
+	                        			#if('$campaignSnap.countryGeneralInfoMap.get($headergetter)' != 'null' )
+	                            			<td class="freeze_left_column">$!campaignSnap.countryGeneralInfoMap.get($headergetter)</td>
+	                        			#else   
+	                            			<td class="freeze_left_column">&nbsp;</td>
+	                        			#end
+	                        		#end
+	
+		                            #set( $headergetter = "" )
+		                            #set( $headergetter = "$orgUnit.id:4" )   
+		                            #if( $gaviEligibleStatus == "ON" )                         
+		                            	#if('$campaignSnap.countryGeneralInfoMap.get($headergetter)' != 'null' )
+		                                	<td class="freeze_left_column">$!campaignSnap.countryGeneralInfoMap.get($headergetter)</td>   
+		                            	#else
+		                                	<td class="freeze_left_column">&nbsp;</td>
+		                            	#end
+		                            #end
+	                        		#if( $!cMap.get( "COL_0" ).intVal1 == 1 )
+	                        			<td class="freeze_left_column"><a href="loadSingleCoutryEntryForm.action?dataSetSectionId=$section.id&orgUnitUid=$orgUnit.uid">$!section.code</a></td>
+	                        		#elseif	( $!cMap.get( "COL_0" ).intVal1 == 2 )
+	                        			<td class="freeze_left_column"><a href="../dhis-web-event-capture/index.html">$!section.code</a></td>
+	                        		#else
+		                        		<td class="freeze_left_column">$!section.code</td>
+	                        		#end
+	                        		#set( $subNatName = " ")
+	                        		#set( $subNatName = $!cMap.get( "COL_0" ).strVal1 )
+	                        		#if( $subNatName == "NONE" )
+	                        			#set( $subNatName = " ")
+	                        		#end
+		                            <td class="freeze_left_column">$subNatName</td>        
+	                            	#foreach( $colObj in $campaignSnap.colList )
+	                            		#set( $comment = "" )
+	                            		#set( $comment = $!cMap.get( $!colObj.code ).strVal2 )
+	                                	#set( $value = "" )
+	                                	#set( $value = $!cMap.get( $!colObj.code ).strVal1 )
+	                                	#if( $!colObj.code == "COL_3" && $value == "May postpone")
+											#set( $value = "Might postpone" )
+										#end
+	                                	
+	                                	#if( $!colObj.code == "COL_4")
+											#if( !$!comment.trim().equals("") && $!comment.length() > 20 )
+												<td align="left" title="$!comment">$!comment.substring(0,20)...</td>
+											#else
+												<td align="left">$!comment</td>
+											#end                                		
+	                                	#elseif( $!colObj.code == "COL_13" )
+											#if( !$!value.trim().equals("") && $!value.length() > 20 )
+												<td align="left" title="$!value">$!value.substring(0,20)...</td>
+											#else
+												<td align="left">$!value</td>
+											#end									
+										#elseif( $!colObj.code == "COL_3" )
+	                                		<td align="left">$!value</td>
+	                                	#else
+	                                		<td align="left" #if(${comment} != '') style="color:green;" title="$!{comment}" #end>$!value</td>	
+	                                	#end	
 	                            	#end
-	                            #end
-                        		#if( $!cMap.get( "COL_0" ).intVal1 == 1 )
-                        			<td class="freeze_left_column"><a href="loadSingleCoutryEntryForm.action?dataSetSectionId=$section.id&orgUnitUid=$orgUnit.uid">$!section.code</a></td>
-                        		#elseif	( $!cMap.get( "COL_0" ).intVal1 == 2 )
-                        			<td class="freeze_left_column"><a href="../dhis-web-event-capture/index.html">$!section.code</a></td>
-                        		#else
-	                        		<td class="freeze_left_column">$!section.code</td>
-                        		#end
-                        		#set( $subNatName = " ")
-                        		#set( $subNatName = $!cMap.get( "COL_0" ).strVal1 )
-                        		#if( $subNatName == "NONE" )
-                        			#set( $subNatName = " ")
-                        		#end
-	                            <td class="freeze_left_column">$subNatName</td>        
-                            	#foreach( $colObj in $colList )
-                            		#set( $comment = "" )
-                            		#set( $comment = $!$cMap.get( $!colObj.code ).strVal2 )
-                                	#set( $value = "" )
-                                	#set( $value = $!$cMap.get( $!colObj.code ).strVal1 )
-                                	#if( $!colObj.code == "COL_4")
-										#if( !$!comment.trim().equals("") && $!comment.length() > 20 )
-											<td align="left" title="$!comment">$!comment.substring(0,20)...</td>
-										#else
-											<td align="left">$!comment</td>
-										#end                                		
-                                	#elseif( $!colObj.code == "COL_13" )
-										#if( !$!value.trim().equals("") && $!value.length() > 20 )
-											<td align="left" title="$!value">$!value.substring(0,20)...</td>
-										#else
-											<td align="left">$!value</td>
-										#end									
-									#elseif( $!colObj.code == "COL_3" )
-                                		<td align="left">$!value</td>
-                                	#else
-                                		<td align="left" #if(${comment} != '') style="color:green;" title="$!{comment}" #end>$!value</td>	
-                                	#end	
-                            	#end
-                    		</tr>
-                        #end
-                    #end
+	                    		</tr>
+	                        #end
+	                    ##end
                     #end
                 #end
-            </tbody>
-        </table>
-        <br/><br/><br/>
-        <table style="margin:auto;display:none;color: #9F6000;background-color: #FEEFB3;border: 1px solid;" width="100%">
-            <tr>
-                <td colspan="5">$i18n.getString( "report_inline_security_warning" )</td>
-            </tr>
-        </table>
+        	</tbody>
+    	</table>
+    	<br/><br/><br/>
+	    <table style="margin:auto;display:none;color: #9F6000;background-color: #FEEFB3;border: 1px solid;" width="100%">
+	    	<tr>
+	        	<td colspan="5">$i18n.getString( "report_inline_security_warning" )</td>
+	        </tr>
+	    </table>
 	</div>
 	
 	
@@ -391,7 +417,7 @@ $(function() {
                         		#if( $isoCode == "ON" ) <td style="border: 1px solid #ccc;vertical-align: middle;">$orgUnit.code</td> #end
                         		#if( $whoRegion == "ON" ) <td style="border: 1px solid #ccc;vertical-align: middle;">$!orgUnit.getParent().shortName</td> #end
                         		#if( $unicefRegion == "ON" ) <td style="border: 1px solid #ccc;vertical-align: middle;">$orgUnit.getGroupInGroupSet( $unicefRegionsGroupSet ).getShortName()</td> #end
-                        		<td align="left" style="border: 1px solid #ccc;vertical-align: middle;">$!orgUnit.name</td>
+                        		<td align="left" style="border: 1px solid #ccc;vertical-align: middle;">$!orgUnit.shortName</td>
                         		#set( $headergetter = "" )
                         		#set( $headergetter = "$orgUnit.id:3" )
                         		#if( $incomeLevel == "ON" )
@@ -424,6 +450,10 @@ $(function() {
                             		#set( $comment = $!$cMap.get( $!colObj.code ).strVal2 )
                                 	#set( $value = "" )
                                 	#set( $value = $!$cMap.get( $!colObj.code ).strVal1 )
+                                	#if( $!colObj.code == "COL_3" && $value == "May postpone")
+										#set( $value = "Might postpone" )
+									#end
+                                	
                                 	#if( $!colObj.code == "COL_4")
 										<td align="left" style="border: 1px solid #ccc;vertical-align: middle;">$!comment</td>
                                 	#elseif( $!colObj.code == "COL_13" )
