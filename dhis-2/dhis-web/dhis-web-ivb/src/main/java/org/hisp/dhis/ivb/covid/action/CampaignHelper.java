@@ -757,12 +757,12 @@ public class CampaignHelper
     {
     	DataFormat dataFormat = wb.createDataFormat();
     	
-    	Font headerFont = wb.createFont();//Create font
+    	XSSFFont headerFont = wb.createFont();//Create font
 		headerFont.setBoldweight(Font.BOLDWEIGHT_BOLD);//Make font bold
-		headerFont.setFontHeightInPoints((short)15);
+		headerFont.setFontHeightInPoints((short)14);
 		headerFont.setColor(IndexedColors.BLACK.getIndex());
 	    
-    	Font subHeaderFont = wb.createFont();//Create font
+		XSSFFont subHeaderFont = wb.createFont();//Create font
     	subHeaderFont.setBoldweight(Font.BOLDWEIGHT_BOLD);//Make font bold
     	subHeaderFont.setFontHeightInPoints((short)12);
     	subHeaderFont.setColor(IndexedColors.BLACK.getIndex());
@@ -770,18 +770,19 @@ public class CampaignHelper
     	//String rgbS = "FFF000";
     	//byte[] rgbB = Hex.decodeHex(rgbS.toCharArray()); // get byte array from hex string
    	    
-    	Font tHeaderFont = wb.createFont();//Create font
-    	tHeaderFont.setFontHeightInPoints((short)10);
+    	XSSFFont tHeaderFont = wb.createFont();//Create font
+    	tHeaderFont.setFontHeightInPoints((short)9);
     	tHeaderFont.setBoldweight(Font.BOLDWEIGHT_BOLD);
-    	tHeaderFont.setColor(IndexedColors.BLACK.getIndex());
+    	XSSFColor tHeadercolor = new XSSFColor( Color.decode("#0A2F76") );
+    	tHeaderFont.setColor(tHeadercolor);
  	    
-		Font dataFont = wb.createFont();//Create font
-	    dataFont.setFontHeightInPoints((short)10);
+    	XSSFFont dataFont = wb.createFont();//Create font
+	    dataFont.setFontHeightInPoints((short)9);
 	    dataFont.setColor(IndexedColors.BLACK.getIndex());
 
 	    
-	    Font dataFontBoldItalic = wb.createFont();//Create font
-	    dataFontBoldItalic.setFontHeightInPoints((short)10);
+	    XSSFFont dataFontBoldItalic = wb.createFont();//Create font
+	    dataFontBoldItalic.setFontHeightInPoints((short)9);
 	    dataFontBoldItalic.setBoldweight(Font.BOLDWEIGHT_BOLD);
 	    dataFontBoldItalic.setItalic( true );
 	    dataFontBoldItalic.setColor(IndexedColors.BLACK.getIndex());
@@ -850,6 +851,7 @@ public class CampaignHelper
 			cell.setCellValue( "Campaign Tracker - current as of "+campaignSnap.getCurDateStr() );
 			
 			//Sub Header
+			rowCount++;
 			row = sheet.createRow( rowCount++ );			
 			colCount = 0;
 			cell = row.createCell( colCount++ );
@@ -860,7 +862,7 @@ public class CampaignHelper
 				campaigns += section.getCode()+" "; 
 			cell.setCellValue( "Campaigns: "+campaigns );
 			
-			rowCount++;
+			rowCount += 2;
 			
 			//Table Header
 			row = sheet.createRow( rowCount++ );			
@@ -869,71 +871,93 @@ public class CampaignHelper
 				cell = row.createCell( colCount++ );
 				cell.setCellStyle( tHeaderStyle );
 				cell.setCellValue( "ISO Code" );
-				sheet.setColumnWidth(colCount-1, 8 * 256);
+				sheet.setColumnWidth(colCount-1, 6 * 256);
 
 			}
 			if( campaignSnap.getWhoRegion() != null && campaignSnap.getWhoRegion().trim().equals("ON") ) {
 				cell = row.createCell( colCount++ );
 				cell.setCellStyle( tHeaderStyle );
 				cell.setCellValue( "WHO Region" );
-				sheet.setColumnWidth(colCount-1, 15 * 256);
+				sheet.setColumnWidth(colCount-1, 8 * 256);
 			}
 			if( campaignSnap.getUnicefRegion() != null && campaignSnap.getUnicefRegion().trim().equals("ON") ) {
 				cell = row.createCell( colCount++ );
 				cell.setCellStyle( tHeaderStyle );
 				cell.setCellValue( "UNICEF Region" );
-				sheet.setColumnWidth(colCount-1, 10 * 256);
+				sheet.setColumnWidth(colCount-1, 9 * 256);
 			}
 
 			cell = row.createCell( colCount++ );
 			cell.setCellStyle( tHeaderStyle );
 			cell.setCellValue( "Country" );
-			sheet.setColumnWidth(colCount-1, 25 * 256);
+			sheet.setColumnWidth(colCount-1, 12 * 256);
 			
 			if( campaignSnap.getIncomeLevel() != null && campaignSnap.getIncomeLevel().trim().equals("ON") ) {
 				cell = row.createCell( colCount++ );
 				cell.setCellStyle( tHeaderStyle );
 				cell.setCellValue( "Income level" );
-				sheet.setColumnWidth(colCount-1, 25 * 256);
+				sheet.setColumnWidth(colCount-1, 15 * 256);
 			}
 			if( campaignSnap.getGaviEligibleStatus() != null && campaignSnap.getGaviEligibleStatus().trim().equals("ON") ) {
 				cell = row.createCell( colCount++ );
 				cell.setCellStyle( tHeaderStyle );
 				cell.setCellValue( "GAVI eligibility status" );
-				sheet.setColumnWidth(colCount-1, 25 * 256);
+				sheet.setColumnWidth(colCount-1, 15 * 256);
 			}
 
 			cell = row.createCell( colCount++ );
 			cell.setCellStyle( tHeaderStyle );
 			cell.setCellValue( "Campaign Vaccine" );
-			sheet.setColumnWidth(colCount-1, 15 * 256);
+			sheet.setColumnWidth(colCount-1, 8 * 256);
 			
 			cell = row.createCell( colCount++ );
 			cell.setCellStyle( tHeaderStyle );
 			cell.setCellValue( "Campaign Identifier" );
-			sheet.setColumnWidth(colCount-1, 25 * 256);
+			sheet.setColumnWidth(colCount-1, 13 * 256);
 			
 			int freezeColNo = colCount;
+			Map<String, Integer> colWidthMap = new HashMap<>();
+			colWidthMap.put("COL_1", 11);
+			colWidthMap.put("COL_2", 11);
+			colWidthMap.put("COL_3", 15);
+			colWidthMap.put("COL_4", 17);
+			colWidthMap.put("COL_5", 11);
+			colWidthMap.put("COL_6", 11);
+			colWidthMap.put("COL_7", 10);
+			colWidthMap.put("COL_8", 11);
+			colWidthMap.put("COL_9", 11);
+			colWidthMap.put("COL_10", 12);
+			colWidthMap.put("COL_11", 11);
+			colWidthMap.put("COL_12", 20);
+			colWidthMap.put("COL_13", 25);
 			
 			for( GenericTypeObj colObj : campaignSnap.getColList() ){
 				cell = row.createCell( colCount++ );
 				cell.setCellStyle( tHeaderStyle );
 				cell.setCellValue( colObj.getName() );
+				/*
 				if( colObj.getCode().equals("COL_1") || colObj.getCode().equals("COL_2") || colObj.getCode().equals("COL_5") || colObj.getCode().equals("COL_6") ||
 						colObj.getCode().equals("COL_7") || colObj.getCode().equals("COL_8") || colObj.getCode().equals("COL_10") )
-					sheet.setColumnWidth(colCount-1, 15 * 256);
+					sheet.setColumnWidth(colCount-1, 12 * 256);
 				else if( colObj.getCode().equals("COL_3") || colObj.getCode().equals("COL_9") || colObj.getCode().equals("COL_11") || colObj.getCode().equals("COL_12") )
+					sheet.setColumnWidth(colCount-1, 15 * 256);
+				else if( colObj.getCode().equals("COL_4") )
+					sheet.setColumnWidth(colCount-1, 18 * 256);
+				else if( colObj.getCode().equals("COL_13") )
 					sheet.setColumnWidth(colCount-1, 25 * 256);
-				else if( colObj.getCode().equals("COL_4") || colObj.getCode().equals("COL_13") )
-					sheet.setColumnWidth(colCount-1, 40 * 256);
 				else
-					sheet.setColumnWidth(colCount-1, 20 * 256);
+					sheet.setColumnWidth(colCount-1, 10 * 256);
+				*/
+				int colWidth = 10;
+				try { colWidth = colWidthMap.get( colObj.getCode() ); }catch(Exception e) {}
+				sheet.setColumnWidth(colCount-1, colWidth * 256);
+				
 				if( campaignSnap.getShowComment() != null && campaignSnap.getShowComment().equals("ON") && !colObj.getCode().equals("COL_3") && !colObj.getCode().equals("COL_4") && !colObj.getCode().equals("COL_13") ) {
 					cell = row.createCell( colCount++ );
 					cell.setCellStyle( tHeaderStyle );
 					cell.setCellValue( colObj.getName() +" Comment");
 
-					sheet.setColumnWidth(colCount-1, 40 * 256);
+					sheet.setColumnWidth(colCount-1, 18 * 256);
 				}
 			}
 			
