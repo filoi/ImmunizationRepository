@@ -9,6 +9,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -41,6 +42,8 @@ import org.hisp.dhis.dataelement.DataElement;
 import org.hisp.dhis.dataelement.DataElementCategoryOptionCombo;
 import org.hisp.dhis.dataelement.DataElementCategoryService;
 import org.hisp.dhis.dataelement.DataElementService;
+import org.hisp.dhis.dataset.DataSet;
+import org.hisp.dhis.dataset.DataSetService;
 import org.hisp.dhis.dataset.Section;
 import org.hisp.dhis.dataset.SectionService;
 import org.hisp.dhis.datavalue.DataValue;
@@ -162,6 +165,9 @@ public class CampaignHelper
 
     @Autowired
     private OrganisationUnitGroupService ouGroupService;
+    
+    @Autowired
+    private DataSetService dataSetService;
     
     @Autowired
     private ProgramStageService programStageService;
@@ -1057,5 +1063,534 @@ public class CampaignHelper
     	}
     	
     	return workbook;
+    }
+    
+    
+    
+    
+    public CampaignSnapshot getCampainCalendarSnap(CampaignSnapshot campaignSnap )
+    {
+    	 Date sDate = null;
+         Date eDate = null;
+
+         if( campaignSnap.getFromDateStr() != null && !campaignSnap.getFromDateStr().trim().equals("") ){
+             sDate = getStartDateByString( campaignSnap.getFromDateStr() );
+         }         
+         if( campaignSnap.getToDateStr() != null && !campaignSnap.getToDateStr().trim().equals("") ){
+             eDate = getEndDateByString( campaignSnap.getToDateStr() );
+         }
+         
+         String ouIdsByComma = "-1";
+         if ( campaignSnap.getOuIds() != null && campaignSnap.getOuIds().size() > 0 ){
+         	ouIdsByComma = getCommaDelimitedString( campaignSnap.getOuIds() );
+         }
+         Lookup lookup = lookupService.getLookupByName( "UNICEF_REGIONS_GROUPSET" );
+         campaignSnap.setUnicefRegionsGroupSet( ouGroupService.getOrganisationUnitGroupSet( Integer.parseInt( lookup.getValue() ) ) );
+         for(Integer ouId : campaignSnap.getOuIds() ){
+             OrganisationUnit orgUnit = ouService.getOrganisationUnit( ouId );
+             campaignSnap.getOrgUnitList().add( orgUnit );
+         }
+         Collections.sort(campaignSnap.getOrgUnitList(), new IdentifiableObjectNameComparator() );
+
+         
+         //Campaigns 
+         lookup = lookupService.getLookupByName( "CAMPAIGN_DATASET_UID" );
+         DataSet dataSet = dataSetService.getDataSet( lookup.getValue() );
+         campaignSnap.getDsSections().addAll( dataSet.getSections() );
+        
+         Set<String> sectionCodes = new HashSet<>();
+         for( Section section : campaignSnap.getDsSections() ){
+             sectionCodes.add( section.getCode().trim().toLowerCase() );
+         }
+         lookup = lookupService.getLookupByName( "CAMPAIGN_PROGRAM_STAGE_IDS" );
+         String psIdsByComma = "-1";
+         List<ProgramStage> programStages = new ArrayList<>();
+         for(String psId : lookup.getValue().split(",")) {
+         	ProgramStage ps = programStageService.getProgramStage( Integer.parseInt(psId) );
+         	if( ps!= null && sectionCodes.contains( ps.getName().trim().toLowerCase()) ) {
+         		programStages.add( ps );
+         		psIdsByComma += ","+ps.getId();
+         	}
+         }
+         lookup = lookupService.getLookupByName( "CAMPAIGN_SUBNATIONAL_DEID" );
+         int subNationalDeId = Integer.parseInt( lookup.getValue() );
+         lookup = lookupService.getLookupByName( "CAMPAIGN_STATUS_DEID" );
+         int statusDeId = Integer.parseInt( lookup.getValue() );
+
+         
+         //Selected Columns
+         campaignSnap.getSelCols().add("COL_1");
+         campaignSnap.getSelCols().add("COL_5");
+         campaignSnap.getSelCols().add("COL_3");
+         Map<Integer, String> deColMap = new HashMap<>();
+         String deIdsByComma = "-1";
+         String psDeIdsByComma = "-1";
+         psDeIdsByComma += "," +subNationalDeId;
+         lookup = lookupService.getLookupByName( "CAMPAIGN_COLUMNS_INFO" );
+         String campaignColInfo = lookup.getValue();
+         //colList = new ArrayList<GenericTypeObj>();
+         for( String colInfo : campaignColInfo.split("@!@") ) {
+         	if( campaignSnap.getSelCols().contains( colInfo.split("@-@")[0] ) ) {
+ 	        	GenericTypeObj colObj = new GenericTypeObj();
+ 	        	colObj.setCode( colInfo.split("@-@")[0] );
+ 	        	colObj.setName( colInfo.split("@-@")[1] );
+ 	        	colObj.setStrAttrib1( colInfo.split("@-@")[2] ); //deids
+ 	        	colObj.setStrAttrib2( colInfo.split("@-@")[3] ); //ps deids
+ 	        	campaignSnap.getColList().add( colObj );
+ 	        	deIdsByComma += ","+colInfo.split("@-@")[2];
+ 	        	psDeIdsByComma += ","+colInfo.split("@-@")[3];
+ 	        	for(String deIdStr : colObj.getStrAttrib1().split(",") ) {
+ 	        		deColMap.put(Integer.parseInt(deIdStr), colObj.getCode());
+ 	        	}
+ 	        	deColMap.put(Integer.parseInt(colObj.getStrAttrib2()), colObj.getCode());
+         	}
+         }
+         
+         Set<Integer> deIds = new HashSet<Integer>( deColMap.keySet() );
+         Map<Integer, String> deSectionMap = new HashMap<>();
+         Map<Integer, Map<String, Integer>> sectionDeMap = new HashMap<>();
+         for(Section section : campaignSnap.getDsSections() ) {
+     		for( DataElement de : section.getDataElements()) {
+     			if( deIds.contains(de.getId()) ) {
+     				deSectionMap.put(de.getId(), section.getCode());
+     				if( sectionDeMap.get( section.getId() ) == null)
+     					sectionDeMap.put(section.getId(), new HashMap<>());
+     				sectionDeMap.get( section.getId() ).put(deColMap.get(de.getId()), de.getId());
+     			}
+     		}
+         }
+         
+         Map<Integer, Map<String, Integer>> psDeMap = new HashMap<>();
+         for(ProgramStage ps : programStages ) {
+     		for( DataElement de : ps.getAllDataElements()) {
+     			if( deIds.contains(de.getId()) ) {
+     				if( psDeMap.get( ps.getId() ) == null)
+     					psDeMap.put(ps.getId(), new HashMap<>());
+     				psDeMap.get( ps.getId() ).put(deColMap.get(de.getId()), de.getId());
+     			}
+     		}
+         }                 
+        
+         Map<String, GenericDataVO> dvDataMap = getLatestDataValues( deIdsByComma, ouIdsByComma );
+ 		
+         //Color Codes
+         lookup = lookupService.getLookupByName( "CAMPAIGN_CALENDAR_COLOR_CODES" );
+         try{ campaignSnap.setPlannedColor(lookup.getValue().split("@!@")[0]);}catch(Exception e) {}
+         try{ campaignSnap.setPostponedColor(lookup.getValue().split("@!@")[1]);}catch(Exception e) {}
+         try{ campaignSnap.setBothMatchColor(lookup.getValue().split("@!@")[2]);}catch(Exception e) {}
+         
+        
+         lookup = lookupService.getLookupByName( "CAMPAIGN_CALENDAR_STATUS_COLOR_MAP" );
+         String statusColorInfo = lookup.getValue();
+         for(String statusColor : statusColorInfo.split("@!@") ) {
+        	 campaignSnap.getStatusColorMap().put(statusColor.split("@-@")[0], statusColor.split("@-@")[1]);
+         }
+         
+         SimpleDateFormat mdf = new SimpleDateFormat("MMM-yyyy");
+         campaignSnap.setCcDataMap( new HashMap<>() );
+         
+         //Arranging aggregated data
+         for( int ouId : campaignSnap.getOuIds() ) {
+         	String key1 = ouId+"_National";
+         	//dataMap.put(key1, new HashMap<>());
+         	for(Section section : campaignSnap.getDsSections() ) {        		
+         		CampaignVO cvo = new CampaignVO();
+         		cvo.setColDataMap( new HashMap<>() );
+         		int flag = 0;
+         		
+         		
+         		        		        		        		
+         		int plannedDeId = 0;
+         		try{ plannedDeId = sectionDeMap.get( section.getId() ).get("COL_1"); }catch(Exception e) {}
+         		int postponedDeId = 0;
+         		try{ postponedDeId = sectionDeMap.get( section.getId() ).get("COL_5");}catch(Exception e) {}
+         		
+         		Date plannedDate = null;
+         		String plannedVal = "";
+         		try { plannedVal = dvDataMap.get(ouId+"_"+plannedDeId).getStrVal1();}catch(Exception e) {}
+         		//System.out.println( "Planned: "+ouId+"_"+plannedDeId + " = " + plannedVal);
+         		if( !plannedVal.trim().equals("") ) {
+         			try{ plannedDate = getStartDateByString( plannedVal );}catch(Exception e) {}
+         			if( plannedDate != null && (plannedDate.before( sDate ) || plannedDate.after( eDate )) )
+         				plannedVal = "";
+         			//System.out.println( "Planned Date = "+ plannedDate );
+         			/*
+         			if( plannedDate == null ) {
+         				GenericDataVO dvo = new GenericDataVO();
+         				dvo.setStrVal1( section.getCode() );
+         				dvo.setStrVal2( plannedColor );
+         				dvo.setStrVal3("pattern1");
+         				dvo.setIntVal1(1);
+         				cvo.getColDataMap().put("NONE1", dvo);
+         				flag = 1;
+         			}
+         			*/
+         		}
+         		
+         		Date postponedDate = null;
+         		String postponedVal = "";
+         		try { postponedVal = dvDataMap.get(ouId+"_"+postponedDeId).getStrVal1();}catch(Exception e) {}
+         		//System.out.println( "Postponed: "+ ouId+"_"+postponedDeId + " = " + postponedVal);
+         		if( !postponedVal.trim().equals("") ) {
+         			try{ postponedDate = getStartDateByString( postponedVal );}catch(Exception e) {}
+         			if( postponedDate != null && (postponedDate.before( sDate ) || postponedDate.after( eDate )) )
+         				postponedVal = "";
+         			//System.out.println( "Postponed Date = "+ postponedDate );
+         			/*
+         			if( postponedDate == null ) {
+         				GenericDataVO dvo = new GenericDataVO();
+         				dvo.setStrVal1( section.getCode() );
+         				dvo.setStrVal2( postponedColor );
+         				dvo.setStrVal3("pattern2");
+         				dvo.setIntVal1(2);
+         				cvo.getColDataMap().put("NONE2", dvo);
+         				flag = 1;
+         			}
+         			*/        			
+         		}
+         		
+         		if( !plannedVal.trim().equals("") && plannedDate == null && !postponedVal.trim().equals("") && postponedDate == null ) {
+     				GenericDataVO dvo = new GenericDataVO();
+     				dvo.setStrVal1( section.getCode() );
+     				dvo.setStrVal2( campaignSnap.getBothMatchColor() );
+     				dvo.setStrVal3("pattern3");
+     				dvo.setIntVal1(3);
+     				cvo.getColDataMap().put("NONE1", dvo);
+     				flag = 1;	        				
+         		}
+         		else if( !plannedVal.trim().equals("") && plannedDate == null) {
+         			GenericDataVO dvo = new GenericDataVO();
+     				dvo.setStrVal1( section.getCode() );
+     				dvo.setStrVal2( campaignSnap.getPlannedColor() );
+     				dvo.setStrVal3("pattern1");
+     				dvo.setIntVal1(1);
+     				cvo.getColDataMap().put("NONE1", dvo);
+     				flag = 1;
+         		}
+         		else if( !postponedVal.trim().equals("") && postponedDate == null ) {
+         			GenericDataVO dvo = new GenericDataVO();
+     				dvo.setStrVal1( section.getCode() );
+     				dvo.setStrVal2( campaignSnap.getPostponedColor() );
+     				dvo.setStrVal3("pattern2");
+     				dvo.setIntVal1(2);
+     				cvo.getColDataMap().put("NONE2", dvo);
+     				flag = 1;
+         		}
+         		else if( plannedDate != null && postponedDate != null && plannedDate.equals(postponedDate) ) {
+         			if( (plannedDate.before( sDate ) || plannedDate.after( eDate )) && 
+         					(postponedDate.before( sDate ) || postponedDate.after( eDate ))) {
+         			
+         			}
+         			else {
+ 	        			String monthName = mdf.format( postponedDate ); 
+ 	    				GenericDataVO dvo = new GenericDataVO();
+ 	    				dvo.setStrVal1( section.getCode() );
+ 	    				dvo.setStrVal2( campaignSnap.getBothMatchColor() );
+ 	    				dvo.setStrVal3("pattern3");
+ 	    				dvo.setIntVal1(3);
+ 	    				cvo.getColDataMap().put(monthName, dvo);
+ 	    				flag = 1;
+         			}
+         		}
+         		else {
+         			if( plannedDate != null ) {
+         				if( plannedDate.before( sDate ) || plannedDate.after( eDate )) {}
+         				else {
+ 	        				String monthName = mdf.format( plannedDate ); 
+ 	        				GenericDataVO dvo = new GenericDataVO();
+ 	        				dvo.setStrVal1( section.getCode() );
+ 	        				dvo.setStrVal2( campaignSnap.getPlannedColor() );
+ 	        				dvo.setStrVal3("pattern1");
+ 	        				dvo.setIntVal1(1);
+ 	        				cvo.getColDataMap().put(monthName, dvo);
+ 	        				flag = 1;
+         				}
+         			}
+         			
+         			if( postponedDate != null ) {
+         				if( postponedDate.before( sDate ) || postponedDate.after( eDate )) {}
+         				else {
+ 	        				String monthName = mdf.format( postponedDate ); 
+ 	        				GenericDataVO dvo = new GenericDataVO();
+ 	        				dvo.setStrVal1( section.getCode() );
+ 	        				dvo.setStrVal2( campaignSnap.getPostponedColor() );
+ 	        				dvo.setStrVal3("pattern2");
+ 	        				dvo.setIntVal1(2);
+ 	        				cvo.getColDataMap().put(monthName, dvo);
+ 	        				flag = 1;
+         				}
+         			}
+         		}
+         		
+         		if( flag == 1 ) {
+         			int aggStatusDeId = 0;
+             		try{ aggStatusDeId = sectionDeMap.get( section.getId() ).get("COL_3"); }catch(Exception e) {}
+             		String statusVal = "";
+             		try { 
+             			statusVal = dvDataMap.get(ouId+"_"+aggStatusDeId).getStrVal1();
+             			cvo.getColDataMap().put("STATUS", dvDataMap.get(ouId+"_"+aggStatusDeId) );
+             		}catch(Exception e) {}
+             		
+     				if( campaignSnap.getCcDataMap().get(key1) == null )
+     					campaignSnap.getCcDataMap().put(key1, new ArrayList<>());
+     				campaignSnap.getCcDataMap().get(key1).add( cvo );
+         		}
+         	}
+         }
+
+         
+         //Arranging event data
+         Set<String> subNationalNames = new HashSet<>();
+         subNationalNames.add("National");
+         Map<String, Map<Integer, CampaignVO>> eventDataMap = getEventData( psIdsByComma, psDeIdsByComma, ouIdsByComma );
+         for( int ouId : campaignSnap.getOuIds() ) {
+         	for(ProgramStage ps : programStages ) {
+         		String eBaseKey = ps.getId()+"_"+ouId;
+         		//System.out.println( "1. " + eBaseKey );
+         		if( eventDataMap.get(eBaseKey) == null ) {
+         			continue;
+         		}
+         		for(Integer psInsId : eventDataMap.get(eBaseKey).keySet()) {
+         			CampaignVO cvo = new CampaignVO();
+         			cvo.setColDataMap( new HashMap<>() );
+         			int flag = 0;
+         			
+         			String subNationName = "National";
+         			try { subNationName = eventDataMap.get(eBaseKey).get(psInsId).getColDataMap().get(subNationalDeId+"").getStrVal1();}catch(Exception e) {}
+         			subNationalNames.add(subNationName);
+         			String key1 = ouId+"_"+subNationName;
+         			//System.out.println( "2. " + eBaseKey + "  " + subNationName );
+         			            		            		            		
+             		//if( dataMap.get(key1) == null)
+             		//	dataMap.put(key1, new HashMap<>());
+ 	        		int plannedDeId = 0;
+ 	        		try{ plannedDeId = psDeMap.get( ps.getId() ).get("COL_1"); }catch(Exception e) {}
+ 	        		int postponedDeId = 0;
+ 	        		try{ postponedDeId = psDeMap.get( ps.getId() ).get("COL_5");}catch(Exception e) {}
+         		
+ 	        		Date plannedDate = null;
+ 	        		String plannedVal = "";
+ 	        		try { plannedVal = eventDataMap.get(eBaseKey).get(psInsId).getColDataMap().get(plannedDeId+"").getStrVal1();}catch(Exception e) {}
+ 	        		//System.out.println( "Planned: "+eBaseKey+"_"+plannedDeId + " = " + plannedVal);
+ 	        		if( !plannedVal.trim().equals("") ) {
+ 	        			try{ plannedDate = getStartDateByString( plannedVal );}catch(Exception e) {}
+ 	        			if( plannedDate != null && (plannedDate.before( sDate ) || plannedDate.after( eDate )) )
+ 	        				plannedVal = "";
+ 	        			//System.out.println( "Planned Date = "+ plannedDate );
+ 	        			/*
+ 	        			if( plannedDate == null ) {
+ 	        				GenericDataVO dvo = new GenericDataVO();
+ 	        				dvo.setStrVal1( ps.getName() );
+ 	        				dvo.setStrVal2( plannedColor );
+ 	        				dvo.setStrVal3("pattern1");
+ 	        				dvo.setIntVal1(1);
+ 	        				cvo.getColDataMap().put("NONE1", dvo);
+ 	        				flag = 1;	        				
+ 	        			} 
+ 	        			*/       			
+ 	        		}
+         		
+ 	        		Date postponedDate = null;
+ 	        		String postponedVal = "";
+ 	        		try { postponedVal = eventDataMap.get(eBaseKey).get(psInsId).getColDataMap().get(postponedDeId+"").getStrVal1();}catch(Exception e) {}
+ 	        		//System.out.println( "Postponed: "+ eBaseKey+"_"+postponedDeId + " = " + postponedVal);
+ 	        		if( !postponedVal.trim().equals("") ) {
+ 	        			try{ postponedDate = getStartDateByString( postponedVal );}catch(Exception e) {}
+ 	        			if( postponedDate != null && (postponedDate.before( sDate ) || postponedDate.after( eDate )) )
+ 	        				postponedVal = "";
+ 	        			//System.out.println( "Postponed Date = "+ postponedDate );
+ 	        			/*
+ 	        			if( postponedDate == null ) {
+ 	        				GenericDataVO dvo = new GenericDataVO();
+ 	        				dvo.setStrVal1( ps.getName() );
+ 	        				dvo.setStrVal2( postponedColor );
+ 	        				dvo.setStrVal3("pattern2");
+ 	        				dvo.setIntVal1(2);
+ 	        				cvo.getColDataMap().put("NONE2", dvo);
+ 	        				flag = 1;	        				
+ 	        			}
+ 	        			*/        			
+ 	        		}
+ 	        		
+ 	        		if( !plannedVal.trim().equals("") && plannedDate == null && !postponedVal.trim().equals("") && postponedDate == null ) {
+         				GenericDataVO dvo = new GenericDataVO();
+         				dvo.setStrVal1( ps.getName() );
+         				dvo.setStrVal2( campaignSnap.getBothMatchColor() );
+         				dvo.setStrVal3("pattern3");
+         				dvo.setIntVal1(3);
+         				cvo.getColDataMap().put("NONE1", dvo);
+         				flag = 1;	        				
+ 	        		}
+ 	        		else if( !plannedVal.trim().equals("") && plannedDate == null) {
+ 	        			GenericDataVO dvo = new GenericDataVO();
+         				dvo.setStrVal1( ps.getName() );
+         				dvo.setStrVal2( campaignSnap.getPlannedColor() );
+         				dvo.setStrVal3("pattern1");
+         				dvo.setIntVal1(1);
+         				cvo.getColDataMap().put("NONE1", dvo);
+         				flag = 1;
+ 	        		}
+ 	        		else if( !postponedVal.trim().equals("") && postponedDate == null ) {
+ 	        			GenericDataVO dvo = new GenericDataVO();
+         				dvo.setStrVal1( ps.getName() );
+         				dvo.setStrVal2( campaignSnap.getPostponedColor() );
+         				dvo.setStrVal3("pattern2");
+         				dvo.setIntVal1(2);
+         				cvo.getColDataMap().put("NONE2", dvo);
+         				flag = 1;
+ 	        		}
+ 	        		else if( plannedDate != null && postponedDate != null && plannedDate.equals(postponedDate) ) {
+ 	        			if( (plannedDate.before( sDate ) || plannedDate.after( eDate )) && 
+ 	        					(postponedDate.before( sDate ) || postponedDate.after( eDate ))) {
+ 	        			
+ 	        			}
+ 	        			else {
+ 		        			String monthName = mdf.format( postponedDate ); 
+ 		    				GenericDataVO dvo = new GenericDataVO();
+ 		    				dvo.setStrVal1( ps.getName() );
+ 		    				dvo.setStrVal2( campaignSnap.getBothMatchColor() );
+ 		    				dvo.setStrVal3("pattern3");
+ 		    				dvo.setIntVal1(3);
+ 		    				cvo.getColDataMap().put(monthName, dvo);
+ 		    				flag = 1;
+ 	        			}
+ 	        		}
+ 	        		else {
+ 	        			if( plannedDate != null ) {
+ 	        				if( plannedDate.before( sDate ) || plannedDate.after( eDate )) {}
+ 	        				else {
+ 		        				String monthName = mdf.format( plannedDate ); 
+ 		        				GenericDataVO dvo = new GenericDataVO();
+ 		        				dvo.setStrVal1( ps.getName() );
+ 		        				dvo.setStrVal2( campaignSnap.getPlannedColor() );
+ 		        				dvo.setStrVal3("pattern1");
+ 		        				dvo.setIntVal1(1);
+ 		        				cvo.getColDataMap().put(monthName, dvo);
+ 		        				flag = 1;
+ 	        				}
+ 	        			}
+         			
+ 	        			if( postponedDate != null ) {
+ 	        				if( postponedDate.before( sDate ) || postponedDate.after( eDate )) {}
+ 	        				else {
+ 		        				String monthName = mdf.format( postponedDate ); 
+ 		        				GenericDataVO dvo = new GenericDataVO();
+ 		        				dvo.setStrVal1( ps.getName() );
+ 		        				dvo.setStrVal2( campaignSnap.getPostponedColor() );
+ 		        				dvo.setStrVal3("pattern2");
+ 		        				dvo.setIntVal1(2);
+ 		        				cvo.getColDataMap().put(monthName, dvo);
+ 		        				flag = 1;
+ 	        				}
+ 	        			}
+ 	        		}
+ 	        		
+ 	        		if( flag == 1 ) {
+ 	        			String statusVal = "";
+ 	            		try { 
+ 	            			statusVal = eventDataMap.get(eBaseKey).get(psInsId).getColDataMap().get(statusDeId+"").getStrVal1();
+ 	            			cvo.getColDataMap().put("STATUS", eventDataMap.get(eBaseKey).get(psInsId).getColDataMap().get(statusDeId+"") );
+ 	            		}catch(Exception e) {}
+ 	            		
+ 	    				if( campaignSnap.getCcDataMap().get(key1) == null )
+ 	    					campaignSnap.getCcDataMap().put(key1, new ArrayList<>());
+ 	    				campaignSnap.getCcDataMap().get(key1).add( cvo );
+ 	        		}
+         		}//psi for loop
+         		
+         	}//ps for loop
+         }//ou for loop
+
+         
+
+         Calendar fromCal = Calendar.getInstance();
+         fromCal.setTime( sDate );
+         
+         Calendar toCal = Calendar.getInstance();
+         toCal.setTime( eDate );
+         
+         
+         while( fromCal.before( toCal) || fromCal.equals(toCal) ) {
+        	 campaignSnap.getMonthNames().add( mdf.format(fromCal.getTime()) );
+         	fromCal.add(Calendar.MONTH, 1);
+         }
+         
+         subNationalNames.remove("National");
+         campaignSnap.setSubNatNames( new ArrayList<>() );
+         campaignSnap.getSubNatNames().addAll( subNationalNames );
+         Collections.sort( campaignSnap.getSubNatNames() );
+         campaignSnap.getSubNatNames().add(0, "National");
+         
+         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+         Date curDate = new Date();
+         campaignSnap.setCurDateStr( sdf.format( curDate ) );
+         
+    	return campaignSnap;
+    }
+    
+    private Date getStartDateByString( String dateStr )
+    {        
+    	String startDate = "";
+        String[] startDateParts = dateStr.split( "-" );
+        if( dateStr.trim().equalsIgnoreCase("TBD") || startDateParts.length <= 1 ){
+            return null;
+        }
+        else if ( startDateParts[1].equalsIgnoreCase( "Q1" ) ){
+            startDate = startDateParts[0] + "-01-01";
+        }
+        else if ( startDateParts[1].equalsIgnoreCase( "Q2" ) ){
+            startDate = startDateParts[0] + "-04-01";
+        }
+        else if ( startDateParts[1].equalsIgnoreCase( "Q3" ) ){
+            startDate = startDateParts[0] + "-07-01";
+        }
+        else if ( startDateParts[1].equalsIgnoreCase( "Q4" ) ){
+            startDate = startDateParts[0] + "-10-01";
+        }
+        else{
+            startDate = startDateParts[0] + "-" + startDateParts[1] + "-01";
+        }
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date sDate = null;
+        try{ sDate = sdf.parse( startDate );}catch(Exception e) {}
+
+        return sDate;
+    }
+    
+    private Date getEndDateByString( String dateStr )
+    {
+        String endDate = "";
+        int monthDays[] = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+        String[] endDateParts = dateStr.split( "-" );
+        if ( endDateParts.length <= 1 ){
+            endDate = endDateParts[0] + "-12-31";
+        }
+        else if ( endDateParts[1].equalsIgnoreCase( "Q1" ) ){
+            endDate = endDateParts[0] + "-03-31";
+        }
+        else if ( endDateParts[1].equalsIgnoreCase( "Q2" ) ){
+            endDate = endDateParts[0] + "-06-30";
+        }
+        else if ( endDateParts[1].equalsIgnoreCase( "Q3" ) ){
+            endDate = endDateParts[0] + "-09-30";
+        }
+        else if ( endDateParts[1].equalsIgnoreCase( "Q4" ) ){
+            endDate = endDateParts[0] + "-12-31";
+        }
+        else{
+            if ( Integer.parseInt( endDateParts[0] ) % 400 == 0 ){
+                endDate = endDateParts[0] + "-" + endDateParts[1] + "-" + (monthDays[Integer.parseInt( endDateParts[1] )] + 1);
+            }
+            else{
+                endDate = endDateParts[0] + "-" + endDateParts[1] + "-" + (monthDays[Integer.parseInt( endDateParts[1] )]);
+            }
+        }
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date eDate = null;
+        try{ eDate = sdf.parse( endDate ); }catch(Exception e) {}
+
+        return eDate;
     }
 }

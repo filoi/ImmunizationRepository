@@ -480,7 +480,9 @@ public class CampaignTrackerResultAction
         
         //Selected Orgunits
         Lookup lookup = lookupService.getLookupByName( "UNICEF_REGIONS_GROUPSET" );
-        unicefRegionsGroupSet = organisationUnitGroupService.getOrganisationUnitGroupSet( Integer.parseInt( lookup.getValue() ) );
+        campaignSnap.setUnicefRegionsGroupSet(organisationUnitGroupService.getOrganisationUnitGroupSet( Integer.parseInt( lookup.getValue() ) ) );
+        //unicefRegionsGroupSet = organisationUnitGroupService.getOrganisationUnitGroupSet( Integer.parseInt( lookup.getValue() ) );
+        
         if( orgUnitIds.size() > 1 )
         {
             for(Integer id : orgUnitIds )

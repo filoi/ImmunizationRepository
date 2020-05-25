@@ -162,6 +162,9 @@ public class CampaignCalendarByStatusAction
     @Autowired
     private ProgramStageService programStageService;
     
+    @Autowired
+    private CampaignHelper campaignHelper;
+
     // -------------------------------------------------------------------------
     // Setters
     // -------------------------------------------------------------------------
@@ -430,54 +433,51 @@ public class CampaignCalendarByStatusAction
 		return dateSelection;
 	}
 
+    CampaignSnapshot campaignSnap;
+	public CampaignSnapshot getCampaignSnap() {
+		return campaignSnap;
+	}
 	// --------------------------------------------------------------------------
     // Action implementation
     // --------------------------------------------------------------------------
     public String execute()
     {
-    	//Selected Dates
+    	campaignSnap = new CampaignSnapshot();
+    	    
         //Selected Months        
-        try
-        {
-            if( introStartDate.length() == 4 ){
+        try{
+        	if( introStartDate.length() == 4 )
                 introStartDate = introStartDate +"-01";
-            }
-
-            if( introEndDate.length() == 4 ){
-                introEndDate = introEndDate +"-12";
-            }
+            
+            if( introEndDate.length() == 4 )
+                introEndDate = introEndDate +"-12";            
         }
         catch( Exception e ){
         }
         
-        Date sDate = null;
-        Date eDate = null;
-
-        if( introStartDate != null && !introStartDate.trim().equals( "" ) ){
-            sDate = getStartDateByString( introStartDate );
-        }
+        campaignSnap.setFromDateStr( introStartDate );
+        campaignSnap.setToDateStr( introEndDate );
         
-        if( introEndDate != null && !introEndDate.trim().equals( "" ) ){
-            eDate = getEndDateByString( introEndDate );
-        }
+       
         
     	//Selected addl columns for orgunit info
         if( isoCode != null )
-        	isoCode = "ON";
+        	campaignSnap.setIsoCode("ON");
         if( whoRegion != null )
-        	whoRegion = "ON";
-        whoRegion = "ON";//making this ON as there is no user selection from first page
+        	campaignSnap.setWhoRegion("ON");
+        campaignSnap.setWhoRegion("ON");//making this ON as there is no user selection from first page
         if( unicefRegion != null )
-        	unicefRegion = "ON";
+        	campaignSnap.setUnicefRegion("ON");
         if( incomeLevel != null )
-        	incomeLevel = "ON";
+        	campaignSnap.setIncomeLevel("ON");
         if( gaviEligibleStatus != null )
-        	gaviEligibleStatus = "ON";
+        	campaignSnap.setGaviEligibleStatus("ON");
         
         
         //Selected Orgunits
         Lookup lookup = lookupService.getLookupByName( "UNICEF_REGIONS_GROUPSET" );
-        unicefRegionsGroupSet = organisationUnitGroupService.getOrganisationUnitGroupSet( Integer.parseInt( lookup.getValue() ) );
+        campaignSnap.setUnicefRegionsGroupSet(organisationUnitGroupService.getOrganisationUnitGroupSet( Integer.parseInt( lookup.getValue() ) ) );
+        
         if( orgUnitIds.size() > 1 )
         {
             for(Integer id : orgUnitIds )
@@ -506,6 +506,9 @@ public class CampaignCalendarByStatusAction
         }
         Collections.sort(orgUnitList, new IdentifiableObjectNameComparator() );
         Collection<Integer> organisationUnitIds = new ArrayList<Integer>( getIdentifiers( orgUnitList ) );
+        campaignSnap.getOuIds().addAll( organisationUnitIds );
+        
+        /*
         String ouIdsByComma = "-1";
         if ( orgUnitList.size() > 0 ){
         	ouIdsByComma = getCommaDelimitedString( organisationUnitIds );
@@ -590,15 +593,7 @@ public class CampaignCalendarByStatusAction
     			}
     		}
         }
-        
-        /*
-        for(Integer sectionId : sectionDeMap.keySet() ) {
-        	for(String colKey : sectionDeMap.get(sectionId).keySet()) {
-        		System.out.println(sectionId + " and " + colKey + "  = " + sectionDeMap.get(sectionId).get(colKey) );
-        	}
-        }
-        */
-        //System.out.println(deIdsByComma);
+                
        
         Map<String, GenericDataVO> dvDataMap = iscReportHelper.getLatestDataValues( deIdsByComma, ouIdsByComma );
 		
@@ -641,18 +636,7 @@ public class CampaignCalendarByStatusAction
         			try{ plannedDate = getStartDateByString( plannedVal );}catch(Exception e) {}
         			if( plannedDate != null && (plannedDate.before( sDate ) || plannedDate.after( eDate )) )
         				plannedVal = "";
-        			//System.out.println( "Planned Date = "+ plannedDate );
-        			/*
-        			if( plannedDate == null ) {
-        				GenericDataVO dvo = new GenericDataVO();
-        				dvo.setStrVal1( section.getCode() );
-        				dvo.setStrVal2( plannedColor );
-        				dvo.setStrVal3("pattern1");
-        				dvo.setIntVal1(1);
-        				cvo.getColDataMap().put("NONE1", dvo);
-        				flag = 1;
-        			}
-        			*/
+        			//System.out.println( "Planned Date = "+ plannedDate );        			
         		}
         		
         		Date postponedDate = null;
@@ -663,18 +647,7 @@ public class CampaignCalendarByStatusAction
         			try{ postponedDate = getStartDateByString( postponedVal );}catch(Exception e) {}
         			if( postponedDate != null && (postponedDate.before( sDate ) || postponedDate.after( eDate )) )
         				postponedVal = "";
-        			//System.out.println( "Postponed Date = "+ postponedDate );
-        			/*
-        			if( postponedDate == null ) {
-        				GenericDataVO dvo = new GenericDataVO();
-        				dvo.setStrVal1( section.getCode() );
-        				dvo.setStrVal2( postponedColor );
-        				dvo.setStrVal3("pattern2");
-        				dvo.setIntVal1(2);
-        				cvo.getColDataMap().put("NONE2", dvo);
-        				flag = 1;
-        			}
-        			*/        			
+        			//System.out.println( "Postponed Date = "+ postponedDate );        			      			
         		}
         		
         		if( !plannedVal.trim().equals("") && plannedDate == null && !postponedVal.trim().equals("") && postponedDate == null ) {
@@ -805,17 +778,7 @@ public class CampaignCalendarByStatusAction
 	        			if( plannedDate != null && (plannedDate.before( sDate ) || plannedDate.after( eDate )) )
 	        				plannedVal = "";
 	        			//System.out.println( "Planned Date = "+ plannedDate );
-	        			/*
-	        			if( plannedDate == null ) {
-	        				GenericDataVO dvo = new GenericDataVO();
-	        				dvo.setStrVal1( ps.getName() );
-	        				dvo.setStrVal2( plannedColor );
-	        				dvo.setStrVal3("pattern1");
-	        				dvo.setIntVal1(1);
-	        				cvo.getColDataMap().put("NONE1", dvo);
-	        				flag = 1;	        				
-	        			} 
-	        			*/       			
+	        			    			
 	        		}
         		
 	        		Date postponedDate = null;
@@ -826,18 +789,7 @@ public class CampaignCalendarByStatusAction
 	        			try{ postponedDate = getStartDateByString( postponedVal );}catch(Exception e) {}
 	        			if( postponedDate != null && (postponedDate.before( sDate ) || postponedDate.after( eDate )) )
 	        				postponedVal = "";
-	        			//System.out.println( "Postponed Date = "+ postponedDate );
-	        			/*
-	        			if( postponedDate == null ) {
-	        				GenericDataVO dvo = new GenericDataVO();
-	        				dvo.setStrVal1( ps.getName() );
-	        				dvo.setStrVal2( postponedColor );
-	        				dvo.setStrVal3("pattern2");
-	        				dvo.setIntVal1(2);
-	        				cvo.getColDataMap().put("NONE2", dvo);
-	        				flag = 1;	        				
-	        			}
-	        			*/        			
+	        			//System.out.println( "Postponed Date = "+ postponedDate );	        			     			
 	        		}
 	        		
 	        		if( !plannedVal.trim().equals("") && plannedDate == null && !postponedVal.trim().equals("") && postponedDate == null ) {
@@ -948,56 +900,13 @@ public class CampaignCalendarByStatusAction
         subNatNames.addAll( subNationalNames );
         Collections.sort( subNatNames );
         subNatNames.add(0, "National");
-        /*
-        for(String baseKey : dataMap.keySet() ) {
-        	for(String mName : dataMap.get(baseKey).keySet() ) {
-        		for(GenericDataVO dvo : dataMap.get(baseKey).get(mName) ) {
-        			System.out.println( baseKey + ", "+ mName + " = " + dvo.getStrVal1()+" and "+dvo.getStrVal2());
-        		}
-        	}
-        }
-        */
-        /*
-        DataElementCategoryOptionCombo optionCombo = categoryService.getDefaultDataElementCategoryOptionCombo();
-        for( OrganisationUnit orgUnit : orgUnitList )
-        {
-            DataElement de1 = dataElementService.getDataElement( 4 );            
-            DataValue dv = dataValueService.getLatestDataValue( de1, optionCombo, orgUnit );            
-            if( dv == null || dv.getValue() == null )
-            {
-                countryGeneralInfoMap.put( orgUnit.getId()+":4", "" );
-            }
-            else
-            {
-                countryGeneralInfoMap.put( orgUnit.getId()+":4", dv.getValue() );
-            }
-
-            de1 = dataElementService.getDataElement( 3 );
-            dv = dataValueService.getLatestDataValue( de1, optionCombo, orgUnit );            
-            if( dv == null || dv.getValue() == null )
-            {
-                countryGeneralInfoMap.put( orgUnit.getId()+":3", "" );
-            }
-            else
-            {
-                countryGeneralInfoMap.put( orgUnit.getId()+":3", dv.getValue() );
-            }
-        }
-        */
-        
-        /*
-        List<Integer> orgunitIds = new ArrayList<Integer>( getIdentifiers( orgUnitList ) );
-        String orgUnitIdsByComma = "-1";
-        if ( orgunitIds.size() > 0 )
-        {
-            orgUnitIdsByComma = getCommaDelimitedString( orgunitIds );
-        }
-        headerDataValueMap = ivbUtil.getLatestDataValuesForTabularReport( headerDataElementIdsByComma, orgUnitIdsByComma );
-        */
+       
         
         Date curDate = new Date();
         curDateStr = format.formatDate( curDate );
-
+		*/
+        
+        campaignSnap = campaignHelper.getCampainCalendarSnap( campaignSnap );
         
         userName = currentUserService.getCurrentUser().getUsername();
         if ( i18nService.getCurrentLocale() == null )

@@ -170,16 +170,28 @@ jQuery(function() {
     #end
 </select>
 
-<form id="form1" name="form1" action="exportToWorkBook.action" method="post" onsubmit="return exportToExcel()" target="_newtab">
+<form id="form1" name="form1" action="campaignCalendarByStatusXl.action" method="post" onsubmit="return exportToExcel()" target="_newtab">
 
     <input type="hidden" name="htmlCode" id="htmlCode" />
+    <input type="hidden" name="isoCode" value="$!campaignSnap.isoCode" />
+	<input type="hidden" name="whoRegion" value="$!campaignSnap.whoRegion" />
+	<input type="hidden" name="unicefRegion" value="$!campaignSnap.unicefRegion" />
+	<input type="hidden" name="incomeLevel" value="$!campaignSnap.incomeLevel" />
+	<input type="hidden" name="gaviEligibleStatus" value="$!campaignSnap.gaviEligibleStatus" />
+	<input type="hidden" name="fromDateStr" value="$!campaignSnap.fromDateStr" />
+	<input type="hidden" name="toDateStr" value="$!campaignSnap.toDateStr" />
+	<select name="ouIds" multiple="multiple" style="display:none;">
+		#foreach($ouId in $campaignSnap.ouIds)
+			<option value="$ouId" selected>$ouId</option>
+		#end
+	</select>
 
 	##set( $fontColor = "#FFFFFF" )
 	#set( $fontColor = "#000000" )
 	
 	<table style="width:98%;">
 		<tr>
-			<td align="left"><font size="3"><b>Campaign Calendar</b> - current as of $!curDateStr</font></td>
+			<td align="left"><font size="3"><b>Campaign Calendar</b> - current as of $!campaignSnap.curDateStr</font></td>
 			<td align="right" style="vertical-align:middle;">
 				<input type="button" onclick="location.href='campaignCalendarForm.action'" value="Change Selections"/>
 				<input type="submit" value="Download As Excel"/>&nbsp;
@@ -192,9 +204,9 @@ jQuery(function() {
 		<tr>
 			<td align="right">
 				<table align="right">
-					#foreach( $statusMapKey in $statusColorMap.keySet() )
+					#foreach( $statusMapKey in $campaignSnap.statusColorMap.keySet() )
 						#set( $tempStatusColor = "#FFFFFF" )
-						#set( $tempStatusColor = $statusColorMap.get("$statusMapKey") )
+						#set( $tempStatusColor = $campaignSnap.statusColorMap.get("$statusMapKey") )
 						#if( $statusMapKey== "May postpone" )
 							#set( $statusMapKey= "Might postpone" )
 						#end
@@ -221,19 +233,19 @@ jQuery(function() {
 					<th class="freeze_left_column" style="min-width:50px; width:50px;">Campaign Identifier</th>
 					<th class="freeze_left_column" style="min-width:100px; width:100px;">Status</th>
 					<th class="freeze_left_column" style="min-width:60px; width:60px">Campaigns - no dates</th>
-					#foreach( $monthName in $monthNames )						
+					#foreach( $monthName in $campaignSnap.monthNames )						
 						<th align="center" style="min-width:50px; width:50px;vertical-align: middle;">$monthName</th>
 					#end
 					
                 </tr>
             </thead>
 			<tbody>
-				#foreach( $orgUnit in $orgUnitList )
-					#foreach( $subNatName in $subNatNames )
+				#foreach( $orgUnit in $campaignSnap.orgUnitList )
+					#foreach( $subNatName in $campaignSnap.subNatNames )
 						#set( $key1 = "${orgUnit.id}_$subNatName")
 						#set( $ouCvoList = "" )
-						#set( $ouCvoList = $dataMap.get( $key1 ) )
-						#if($dataMap.get( $key1 ) && $dataMap.get( $key1 ) != " ")
+						#set( $ouCvoList = $campaignSnap.ccDataMap.get( $key1 ) )
+						#if($campaignSnap.ccDataMap.get( $key1 ) && $campaignSnap.ccDataMap.get( $key1 ) != " ")
 							#foreach( $cvo in $ouCvoList )
 								#set( $cMap = "")
                        			#set( $cMap = $cvo.colDataMap )
@@ -244,8 +256,8 @@ jQuery(function() {
 									#set( $statusVal = "" )
 									#set( $statusVal = $!cMap.get( "STATUS" ).strVal1 )
 									#set( $statusColor = "")
-									#set( $statusColor = $statusColorMap.get("$statusVal") )
-#if( $statusVal == "May postpone" )
+									#set( $statusColor = $campaignSnap.statusColorMap.get("$statusVal") )
+									#if( $statusVal == "May postpone" )
 										#set( $statusVal = "Might postpone" )
 									#end
 
@@ -298,7 +310,7 @@ jQuery(function() {
 										#end																				
 									</td>
 		
-									#foreach( $monthName in $monthNames )
+									#foreach( $monthName in $campaignSnap.monthNames )
 										#set( $temp1 = "" )
 										#set( $temp1 =  $!cMap.get( "${monthName}" ).strVal1 )
 										#set( $styleProp = "style='vertical-align: middle;'")

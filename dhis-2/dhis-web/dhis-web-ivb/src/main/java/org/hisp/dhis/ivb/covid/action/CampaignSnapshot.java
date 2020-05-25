@@ -41,17 +41,30 @@ public class CampaignSnapshot
     private Map<String, List<CampaignVO>> ctDataMap;
     
     //Campaign Calendar
-    
+    private String fromDateStr;
+    private String toDateStr;
     private String plannedColor = "#D11509";
     private String postponedColor = "#F78526";
     private String bothMatchColor = "#04A20B";
-    private Map<String, Map<String, List<GenericDataVO>>> ccDataMap;
-    private List<String> monthNames = new ArrayList<>();
+    private Map<String, String> statusColorMap = new HashMap<>();    
+    private  Map<String, List<CampaignVO>> ccDataMap;   
+	private List<String> monthNames = new ArrayList<>();
     
     // --------------------------------------------------------------------------
     // Getters & Setters
     // --------------------------------------------------------------------------
-    
+	public Map<String, List<CampaignVO>> getCcDataMap() {
+		return ccDataMap;
+	}
+	public void setCcDataMap(Map<String, List<CampaignVO>> ccDataMap) {
+		this.ccDataMap = ccDataMap;
+	}
+	public void setStatusColorMap(Map<String, String> statusColorMap) {
+		this.statusColorMap = statusColorMap;
+	}
+	public Map<String, String> getStatusColorMap() {
+		return statusColorMap;
+	}    
 	public String getIsoCode() {
 		return isoCode;
 	}
@@ -141,13 +154,7 @@ public class CampaignSnapshot
 	}
 	public void setBothMatchColor(String bothMatchColor) {
 		this.bothMatchColor = bothMatchColor;
-	}
-	public Map<String, Map<String, List<GenericDataVO>>> getCcDataMap() {
-		return ccDataMap;
-	}
-	public void setCcDataMap(Map<String, Map<String, List<GenericDataVO>>> ccDataMap) {
-		this.ccDataMap = ccDataMap;
-	}
+	}	
 	public List<String> getMonthNames() {
 		return monthNames;
 	}
@@ -196,6 +203,16 @@ public class CampaignSnapshot
 	public void setCountryGeneralInfoMap(Map<String, String> countryGeneralInfoMap) {
 		this.countryGeneralInfoMap = countryGeneralInfoMap;
 	}
-    
-	
+	public String getFromDateStr() {
+		return fromDateStr;
+	}
+	public void setFromDateStr(String fromDateStr) {
+		this.fromDateStr = fromDateStr;
+	}
+	public String getToDateStr() {
+		return toDateStr;
+	}
+	public void setToDateStr(String toDateStr) {
+		this.toDateStr = toDateStr;
+	}    	
 }
