@@ -1922,6 +1922,11 @@
 		class="org.hisp.dhis.ivb.covid.action.CampaignTrackerXlAction"
 		scope="prototype">
 	</bean>
+	<bean
+		id="org.hisp.dhis.ivb.covid.action.CampaignCalendarByStatusXlAction"
+		class="org.hisp.dhis.ivb.covid.action.CampaignCalendarByStatusXlAction"
+		scope="prototype">
+	</bean>
 	
 	<bean
 		id="org.hisp.dhis.ivb.covid.action.CampaignHelper"

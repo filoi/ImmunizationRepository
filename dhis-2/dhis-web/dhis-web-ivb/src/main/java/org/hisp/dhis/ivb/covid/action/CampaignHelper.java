@@ -19,6 +19,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.fop.util.DataURIResolver;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DataFormat;
@@ -759,6 +760,8 @@ public class CampaignHelper
     private XSSFCellStyle tHeaderStyle;
     private XSSFCellStyle numberStyle;
     private XSSFCellStyle dataStyle;
+    private Map<String, XSSFCellStyle> statusCellStyles = new HashMap<>();
+    
     private void initialiseExcelProps( XSSFWorkbook wb )
     {
     	DataFormat dataFormat = wb.createDataFormat();
@@ -769,7 +772,7 @@ public class CampaignHelper
 		headerFont.setColor(IndexedColors.BLACK.getIndex());
 	    
 		XSSFFont subHeaderFont = wb.createFont();//Create font
-    	subHeaderFont.setBoldweight(Font.BOLDWEIGHT_BOLD);//Make font bold
+    	subHeaderFont.setBoldweight(Font.BOLDWEIGHT_BOLD);//Make font bold    
     	subHeaderFont.setFontHeightInPoints((short)12);
     	subHeaderFont.setColor(IndexedColors.BLACK.getIndex());
 	    
@@ -786,6 +789,7 @@ public class CampaignHelper
 	    dataFont.setFontHeightInPoints((short)9);
 	    dataFont.setColor(IndexedColors.BLACK.getIndex());
 
+		
 	    
 	    XSSFFont dataFontBoldItalic = wb.createFont();//Create font
 	    dataFontBoldItalic.setFontHeightInPoints((short)9);
@@ -832,7 +836,6 @@ public class CampaignHelper
 	    numberStyle.setDataFormat(dataFormat.getFormat("###,###0;[Red]-###,###0"));
 	    numberStyle.setVerticalAlignment( CellStyle.VERTICAL_CENTER );
 	    numberStyle.setFont( dataFont );
-
     }
     
     public Workbook generateCampaignTrackerXl( CampaignSnapshot campaignSnap )
@@ -890,7 +893,7 @@ public class CampaignHelper
 				cell = row.createCell( colCount++ );
 				cell.setCellStyle( tHeaderStyle );
 				cell.setCellValue( "UNICEF Region" );
-				sheet.setColumnWidth(colCount-1, 9 * 256);
+				sheet.setColumnWidth(colCount-1, 7 * 256);
 			}
 
 			cell = row.createCell( colCount++ );
@@ -923,12 +926,12 @@ public class CampaignHelper
 			
 			int freezeColNo = colCount;
 			Map<String, Integer> colWidthMap = new HashMap<>();
-			colWidthMap.put("COL_1", 11);
-			colWidthMap.put("COL_2", 11);
+			colWidthMap.put("COL_1", 10);
+			colWidthMap.put("COL_2", 10);
 			colWidthMap.put("COL_3", 15);
 			colWidthMap.put("COL_4", 17);
-			colWidthMap.put("COL_5", 11);
-			colWidthMap.put("COL_6", 11);
+			colWidthMap.put("COL_5", 10);
+			colWidthMap.put("COL_6", 10);
 			colWidthMap.put("COL_7", 10);
 			colWidthMap.put("COL_8", 11);
 			colWidthMap.put("COL_9", 11);
@@ -1066,6 +1069,291 @@ public class CampaignHelper
     }
     
     
+    public Workbook generateCampaignCalendarXl( CampaignSnapshot campaignSnap )
+    {
+    	XSSFWorkbook workbook = new XSSFWorkbook();
+    	try {
+    		//CreationHelper factory = workbook.getCreationHelper();
+			//Drawing drawing = sheet.createDrawingPatriarch();
+			
+    		initialiseExcelProps( workbook );
+    		
+    		campaignSnap.getStatusColorMap().put("Might postpone", campaignSnap.getStatusColorMap().get("May postpone") );
+    		
+    		int rowCount = 0;
+    		
+			Sheet sheet = workbook.createSheet( "CampaignCalendar" );
+			
+			//Main Header
+			Row row = sheet.createRow( rowCount++ );			
+			int colCount = 0;
+			Cell cell = row.createCell( colCount++ );
+			cell.setCellStyle( headerStyle );
+			//sheet.addMergedRegion( new org.apache.poi.ss.util.CellRangeAddress( rowCount-1, rowCount-1, colCount-1, colCount+4 ) );
+			cell.setCellValue( "Campaign Calendar - current as of "+campaignSnap.getCurDateStr() );
+			
+			//Sub Header
+			//rowCount++;
+			//row = sheet.createRow( rowCount++ );			
+			//colCount = 0;
+			//sheet.addMergedRegion( new org.apache.poi.ss.util.CellRangeAddress( rowCount-1, rowCount-1, colCount-1, colCount+5 ) );
+			colCount += 6;
+			XSSFFont dataFont = workbook.createFont();//Create font
+		    dataFont.setFontHeightInPoints((short)9);
+		    dataFont.setColor(IndexedColors.BLACK.getIndex());
+		    
+		    XSSFFont dataFontUnderline = workbook.createFont();//Create font
+			dataFontUnderline.setFontHeightInPoints((short)9);
+			dataFontUnderline.setUnderline(Font.U_SINGLE);
+			dataFontUnderline.setColor(IndexedColors.BLACK.getIndex());
+			
+			for( String statusMapKey : campaignSnap.getStatusColorMap().keySet() ) {
+				if( statusMapKey.equalsIgnoreCase("May postpone") )
+					statusMapKey = "Might postpone";
+				
+				XSSFCellStyle tempStyle = workbook.createCellStyle();//Create style
+				tempStyle.setAlignment(CellStyle.ALIGN_CENTER);
+		 		XSSFColor tempColor = new XSSFColor( Color.decode(campaignSnap.getStatusColorMap().get(statusMapKey)) );
+		 		tempStyle.setFillForegroundColor( tempColor );
+		 		tempStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		 		tempStyle.setWrapText( true );
+		 		tempStyle.setVerticalAlignment( CellStyle.VERTICAL_CENTER );
+		 		tempStyle.setFont(dataFont);
+		 		statusCellStyles.put(statusMapKey, tempStyle);
+		 		
+		 		XSSFCellStyle tempStyle1 = workbook.createCellStyle();//Create style
+				tempStyle1.setAlignment(CellStyle.ALIGN_CENTER);
+		 		tempStyle1.setFillForegroundColor( tempColor );
+		 		tempStyle1.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		 		tempStyle1.setWrapText( true );
+		 		tempStyle1.setVerticalAlignment( CellStyle.VERTICAL_CENTER );
+		 		tempStyle1.setFont(dataFontUnderline);
+		 		statusCellStyles.put(statusMapKey+"_1", tempStyle1);
+				
+				cell = row.createCell( colCount++ );
+				cell.setCellStyle( statusCellStyles.get(statusMapKey) );
+				cell.setCellValue( statusMapKey );
+			}
+			colCount++;
+			XSSFCellStyle tempStyle = workbook.createCellStyle();//Create style
+			tempStyle.setAlignment(CellStyle.ALIGN_CENTER);
+	 		//XSSFColor tempColor = new XSSFColor( Color.decode("#FFFFFF") );
+	 		//tempStyle.setFillForegroundColor( tempColor );
+	 		//tempStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+	 		tempStyle.setWrapText( true );
+	 		tempStyle.setVerticalAlignment( CellStyle.VERTICAL_CENTER );
+	 		tempStyle.setFont(dataFontUnderline);
+	 		cell = row.createCell( colCount++ );
+	 		cell.setCellStyle( tempStyle );
+	 		cell.setCellValue( "New Postponed Date" );
+			
+			rowCount += 2;
+			
+			//Table Header
+			row = sheet.createRow( rowCount++ );			
+			colCount = 0;			
+			if( campaignSnap.getIsoCode() != null && campaignSnap.getIsoCode().trim().equals("ON") ) {
+				cell = row.createCell( colCount++ );
+				cell.setCellStyle( tHeaderStyle );
+				cell.setCellValue( "ISO Code" );
+				sheet.setColumnWidth(colCount-1, 6 * 256);
+
+			}
+			if( campaignSnap.getWhoRegion() != null && campaignSnap.getWhoRegion().trim().equals("ON") ) {
+				cell = row.createCell( colCount++ );
+				cell.setCellStyle( tHeaderStyle );
+				cell.setCellValue( "WHO Region" );
+				sheet.setColumnWidth(colCount-1, 8 * 256);
+			}
+			if( campaignSnap.getUnicefRegion() != null && campaignSnap.getUnicefRegion().trim().equals("ON") ) {
+				cell = row.createCell( colCount++ );
+				cell.setCellStyle( tHeaderStyle );
+				cell.setCellValue( "UNICEF Region" );
+				sheet.setColumnWidth(colCount-1, 7 * 256);
+			}
+
+			cell = row.createCell( colCount++ );
+			cell.setCellStyle( tHeaderStyle );
+			cell.setCellValue( "Country" );
+			sheet.setColumnWidth(colCount-1, 12 * 256);
+			
+			if( campaignSnap.getIncomeLevel() != null && campaignSnap.getIncomeLevel().trim().equals("ON") ) {
+				cell = row.createCell( colCount++ );
+				cell.setCellStyle( tHeaderStyle );
+				cell.setCellValue( "Income level" );
+				sheet.setColumnWidth(colCount-1, 15 * 256);
+			}
+			if( campaignSnap.getGaviEligibleStatus() != null && campaignSnap.getGaviEligibleStatus().trim().equals("ON") ) {
+				cell = row.createCell( colCount++ );
+				cell.setCellStyle( tHeaderStyle );
+				cell.setCellValue( "GAVI eligibility status" );
+				sheet.setColumnWidth(colCount-1, 15 * 256);
+			}
+						
+			cell = row.createCell( colCount++ );
+			cell.setCellStyle( tHeaderStyle );
+			cell.setCellValue( "Campaign Identifier" );
+			sheet.setColumnWidth(colCount-1, 13 * 256);
+		
+			cell = row.createCell( colCount++ );
+			cell.setCellStyle( tHeaderStyle );
+			cell.setCellValue( "Status" );
+			sheet.setColumnWidth(colCount-1, 15 * 256);
+			
+			int freezeColNo = colCount;
+
+			cell = row.createCell( colCount++ );
+			cell.setCellStyle( tHeaderStyle );
+			cell.setCellValue( "Campaigns - no dates" );
+			sheet.setColumnWidth(colCount-1, 9 * 256);
+
+			/*
+			Map<String, Integer> colWidthMap = new HashMap<>();
+			colWidthMap.put("COL_1", 10);
+			colWidthMap.put("COL_2", 10);
+			colWidthMap.put("COL_3", 15);
+			colWidthMap.put("COL_4", 17);
+			colWidthMap.put("COL_5", 10);
+			colWidthMap.put("COL_6", 10);
+			colWidthMap.put("COL_7", 10);
+			colWidthMap.put("COL_8", 11);
+			colWidthMap.put("COL_9", 11);
+			colWidthMap.put("COL_10", 12);
+			colWidthMap.put("COL_11", 11);
+			colWidthMap.put("COL_12", 20);
+			colWidthMap.put("COL_13", 25);
+			*/
+			for( String monthName : campaignSnap.getMonthNames() ) {				
+				cell = row.createCell( colCount++ );
+				cell.setCellStyle( tHeaderStyle );
+				cell.setCellValue( monthName );
+				sheet.setColumnWidth(colCount-1, 9 * 256);
+			}
+			
+			sheet.setAutoFilter(new CellRangeAddress(rowCount-1, rowCount-1, 0, colCount-1));
+			sheet.createFreezePane( freezeColNo, rowCount);
+			
+			//Table Body - Data
+			for( OrganisationUnit orgUnit : campaignSnap.getOrgUnitList() ) {
+				for( String subNatName : campaignSnap.getSubNatNames() ) {
+					String key1 = orgUnit.getId()+"_"+subNatName;
+					List<CampaignVO> ouCvoList = campaignSnap.getCcDataMap().get( key1 );
+					if(ouCvoList != null) {
+						for( CampaignVO cvo : ouCvoList ){
+							Map<String, GenericDataVO> cMap = cvo.getColDataMap();
+							
+							row = sheet.createRow( rowCount++ );			
+							colCount = 0;
+							if( campaignSnap.getIsoCode() != null && campaignSnap.getIsoCode().trim().equals("ON") ) {
+								cell = row.createCell( colCount++ );
+								cell.setCellStyle( dataStyle );
+								cell.setCellValue( orgUnit.getCode() );				
+							}
+							if( campaignSnap.getWhoRegion() != null && campaignSnap.getWhoRegion().trim().equals("ON") ) {
+								cell = row.createCell( colCount++ );
+								cell.setCellStyle( dataStyle );
+								cell.setCellValue( orgUnit.getParent().getShortName() );				
+							}
+							if( campaignSnap.getUnicefRegion() != null && campaignSnap.getUnicefRegion().trim().equals("ON") ) {
+								cell = row.createCell( colCount++ );
+								cell.setCellStyle( dataStyle );
+								String tempVal = " ";
+								try { tempVal = orgUnit.getGroupInGroupSet( campaignSnap.getUnicefRegionsGroupSet() ).getShortName(); }catch(Exception e) {}
+								cell.setCellValue( tempVal );										
+							}
+
+							cell = row.createCell( colCount++ );
+							cell.setCellStyle( dataStyle );
+							cell.setCellValue( orgUnit.getShortName() );				
+							
+							if( campaignSnap.getIncomeLevel() != null && campaignSnap.getIncomeLevel().trim().equals("ON") ) {
+								cell = row.createCell( colCount++ );
+								cell.setCellStyle( dataStyle );
+								String tempVal = " ";
+								try { tempVal = campaignSnap.getCountryGeneralInfoMap().get(orgUnit.getId()+":3"); }catch(Exception e) {}
+								cell.setCellValue( tempVal );				
+							}
+							if( campaignSnap.getGaviEligibleStatus() != null && campaignSnap.getGaviEligibleStatus().trim().equals("ON") ) {
+								cell = row.createCell( colCount++ );
+								cell.setCellStyle( dataStyle );
+								String tempVal = " ";
+								try { tempVal = campaignSnap.getCountryGeneralInfoMap().get(orgUnit.getId()+":4"); }catch(Exception e) {}
+								cell.setCellValue( tempVal );				
+							}
+							
+							cell = row.createCell( colCount++ );
+							cell.setCellStyle( dataStyle );
+							cell.setCellValue( subNatName );
+							
+							String statusVal = "";
+							try{ statusVal = cMap.get( "STATUS" ).getStrVal1(); }catch(Exception e) {}
+							if( statusVal.equalsIgnoreCase("May postpone") )
+								statusVal = "Might postpone";
+							
+							cell = row.createCell( colCount++ );
+							cell.setCellStyle( statusCellStyles.get(statusVal) );
+							cell.setCellValue( statusVal );
+							
+							cell = row.createCell( colCount++ );
+							XSSFRichTextString cellValue = new XSSFRichTextString();							    
+							String temp1 = "";
+							try{ temp1 =  cMap.get( "NONE1" ).getStrVal1(); }catch(Exception e) {}									
+							String temp2 = "";
+							try { temp2 =  cMap.get( "NONE2" ).getStrVal1(); }catch(Exception e) {}							
+							if( !temp1.trim().equals("") || !temp2.trim().equals("") )									
+								cell.setCellStyle( statusCellStyles.get(statusVal) );
+							if( !temp1.trim().equals("") ) {
+								temp1 += "\n";
+								String patternClass = "";
+								try { patternClass = cMap.get( "NONE1" ).getStrVal3();}catch(Exception e) {}
+								if( patternClass.equals("pattern2") )
+									cellValue.append(temp1, dataFontUnderline);
+								else 
+									cellValue.append(temp1, dataFont);
+							}
+							if( !temp2.trim().equals("") ) {
+								String patternClass = "";
+								try { patternClass = cMap.get( "NONE2" ).getStrVal3();}catch(Exception e) {}
+								if( patternClass.equals("pattern2") )
+									cellValue.append(temp2, dataFontUnderline);
+								else 
+									cellValue.append(temp2, dataFont);
+							}
+							cell.setCellValue(cellValue);
+							
+														
+							for( String monthName : campaignSnap.getMonthNames() ){
+								String temp3 = "";
+								try{ temp3 =  cMap.get( monthName ).getStrVal1(); }catch(Exception e) {}
+								String patternClass = "";										
+								try{ patternClass = cMap.get( monthName ).getStrVal3();}catch(Exception e) {}
+								
+								if( !temp3.trim().equals("") ) {
+									cell = row.createCell( colCount++ );
+									if( patternClass.equals("pattern2") )
+										cell.setCellStyle( statusCellStyles.get(statusVal+"_1") );
+									else
+										cell.setCellStyle( statusCellStyles.get(statusVal) );									
+									cell.setCellValue( temp3 );
+								}
+								else {
+									cell = row.createCell( colCount++ );
+									cell.setCellStyle( dataStyle );									
+									cell.setCellValue( temp3 );
+								}
+							}
+						}
+					}
+				}
+			}
+    	}
+    	catch(Exception e) {
+    		System.out.println("Error while preparing workbook object in generateCampaignTrackerXl "+ e.getMessage() );
+    		e.printStackTrace();
+    	}
+    	
+    	return workbook;
+    }
     
     
     public CampaignSnapshot getCampainCalendarSnap(CampaignSnapshot campaignSnap )
