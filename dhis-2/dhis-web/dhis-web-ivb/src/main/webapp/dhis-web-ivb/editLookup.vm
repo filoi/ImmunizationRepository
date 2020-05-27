@@ -60,7 +60,7 @@
       
       <tr>
         <td><label>$i18n.getString( "value" )</label></td>
-        <td><input type="text" id="value" name="value" value="$!encoder.htmlEncode( $lookup.value )"/></td>
+        <td><textarea id="value" name="value">$!encoder.htmlEncode( $lookup.value )</textarea></td>
       </tr>
       
       <tr>

@@ -1929,6 +1929,15 @@
 	</bean>
 	
 	<bean
+		id="org.hisp.dhis.ivb.covid.action.CampaignDashboardAction"
+		class="org.hisp.dhis.ivb.covid.action.CampaignDashboardAction"
+		scope="prototype">
+		<property name="currentUserService" ref="org.hisp.dhis.user.CurrentUserService" />
+		<property name="i18nService" ref="org.hisp.dhis.i18n.I18nService" />
+		<property name="messageService" ref="org.hisp.dhis.message.MessageService" />
+		<property name="configurationService" ref="org.hisp.dhis.configuration.ConfigurationService" />
+	</bean>
+	<bean
 		id="org.hisp.dhis.ivb.covid.action.CampaignHelper"
 		class="org.hisp.dhis.ivb.covid.action.CampaignHelper"
 		scope="prototype">

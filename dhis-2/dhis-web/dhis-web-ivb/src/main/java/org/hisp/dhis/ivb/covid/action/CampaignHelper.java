@@ -1,5 +1,6 @@
 package org.hisp.dhis.ivb.covid.action;
 
+import static org.hisp.dhis.common.IdentifiableObjectUtils.getIdentifiers;
 import static org.hisp.dhis.commons.util.TextUtils.getCommaDelimitedString;
 
 import java.awt.Color;
@@ -10,6 +11,7 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -19,7 +21,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.fop.util.DataURIResolver;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DataFormat;
@@ -55,7 +56,9 @@ import org.hisp.dhis.ivb.util.IVBUtil;
 import org.hisp.dhis.lookup.Lookup;
 import org.hisp.dhis.lookup.LookupService;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
+import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroupService;
+import org.hisp.dhis.organisationunit.OrganisationUnitGroupSet;
 import org.hisp.dhis.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.program.ProgramStage;
 import org.hisp.dhis.program.ProgramStageService;
@@ -382,6 +385,7 @@ public class CampaignHelper
                      " AND dv.dataelementid=asd1.dataelementid " +
                      " AND dv.periodid=asd1.periodid";
 
+            System.out.println( "getLatestDataValues query = " + query );
             SqlRowSet rs = jdbcTemplate.queryForRowSet( query );
             
             while( rs.next() ){
@@ -429,7 +433,7 @@ public class CampaignHelper
                      " AND dv.periodid=asd1.periodid " +
                      " WHERE dv.value IS NOT NULL AND dv.value <> ''";
             
-            //System.out.println(query);
+            //System.out.println("getLatestDataValuesForCampaignReport query = "+ query);
 
             SqlRowSet rs = jdbcTemplate.queryForRowSet( query );
             
@@ -1814,6 +1818,181 @@ public class CampaignHelper
          campaignSnap.setCurDateStr( sdf.format( curDate ) );
          
     	return campaignSnap;
+    }
+
+    public CampaignSnapshot getCampainDashboardSnap(CampaignSnapshot campaignSnap )
+    {
+    	Lookup lookup = lookupService.getLookupByName( Lookup.WHO_REGIONS_GROUPSET );
+    	OrganisationUnitGroupSet whoRegionsGroupSet = ouGroupService.getOrganisationUnitGroupSet( Integer.parseInt( lookup.getValue() ) );
+    	Collection<OrganisationUnit> whoOrgUnits = new ArrayList<>( whoRegionsGroupSet.getOrganisationUnits() );
+    	Collection<Integer> ouIds = new ArrayList<>( getIdentifiers( whoOrgUnits ) );
+    	String ouIdsByComma = "-1";
+    	if ( ouIds.size() > 0 ){
+        	ouIdsByComma = getCommaDelimitedString( ouIds );
+        }
+    	List<OrganisationUnitGroup> ouGroups = new ArrayList<>();
+    	ouGroups.addAll( whoRegionsGroupSet.getOrganisationUnitGroups() );
+    	Collections.sort( ouGroups, new IdentifiableObjectNameComparator() );
+    	campaignSnap.setOuGroups( ouGroups );
+    	
+    	lookup = lookupService.getLookupByName( "CAMPAIGN_DATASET_UID" );
+        DataSet dataSet = dataSetService.getDataSet( lookup.getValue() );
+        campaignSnap.getDsSections().addAll( dataSet.getSections() );
+       
+        Set<String> sectionCodes = new HashSet<>();
+        for( Section section : campaignSnap.getDsSections() ){
+            sectionCodes.add( section.getCode().trim().toLowerCase() );
+        }
+        lookup = lookupService.getLookupByName( "CAMPAIGN_PROGRAM_STAGE_IDS" );
+        String psIdsByComma = "-1";
+        List<ProgramStage> programStages = new ArrayList<>();
+        for(String psId : lookup.getValue().split(",")) {
+        	ProgramStage ps = programStageService.getProgramStage( Integer.parseInt(psId) );
+        	if( ps!= null && sectionCodes.contains( ps.getName().trim().toLowerCase()) ) {
+        		programStages.add( ps );
+        		psIdsByComma += ","+ps.getId();
+        	}
+        }
+        lookup = lookupService.getLookupByName( "CAMPAIGN_SUBNATIONAL_DEID" );
+        int subNationalDeId = Integer.parseInt( lookup.getValue() );
+        lookup = lookupService.getLookupByName( "CAMPAIGN_STATUS_DEID" );
+        int statusDeId = Integer.parseInt( lookup.getValue() );
+
+        
+        //Selected Columns
+        //campaignSnap.getSelCols().add("COL_1");
+        //campaignSnap.getSelCols().add("COL_5");
+        campaignSnap.getSelCols().add("COL_3");
+        Map<Integer, String> deColMap = new HashMap<>();
+        String deIdsByComma = "-1";
+        String psDeIdsByComma = "-1";
+        psDeIdsByComma += "," +subNationalDeId;
+        lookup = lookupService.getLookupByName( "CAMPAIGN_COLUMNS_INFO" );
+        String campaignColInfo = lookup.getValue();
+        //colList = new ArrayList<GenericTypeObj>();
+        for( String colInfo : campaignColInfo.split("@!@") ) {
+        	if( campaignSnap.getSelCols().contains( colInfo.split("@-@")[0] ) ) {
+	        	GenericTypeObj colObj = new GenericTypeObj();
+	        	colObj.setCode( colInfo.split("@-@")[0] );
+	        	colObj.setName( colInfo.split("@-@")[1] );
+	        	colObj.setStrAttrib1( colInfo.split("@-@")[2] ); //deids
+	        	colObj.setStrAttrib2( colInfo.split("@-@")[3] ); //ps deids
+	        	campaignSnap.getColList().add( colObj );
+	        	deIdsByComma += ","+colInfo.split("@-@")[2];
+	        	psDeIdsByComma += ","+colInfo.split("@-@")[3];
+	        	for(String deIdStr : colObj.getStrAttrib1().split(",") ) {
+	        		deColMap.put(Integer.parseInt(deIdStr), colObj.getCode());
+	        	}
+	        	deColMap.put(Integer.parseInt(colObj.getStrAttrib2()), colObj.getCode());
+        	}
+        }
+        
+        Set<Integer> deIds = new HashSet<Integer>( deColMap.keySet() );
+        Map<Integer, String> deSectionMap = new HashMap<>();
+        Map<Integer, Map<String, Integer>> sectionDeMap = new HashMap<>();
+        for(Section section : campaignSnap.getDsSections() ) {
+    		for( DataElement de : section.getDataElements()) {
+    			if( deIds.contains(de.getId()) ) {
+    				deSectionMap.put(de.getId(), section.getCode());
+    				if( sectionDeMap.get( section.getId() ) == null)
+    					sectionDeMap.put(section.getId(), new HashMap<>());
+    				sectionDeMap.get( section.getId() ).put(deColMap.get(de.getId()), de.getId());
+    			}
+    		}
+        }
+        
+        Map<Integer, Map<String, Integer>> psDeMap = new HashMap<>();
+        for(ProgramStage ps : programStages ) {
+    		for( DataElement de : ps.getAllDataElements()) {
+    			if( deIds.contains(de.getId()) ) {
+    				if( psDeMap.get( ps.getId() ) == null)
+    					psDeMap.put(ps.getId(), new HashMap<>());
+    				psDeMap.get( ps.getId() ).put(deColMap.get(de.getId()), de.getId());
+    			}
+    		}
+        }                 
+        
+        lookup = lookupService.getLookupByName( "CAMPAIGN_DB_STATUS_VALS" );
+        Set<String> statusValues = new HashSet<>();
+        for(String statusVal : lookup.getValue().split("@!@")) {
+        	statusValues.add( statusVal );
+        }
+        
+        lookup = lookupService.getLookupByName( "CAMPAIGN_DB_ROW_INFO" );
+        String campaignRowInfo = lookup.getValue();
+        List<GenericTypeObj> rowObjList = new ArrayList<>();
+        Map<String, GenericTypeObj> rowObjMap = new HashMap<>();
+        Map<Integer, String> sectionRowMap = new HashMap<>();
+        Map<Integer, String> psRowMap = new HashMap<>();
+        for( String rowInfo : campaignRowInfo.split("@!@") ) {
+        	GenericTypeObj rowObj = new GenericTypeObj();
+        	rowObj.setCode( rowInfo.split("@-@")[0] );
+        	rowObj.setName( rowInfo.split("@-@")[1] );
+        	rowObj.setStrAttrib1( rowInfo.split("@-@")[2] ); //section ids
+        	rowObj.setStrAttrib2( rowInfo.split("@-@")[3] ); //program stage ids
+        	rowObjList.add( rowObj );
+        	rowObjMap.put( rowObj.getCode(), rowObj );
+        	
+        	for(String sectionIdStr : rowObj.getStrAttrib1().split(",") ) {
+        		sectionRowMap.put(Integer.parseInt(sectionIdStr), rowObj.getCode());
+        	}
+        	for(String psIdStr : rowObj.getStrAttrib2().split(",") ) {
+        		psRowMap.put(Integer.parseInt(psIdStr), rowObj.getCode());
+        	}
+        }
+        campaignSnap.setRowObjList( rowObjList );
+        
+		/*
+		 * for( Integer key : sectionRowMap.keySet() ) { System.out.println( key + "  "
+		 * + sectionRowMap.get(key) ); }
+		 */
+        
+        Map<String, GenericDataVO> dvDataMap = getLatestDataValuesForCampaignReport( deIdsByComma, ouIdsByComma );
+        int ALL_OUGROUP_ID = -1;
+        HashMap<String, Integer> dataMap = new HashMap<>();
+        //Arranging aggregated data
+        for( OrganisationUnit ou : whoOrgUnits ) {
+        	int ouGroupId = 0;
+        	try{ ouGroupId = ou.getGroupInGroupSet( whoRegionsGroupSet ).getId(); }catch(Exception e) {}
+        	if( ouGroupId == 0)
+        		continue;
+        	for(Section section : campaignSnap.getDsSections() ) { 
+        		int aggStatusDeId = 0;
+         		try{ aggStatusDeId = sectionDeMap.get( section.getId() ).get("COL_3"); }catch(Exception e) {}
+         		String statusVal = "";
+         		try{ statusVal = dvDataMap.get(ou.getId()+"_"+aggStatusDeId).getStrVal1(); }catch(Exception e) {}
+         		
+         		//System.out.println( ouGroupId + "_" + section.getId() + "_" + section.getName() +"  = " +sectionRowMap.get(section.getId()) );
+         		
+         		if( statusValues.contains( statusVal ) && sectionRowMap.get(section.getId()) != null ) {
+             		//try{ System.out.println( ouGroupId + "_" +rowObjMap.get( sectionRowMap.get(section.getId()) ).getCode() + " = " + statusVal );}catch(Exception e) {}
+
+         			String ougKey = ouGroupId+"_"+ rowObjMap.get( sectionRowMap.get(section.getId()) ).getCode();
+         			if( dataMap.get( ougKey ) == null )
+         				dataMap.put( ougKey, 1);
+         			else {
+         				dataMap.put( ougKey, dataMap.get(ougKey)+1 );
+         			}
+         			
+         			String allOugKey = ALL_OUGROUP_ID+"_"+ rowObjMap.get( sectionRowMap.get(section.getId()) ).getCode();
+         			if( dataMap.get( allOugKey ) == null )
+         				dataMap.put( allOugKey, 1);
+         			else {
+         				dataMap.put( allOugKey, dataMap.get(allOugKey)+1 );
+         			}         			
+         		}
+        	}
+        }
+        
+        //TODO-Event Data
+        
+        campaignSnap.setCdbDataMap( dataMap );
+    	
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date curDate = new Date();
+        campaignSnap.setCurDateStr( sdf.format( curDate ) );
+        
+        return campaignSnap;
     }
     
     private Date getStartDateByString( String dateStr )

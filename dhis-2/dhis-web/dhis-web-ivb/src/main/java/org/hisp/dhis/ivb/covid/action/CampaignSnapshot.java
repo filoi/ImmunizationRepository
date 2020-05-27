@@ -12,6 +12,7 @@ import org.hisp.dhis.dataset.Section;
 import org.hisp.dhis.ivb.util.GenericDataVO;
 import org.hisp.dhis.ivb.util.GenericTypeObj;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
+import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroupSet;
 
 public class CampaignSnapshot 
@@ -49,12 +50,35 @@ public class CampaignSnapshot
     private Map<String, String> statusColorMap = new HashMap<>();    
     private  Map<String, List<CampaignVO>> ccDataMap;   
 	private List<String> monthNames = new ArrayList<>();
-    
+	
+	//Campaign Dashboard
+	private List<OrganisationUnitGroup> ouGroups = new ArrayList<>();
+	private List<GenericTypeObj> rowObjList = new ArrayList<>();
+	private HashMap<String, Integer> cdbDataMap = new HashMap<>();
+	
     // --------------------------------------------------------------------------
     // Getters & Setters
     // --------------------------------------------------------------------------
 	public Map<String, List<CampaignVO>> getCcDataMap() {
 		return ccDataMap;
+	}
+	public List<OrganisationUnitGroup> getOuGroups() {
+		return ouGroups;
+	}
+	public void setOuGroups(List<OrganisationUnitGroup> ouGroups) {
+		this.ouGroups = ouGroups;
+	}
+	public List<GenericTypeObj> getRowObjList() {
+		return rowObjList;
+	}
+	public void setRowObjList(List<GenericTypeObj> rowObjList) {
+		this.rowObjList = rowObjList;
+	}
+	public HashMap<String, Integer> getCdbDataMap() {
+		return cdbDataMap;
+	}
+	public void setCdbDataMap(HashMap<String, Integer> cdbDataMap) {
+		this.cdbDataMap = cdbDataMap;
 	}
 	public void setCcDataMap(Map<String, List<CampaignVO>> ccDataMap) {
 		this.ccDataMap = ccDataMap;

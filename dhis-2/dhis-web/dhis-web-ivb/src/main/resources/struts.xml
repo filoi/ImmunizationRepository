@@ -1456,6 +1456,14 @@
 				<param name="bufferSize">1024</param>
 			</result>
 		</action>
+		<!-- Campaign Dashboard -->
+		<action name="campaignDashboard"
+			class="org.hisp.dhis.ivb.covid.action.CampaignDashboardAction">
+			<result name="success" type="velocity">/dhis-web-ivb/main.vm</result>
+			<param name="page">/dhis-web-ivb/campaignDashboard.vm</param>
+			<param name="javascripts">javascript/ivb-dataentry.js,javascript/jquerycssmenu.js,javascript/request.js,javascript/jquery.treeview.js,../dhis-web-commons/select2/select2.min.js</param>
+			<param name="stylesheets">css/ivb-dataentry.css,css/jquery.fancybox.css,css/jquerycssmenu.css,css/jquery.treeview.css,../dhis-web-commons/select2/select2.css</param>
+		</action>
 		
 						
 		<!--  for download map to excel -->

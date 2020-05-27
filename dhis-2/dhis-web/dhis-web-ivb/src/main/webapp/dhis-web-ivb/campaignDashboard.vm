@@ -1,0 +1,353 @@
+<!doctype html>
+
+<script type="text/javascript" src="freeze_table/tableFreezer.js"></script>
+   
+#set( $reportWarning = "Y" )
+
+<style >   
+	.table-condensed>thead>tr>th, .table-condensed>tbody>tr>th,
+		.table-condensed>tfoot>tr>th, .table-condensed>thead>tr>td,
+		.table-condensed>tbody>tr>td, .table-condensed>tfoot>tr>td,
+		.table-condensed>tr>th, .table-condensed>tr>th, .table-condensed>tr>th,
+		.table-condensed>tr>td, .table-condensed>tr>td, .table-condensed>tr>td{
+			padding: 3px 4px;
+	}
+	
+	.table-bordered > thead > tr > th, .table-bordered > tbody > tr > th, 
+	.table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, 
+	.table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td {
+		border: 1px solid #ddd;
+	}
+
+	td{
+		max-width: none!important;
+	}
+	
+	td, th {
+		font-size: 11px;
+		padding: 3px 4px;
+	}
+
+	.table tr th {
+		text-align: center;
+		background: #F0F0F0;
+		padding: 3px 4px;
+	}
+	
+	.freeze_header{
+		border-collapse: separate !important;
+	}
+	
+	.freeze_header thead tr th {
+		padding:5px;
+		color:/* #092E72; */#0a2f76;
+		text-align:center;
+		position: relative !important; 
+		top: 0px;
+		border:none;
+		border-right:1px solid #ccc;
+		border-left:1px solid #ccc;
+		background-clip: padding-box;
+	}
+								
+	th.freeze_left_column{
+		position: relative !important; 
+		top: 0px;
+		z-index: 100;
+		border:1px solid #ccc;
+	}
+							  
+	td.freeze_left_column{
+	    position: relative !important;
+	    left: 0px;
+	    background-color: white;
+	    background-clip: padding-box;
+	    border-top:1px solid #ccc;
+	    border-right: 1px solid #ccc;
+	    border-bottom: 1px solid #ccc;
+	    border-left: 1px solid #ccc; 
+	}
+												
+	.freeze_header tbody tr td,  .freeze_header thead tr th{
+		border-left:none !important;
+		border-bottom:none !important;
+	}
+				
+	thead th.freeze_left_column{
+		z-index: 899!important;
+	}					
+</style>
+
+<style>
+	.pattern1{
+		background-image: repeating-linear-gradient(45deg,$statusColor,#ccc 1%);
+	}
+	
+	.pattern2{
+		background-image: repeating-linear-gradient(90deg,$statusColor,#ccc 1%);
+	}
+	
+	.pattern3{
+		background-image: repeating-linear-gradient(180deg,$statusColor,#ccc 1%);
+	}
+</style>
+<script type="text/javascript">
+    $(document).ready(function() {
+		$("#regionalDBTable").tableFreezer({					
+			"freeze" : 'head_left_column',
+			show_scroll_x : true,
+			show_scroll_y : true,					
+			scrollHeightRemove: 70
+		});			
+	});
+</script>
+
+<body>
+
+<script type="text/javascript">
+jQuery(function() {
+    $('#toUser').show();
+    $('#recipients').select2({
+       minimumInputLength: 1,
+       multiple: true, 
+       width: "546px",      
+       ajax: {
+           url: 'getMessageRecipients.action',
+           dataType: 'json',
+           data: function(term, page) {
+                return {
+                    filter: term
+                }
+           },
+           results: function(data, page) {
+            return {               
+               results: data.matches }
+           }
+       }
+    });
+});
+</script>
+
+<script>
+    function getShareLink()
+    {       
+        $('#shareSubject').val('AFRO West Monitoring Tool');
+        $('#orgUnitIds option').attr('selected', 'selected');
+        var orgUnitIds = document.getElementById('orgUnitIds').options;
+        var ids = '';
+        for(var i=0;i <= orgUnitIds.length-1 ; i++)
+        {   
+            ids = ids+'&orgUnitIds='+orgUnitIds[i].value;
+        }
+        url = document.location.href +ids;
+        $('#shareText').val('Link to view the report: \n \n' + url);
+        $( "#shareLinkToUser" ).dialog('open');     
+    }
+    function getKeyFlagDetails(value,comment,source,orgName,area)
+    {
+        $('#detailSection').remove();
+        $('#areaAndCountry').find('#content').remove();
+        $('#areaAndCountry').append("<div id='content'><b style='float:left;'> Area: "+area+"</b><b style='float:right;'>Country: "+orgName+"&nbsp;</b> </div>");
+        $('#detailTable').append("<tr id='detailSection'><td>"+value+"</td><td>"+comment+"</td><td>"+source+"</td></tr>")
+        $( '.keyFlagDetail' ).css( 'display','block' );
+    }
+    $(function() {
+        $( document ).tooltip({
+            track: true
+        });
+    });
+</script>
+ <style>
+    @media print {
+    @page { margin: 0; }
+        body { margin: 1.6cm; }
+    }
+        
+</style>
+<select id="orgUnitIds" multiple style="display:none;">
+    #foreach( $orgUnit in $orgUnitList )
+        <option value="$orgUnit.id"></option>
+    #end
+</select>
+
+<form id="form1" name="form1" action="exportToWorkBook.action" method="post" onsubmit="return exportToExcel()" target="_newtab">
+
+    <input type="hidden" name="htmlCode" id="htmlCode" />
+    
+
+	##set( $fontColor = "#FFFFFF" )
+	#set( $fontColor = "#000000" )
+	
+	<table style="width:98%;">
+		<tr>
+			<td align="left"><font size="3"><b>Campaign Dashboard</b> - current as of $!campaignSnap.curDateStr</font></td>
+			<td align="right" style="vertical-align:middle;">				
+				<input type="submit" value="Download As Excel"/>&nbsp;
+				<input type="button" value="Print" onclick="javascript:printDiv('htmlContent')" />
+				<input type="button" value="Share" onclick="javascript: getShareLink()"/>
+			</td>
+		</tr>	
+	</table>
+	
+    <div id="htmlContent" style="width:98%;margin:10px;">    
+    	<table align="center" id="regionalDBTable" border="0" cellspacing="0" cellpadding="0" style="width:100%;" class="table table-bordered table-condensed freeze_header">
+           <thead>
+                <tr>
+					<th class="freeze_left_column" rowspan="2" style="min-width:65px; width:65px;">Diseases</th>
+					<th class="freeze_left_column" rowspan="2" style="min-width:65px; width:65px;">Total no. of countries affected <br/>*with postponed/likely to be postponed campaigns</th>					
+					<th colspan="$!campaignSnap.ouGroups.size()">No. of campaigns affected by regions</th>
+				</tr>
+				<tr>
+					#foreach( $ouGroup in $campaignSnap.ouGroups )						
+						<th align="center" style="min-width:50px; width:50px;vertical-align: middle;">$ouGroup.shortName</th>
+					#end				
+                </tr>
+            </thead>
+			<tbody>
+				#foreach( $rowObj in $campaignSnap.rowObjList )
+					#set( $key1 = "-1_${rowObj.code}")
+					#set( $cellData = "" )
+					#set( $cellData = $campaignSnap.cdbDataMap.get( $key1 ) )
+					<tr>
+						<td class="freeze_left_column">$rowObj.name</td>
+						<td class="freeze_left_column" align="center" >$cellData</td>
+						#foreach( $ouGroup in $campaignSnap.ouGroups )
+							#set( $key1 = "${ouGroup.id}_${rowObj.code}")
+							#set( $cellData = "" )
+							#set( $cellData = $campaignSnap.cdbDataMap.get( $key1 ) )
+							<td align="center">$cellData</td>
+						#end
+					</tr>	
+				#end
+    		</tbody>
+		</table>
+           		
+ 		<br/><br/><br/>
+        <table style="margin:auto;display:none;color: #9F6000;background-color: #FEEFB3;border: 1px solid;" width="100%">
+            <tr>
+                <td colspan="5">$i18n.getString( "inline_security_warning" )</td>
+            </tr>
+        </table>
+	</div>
+</form>
+
+<div id="shareLinkToUser" title="Share Link to User">
+    <fieldset>
+        <label for="toUser">$i18n.getString( "maintenance_users" )</label>
+        <input type="hidden" name="recipients" id="recipients" class="text ui-widget-content ui-corner-all" placeholder="Enter User Name"/>
+        <br/><br/>
+        <label for="shareSubject">$i18n.getString( "feedback_subject" )</label>
+        <input type="text" id="shareSubject" name="shareSubject" class="text ui-widget-content ui-corner-all" />
+        <label for="shareText">$i18n.getString( "feedback_text" )</label>
+        <textarea id="shareText" name="shareText" class="text ui-widget-content ui-corner-all" rows="6">                
+        </textarea>
+    </fieldset>
+	<br/>
+	<hr/>
+	<span style="float:right;">
+    	<a id="send" href="#">Send</a>
+		<a id="cancel" href="#">Cancel</a>
+	</span>
+</div>
+    
+<style>
+    label, #toUser ,#shareText ,#shareSubject{ 
+        display:block;
+    }
+        #recipients ,#shareText ,#shareSubject  { 
+        margin-bottom:12px;
+        width:95%; 
+        padding: .4em; 
+    }   
+    #shareLinkToUser fieldset   { 
+        padding:0;
+        border:0;
+        margin-top:25px;
+    }
+</style>
+
+<script>
+	
+    jQuery(function() {	
+	
+	$("#send").button();
+	$("#send").click(function() {
+			
+			$("#send").attr("href","mailto:"+$('#recipients').val().replace(/[,]/g,';')+"?subject="+$('#shareSubject').val()+"&body="+escape(document.getElementById('shareText').value));
+    		$("#shareLinkToUser").dialog('close');
+	});
+	$("#cancel").button();
+	$("#cancel").click(function() {
+		$("#shareLinkToUser").dialog('close');
+	});
+        var emailIds = 'null';
+        $( "#shareLinkToUser" ).dialog({
+                autoOpen: false,
+                height: 420,
+                width: 595,
+                modal: true,
+                show: "blind",
+                hide: "explode"               
+           
+        });
+    });
+	function sendMsg()
+	{
+    		
+    
+	}
+</script>
+
+
+<script>
+   
+    $(document).ready(function()
+    {
+        
+    });
+    
+    function exportToExcel()
+    {
+        var currentFlaggedImgPath = $('.flagedImg').find('img').attr('src');
+		var currentUnFlaggedImgPath = $('.unFlagedImg').find('img').attr('src');
+		
+		var redFlag = $('#redFlag').val();
+		var greyFlag = $('#greyFlag').val();
+		
+		
+		$('.flagedImg').find('img').remove();
+		$('.unFlagedImg').find('img').remove();
+		
+		$('.flagedImg').append('<font size=\"20\" color=\"red\">*</font>')
+		$('.unFlagedImg').append('<font size=\"20\" color=\"#A4A4A4\">*</font>');
+		
+		document.getElementById('htmlCode').value = document.getElementById('htmlContent').innerHTML;
+		
+		$('.flagedImg').text('');
+		$('.unFlagedImg').text('');	
+		
+		$('.flagedImg').append('<img src=\"'+currentFlaggedImgPath+'\" width=\"20\" height=\"20\" style=\"float:left;\" \>');
+		$('.unFlagedImg').append('<img src=\"'+currentUnFlaggedImgPath+'\" width=\"20\" height=\"20\" style=\"float:left;\" \>');
+        return true;
+    }
+    
+    function printDiv( divID ) 
+    {
+        //Get the HTML of div
+        var divElements = document.getElementById(divID).innerHTML;
+        
+        //Get the HTML of whole page
+        var oldPage = document.body.innerHTML;
+
+        //Reset the page's HTML with div's HTML only
+        document.body.innerHTML = "<html><head><title></title></head><body>" + divElements + "</body>";
+
+        //Print Page
+        window.print();
+
+        //Restore orignal HTML
+        document.body.innerHTML = oldPage;          
+		
+		window.location.reload();
+    }
+</script>
