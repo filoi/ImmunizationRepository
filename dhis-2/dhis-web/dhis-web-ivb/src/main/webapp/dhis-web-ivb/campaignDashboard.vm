@@ -178,28 +178,24 @@ jQuery(function() {
 	##set( $fontColor = "#FFFFFF" )
 	#set( $fontColor = "#000000" )
 	
-	<table style="width:98%;">
-		<tr>
-			<td align="left"><font size="3"><b>Campaign Dashboard</b> - current as of $!campaignSnap.curDateStr</font></td>
-			<td align="right" style="vertical-align:middle;">				
-				<input type="submit" value="Download As Excel"/>&nbsp;
-				<input type="button" value="Print" onclick="javascript:printDiv('htmlContent')" />
-				<input type="button" value="Share" onclick="javascript: getShareLink()"/>
-			</td>
-		</tr>	
-	</table>
-	
+	<div class="removexl" style="float:right;vertical-align:middle;">				
+						<input type="submit" value="Download As Excel"/>&nbsp;
+						<input type="button" value="Print" onclick="javascript:printDiv('htmlContent')" />
+						<input type="button" value="Share" onclick="javascript: getShareLink()"/>
+					</div>	
     <div id="htmlContent" style="width:98%;margin:10px;">    
-    	<table align="center" id="regionalDBTable" border="0" cellspacing="0" cellpadding="0" style="width:100%;" class="table table-bordered table-condensed freeze_header">
+		<div style="width:98%;margin-bottom:20px;"><font size="3"><b>Campaign Dashboard</b> - current as of $!campaignSnap.curDateStr</font></div>
+					
+    	<table align="center" id="regionalDBTable" border="0" cellspacing="0" cellpadding="0" style="width:100%;">
            <thead>
-                <tr>
-					<th class="freeze_left_column" rowspan="2" style="min-width:65px; width:65px;">Diseases</th>
-					<th class="freeze_left_column" rowspan="2" style="min-width:65px; width:65px;">Total no. of countries affected <br/>*with postponed/likely to be postponed campaigns</th>					
-					<th colspan="$!campaignSnap.ouGroups.size()">No. of campaigns affected by regions</th>
+                <tr style="background:#F0F0F0;color:#0a2f76;">
+					<th rowspan="2" style="min-width:65px; width:65px;border: 1px solid #ccc;">Diseases</th>
+					<th rowspan="2" style="min-width:65px; width:65px;border: 1px solid #ccc;">Total no. of countries affected <br/>*with postponed/likely to be postponed campaigns</th>					
+					<th colspan="$!campaignSnap.ouGroups.size()" style="border: 1px solid #ccc;">No. of campaigns affected by regions</th>
 				</tr>
-				<tr>
+				<tr style="background:#F0F0F0;color:#0a2f76;">
 					#foreach( $ouGroup in $campaignSnap.ouGroups )						
-						<th align="center" style="min-width:50px; width:50px;vertical-align: middle;">$ouGroup.shortName</th>
+						<th align="center" style="min-width:50px; width:50px;vertical-align: middle;border: 1px solid #ccc;">$ouGroup.shortName</th>
 					#end				
                 </tr>
             </thead>
@@ -209,13 +205,13 @@ jQuery(function() {
 					#set( $cellData = "" )
 					#set( $cellData = $campaignSnap.cdbDataMap.get( $key1 ) )
 					<tr>
-						<td class="freeze_left_column">$rowObj.name</td>
-						<td class="freeze_left_column" align="center" >$cellData</td>
+						<td style="border: 1px solid #ccc;">$rowObj.name</td>
+						<td style="border: 1px solid #ccc;" align="center" >$cellData</td>
 						#foreach( $ouGroup in $campaignSnap.ouGroups )
 							#set( $key1 = "${ouGroup.id}_${rowObj.code}")
 							#set( $cellData = "" )
 							#set( $cellData = $campaignSnap.cdbDataMap.get( $key1 ) )
-							<td align="center">$cellData</td>
+							<td style="border: 1px solid #ccc;" align="center">$cellData</td>
 						#end
 					</tr>	
 				#end
@@ -314,7 +310,7 @@ jQuery(function() {
 		var redFlag = $('#redFlag').val();
 		var greyFlag = $('#greyFlag').val();
 		
-		
+		$('.removexl').hide();
 		$('.flagedImg').find('img').remove();
 		$('.unFlagedImg').find('img').remove();
 		
@@ -325,7 +321,7 @@ jQuery(function() {
 		
 		$('.flagedImg').text('');
 		$('.unFlagedImg').text('');	
-		
+		$('.removexl').show();
 		$('.flagedImg').append('<img src=\"'+currentFlaggedImgPath+'\" width=\"20\" height=\"20\" style=\"float:left;\" \>');
 		$('.unFlagedImg').append('<img src=\"'+currentUnFlaggedImgPath+'\" width=\"20\" height=\"20\" style=\"float:left;\" \>');
         return true;
