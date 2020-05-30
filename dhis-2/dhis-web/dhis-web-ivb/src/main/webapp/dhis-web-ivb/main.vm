@@ -536,7 +536,7 @@
 						<ul>
 							<li><a href="campaignTrackerForm.action"><b>Campaign Tracker</b></a></li>
 							<li><a href="campaignCalendarForm.action?resultPage=0"><b>Campaign Calendar</b></a></li>
-							<!--<li><a href="campaignDashboard.action"><b>Campaign Dashboard</b></a></li>-->
+							<li><a href="campaignDashboard.action"><b>Campaign Dashboard</b></a></li>
 						</ul>
 					</li>	
 					<li><a href="tabularReportForm.action"><b>$i18n.getString( "tabular_report" )</b></a></li>
