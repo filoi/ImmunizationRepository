@@ -34,19 +34,20 @@ $(function() {
 
 	function generateHTMLreport()
 	{		
-		$('#selectedListVaccine option').attr('selected', 'selected');
+		//$('#selectedListVaccine option').attr('selected', 'selected');
 		$('#selectedListDataset option').attr('selected', 'selected');
 		//console.log("hello"+$("#orgUnitId").val( orgUnits[0] ));
-		var vaccineListBox = document.getElementById('selectedListVaccine');
+		//var vaccineListBox = document.getElementById('selectedListVaccine');
 		var dataSetListBox = document.getElementById('selectedListDataset');
 		
 		var showComment = document.getElementById('showComment');				
-		
+		/*
 		if( vaccineListBox.options.length <= 0 )
 		{
 			alert("Please select campaign(s)");
 			return false;
 		}
+		*/
 		
 		/*
 		if(!$("#dateFrom").val())
@@ -65,11 +66,6 @@ $(function() {
 			alert("Please select other data");
 			return false;
 		}
-		if(showComment.checked)
-		{
-			var form = document.forms["vacIntroReportForm"];
-			form.action = "generateVaccineIntroReportCommentWise.action";
-		}	
 					
 	}
 	function getDate( date )
@@ -146,31 +142,11 @@ $(function() {
 
 <br/>
 
-<div style="font-size:16px; width:93%; margin:auto;" class="ui-widget-header ui-corner-all"><b>#if($resultPage == 1) Measles Dashboard #else Campaign Tracker #end</b></div>
+<div style="font-size:16px; width:93%; margin:auto;" class="ui-widget-header ui-corner-all"><b>Campaign Tracker</b></div>
 <form id="vacIntroReportForm" method="get" action="campaignTrackerResult.action" onsubmit="return generateHTMLreport()">
  	<input type="hidden" name="orgUnitId" id="orgUnitId"/>
- 	<input type="hidden" name="resultPage" id="resultPage" value="$!resultPage" />
  	<div id="reportFilterDiv" >
- 		<table style="width:95%;margin:auto;table-layout:fixed;" cellpadding="4" cellspacing="2">
- 				<tr style="margin-bottom: 15px;">
- 					<td width="45%">
- 						Campaigns<br/> 					
-			          	<select id="availableListVaccine" name="availableListVaccine" ondblclick="moveSelectedById( 'availableListVaccine', 'selectedListVaccine' )" multiple="multiple" style="height: 165px; width: 100%;">
-						#foreach($campaign in $campaignList)
-							<option value="$campaign.id">$campaign.displayName</option>
-						#end
-			          </select>
-        			</td>
-			        <td style="text-align:center" width="10%">
-			            <input type="button" value="&gt;" title="$i18n.getString( 'move_selected' )" style="width:50px" onclick="moveSelectedById( 'availableListVaccine', 'selectedListVaccine' );"/><br/>
-			            <input type="button" value="&lt;" title="$i18n.getString( 'remove_selected' )" style="width:50px" onclick="moveSelectedById( 'selectedListVaccine', 'availableListVaccine' );"/><br/>
-			            <input type="button" value="&gt;&gt;" title="$i18n.getString('move_all')" style="width:50px" onclick="moveAllById( 'availableListVaccine', 'selectedListVaccine' );"/><br/>
-			            <input type="button" value="&lt;&lt;" title="$i18n.getString('remove_all')" style="width:50px" onclick="moveAllById( 'selectedListVaccine', 'availableListVaccine' );"/>
-			        </td>
-			        <td width="45%">
-			            <select id="selectedListVaccine" name="selectedListVaccine" ondblclick="moveSelectedById( 'selectedListVaccine', 'availableListVaccine' )" multiple="multiple" style="height: 165px; width: 100%; margin-top: 22px;"></select>
-			        </td>				 
-			 </tr>
+ 		<table style="width:95%;margin:auto;table-layout:fixed;" cellpadding="4" cellspacing="2"> 				
  			<tr>
  				<td width="55%" colspan="2">
  					<!-- $i18n.getString( "select_country_or_region" )<br/>-->

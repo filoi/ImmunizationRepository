@@ -46,6 +46,7 @@ import org.hisp.dhis.dataelement.DataElementService;
 import org.hisp.dhis.dataset.DataSet;
 import org.hisp.dhis.dataset.DataSetService;
 import org.hisp.dhis.dataset.Section;
+import org.hisp.dhis.dataset.SectionService;
 import org.hisp.dhis.dataset.comparator.SectionOrderComparator;
 import org.hisp.dhis.i18n.I18nService;
 import org.hisp.dhis.ivb.util.GenericTypeObj;
@@ -141,9 +142,21 @@ public class CampaignTrackerFormAction
     @Autowired
     private LookupService lookupService;
     
+    @Autowired
+	private SectionService sectionService;
+    
     // -------------------------------------------------------------------------
     // Getters & Setters
     // -------------------------------------------------------------------------
+    
+    private Integer resultPage = 0;
+	public Integer getResultPage() {
+		return resultPage;
+	}
+	public void setResultPage(Integer resultPage) {
+		this.resultPage = resultPage;
+	}
+
 	private String language;
 
     public String getLanguage()
@@ -200,6 +213,8 @@ public class CampaignTrackerFormAction
         return adminStatus;
     }
     
+  
+    
 //    private String orgUnitGrpId = "";
 //
 //    public String getOrgUnitGrpId()
@@ -225,17 +240,28 @@ public class CampaignTrackerFormAction
             language = i18nService.getCurrentLocale().getLanguage();
         }
         
-        Lookup lookup = lookupService.getLookupByName( "CAMPAIGN_DATASET_UID" );
-        DataSet dataSet = dataSetService.getDataSet( lookup.getValue() );
-        campaignList = new ArrayList<Section>( dataSet.getSections() );
+        if( resultPage == 1 ) {
+        	campaignList = new ArrayList<Section>();
+        	Lookup lookup = lookupService.getLookupByName( "MEASLES_SECTION_IDS" );
+        	for( String sectionIdStr : lookup.getValue().split(",") ){
+                Section section = sectionService.getSection( Integer.parseInt( sectionIdStr) );
+                campaignList.add( section );
+            }
+        }
+        else {
+        	 Lookup lookup = lookupService.getLookupByName( "CAMPAIGN_DATASET_UID" );
+             DataSet dataSet = dataSetService.getDataSet( lookup.getValue() );
+             campaignList = new ArrayList<Section>( dataSet.getSections() );
+        }
         Collections.sort(campaignList , new Comparator<Section>() {
             public int compare(Section one, Section other) {
                 return one.getDisplayName().trim() .compareTo(other.getDisplayName().trim());
             }
         }); 
+        
         //Collections.sort( campaignList, new SectionOrderComparator() );
         
-        lookup = lookupService.getLookupByName( "CAMPAIGN_COLUMNS_INFO" );
+        Lookup lookup = lookupService.getLookupByName( "CAMPAIGN_COLUMNS_INFO" );
         String campaignColInfo = lookup.getValue();
         colList = new ArrayList<GenericTypeObj>();
         for( String colInfo : campaignColInfo.split("@!@") ) {
@@ -244,6 +270,18 @@ public class CampaignTrackerFormAction
         	colObj.setName( colInfo.split("@-@")[1] );
         	//colObj.setStrAttrib1( colInfo.split("@-@")[2] ); //deids
         	colList.add( colObj );
+        }
+        
+        if( resultPage == 1 ) {
+        	lookup = lookupService.getLookupByName( "MEASLES_COLUMNS_INFO" );
+            String measlesColInfo = lookup.getValue();            
+            for( String colInfo : measlesColInfo.split("@!@") ) {
+            	GenericTypeObj colObj = new GenericTypeObj();
+            	colObj.setCode( colInfo.split("@-@")[0] );
+            	colObj.setName( colInfo.split("@-@")[1] );
+            	//colObj.setStrAttrib1( colInfo.split("@-@")[2] ); //deids
+            	colList.add( colObj );
+            }
         }
         
         /*

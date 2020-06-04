@@ -201,6 +201,8 @@ $(function() {
 	<input type="hidden" name="incomeLevel" value="$!campaignSnap.incomeLevel" />
 	<input type="hidden" name="gaviEligibleStatus" value="$!campaignSnap.gaviEligibleStatus" />
 	<input type="hidden" name="showComment" value="$!campaignSnap.showComment" />
+	<input type="hidden" name="resultPage" id="resultPage" value="$!campaignSnap.resultPage" />
+	
 	<select name="ouIds" multiple="multiple" style="display:none;">
 		#foreach($ouId in $campaignSnap.ouIds)
 			<option value="$ouId" selected>$ouId</option>
@@ -219,17 +221,21 @@ $(function() {
 	
 	
 	<div align="right" style="width:95%;margin:auto;padding-top:8px;padding-bottom:3px;">
-		<input type="button" onclick="location.href='campaignTrackerForm.action'" value="Change Selections"/>&nbsp;
+		#if($campaignSnap.resultPage == 1)
+			<input type="button" onclick="location.href='campaignTrackerForm.action?resultPage=1'" value="Change Selections"/>&nbsp;
+		#else
+			<input type="button" onclick="location.href='campaignTrackerForm.action'" value="Change Selections"/>&nbsp;
+		#end	
 		<input type="submit" value="Download As Excel"/>&nbsp;
 		<input type="button" value="Print" onclick="javascript:printDiv('htmlContent')" />
 		<input type="button" value="Share" onclick="javascript: getShareLink()"/>
 	</div>
   
 
-	<div id="htmlContent1" style="width:98%;margin:auto;" >   
+	<div id="htmlContent" style="width:98%;margin:auto;" >   
 
 		<div style="margin:auto; margin-top:-50px;" >        
-	        <h2>Campaign Tracker - current as of $!campaignSnap.curDateStr</h2>
+	        <h2>#if($campaignSnap.resultPage == 1) Measles Dashboard #else Campaign Tracker #end - current as of $!campaignSnap.curDateStr</h2>
 			<h3>Campaigns: 
 				#foreach( $dataSetSection in $campaignSnap.dsSections )
 					$dataSetSection.code &nbsp; 
@@ -259,7 +265,7 @@ $(function() {
 						#elseif( $!colObj.code == "COL_4" || $!colObj.code == "COL_13" )
 							#set( $styleProp = "style='min-width:120px; width:120px;'" )							
 						#else
-							#set( $styleProp = "" )
+							#set( $styleProp = "style='min-width:50px; width:50px;'" )
 						#end
 	                    <th $styleProp>$!colObj.name</th>
 	                #end
@@ -353,11 +359,6 @@ $(function() {
 	        	<td colspan="5">$i18n.getString( "report_inline_security_warning" )</td>
 	        </tr>
 	    </table>
-	</div>
-	
-	
-	 <div id="htmlContent" style="width:98%;margin:auto;display:none;" >   
-
 	</div>
 </form>
 

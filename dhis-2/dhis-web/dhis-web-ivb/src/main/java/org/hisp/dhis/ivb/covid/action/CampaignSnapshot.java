@@ -18,6 +18,7 @@ import org.hisp.dhis.organisationunit.OrganisationUnitGroupSet;
 public class CampaignSnapshot 
 {
 	//Common
+	private Integer resultPage;
 	private String isoCode;
     private String whoRegion;
     private String unicefRegion;
@@ -238,5 +239,12 @@ public class CampaignSnapshot
 	}
 	public void setToDateStr(String toDateStr) {
 		this.toDateStr = toDateStr;
-	}    	
+	}
+	public Integer getResultPage() {
+		return resultPage;
+	}
+	public void setResultPage(Integer resultPage) {
+		this.resultPage = resultPage;
+	}
+	
 }

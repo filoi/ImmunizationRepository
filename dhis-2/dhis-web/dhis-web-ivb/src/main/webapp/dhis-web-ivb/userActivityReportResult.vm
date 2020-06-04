@@ -114,7 +114,7 @@ jQuery(function() {
         <input type="button" onclick="location.href='userActivityReportForm.action'" value="Change Selections"/>&nbsp;
         <!--<input type="button" onclick="tableToExcel('table1','output')" value="Download As Excel"/>&nbsp;-->
         <!--<input type="button" id="btnExport" value="Download As Excel" />-->
-	<input type="submit" value="Download As Excel"/>&nbsp;
+		<input type="submit" value="Download As Excel"/>&nbsp;
         <input type="button" value="Print" onclick="javascript:printDiv('htmlContent')" />
         <input type="button" value="Share" onclick="javascript: getShareLink()"/>
     </div>
@@ -315,24 +315,6 @@ jQuery(function() {
         
         return true;
     }
-
-var tableToExcel = function() {
-
-
-   sa = true; 
-   var myBlob = new Blob( [document.getElementById('htmlContent').innerHTML] , {type: 'application/vnd.ms-excel'});
-   var url = window.URL.createObjectURL(myBlob);
-   var a = document.createElement("a");
-   document.body.appendChild(a);
-   a.href = url;
-   a.download = "newfile.xls"; a.click();
-   //adding some delay in removing the dynamically created link solved the problem in FireFox 
-   setTimeout(function() {window.URL.revokeObjectURL(url);},0);
-
-
- 
-};
-
 
 
     function printDiv( divID ) 

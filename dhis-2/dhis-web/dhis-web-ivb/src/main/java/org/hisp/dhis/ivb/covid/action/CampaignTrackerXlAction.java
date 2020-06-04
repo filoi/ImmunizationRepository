@@ -56,6 +56,14 @@ public class CampaignTrackerXlAction implements Action
     private Collection<Integer> campaignIds;
     private Collection<String> selCols;
     
+    private Integer resultPage = 0;
+	public Integer getResultPage() {
+		return resultPage;
+	}
+	public void setResultPage(Integer resultPage) {
+		this.resultPage = resultPage;
+	}
+	
 	public void setIsoCode(String isoCode) {
 		this.isoCode = isoCode;
 	}
@@ -102,6 +110,9 @@ public class CampaignTrackerXlAction implements Action
         	campaignSnap.setGaviEligibleStatus("ON");
         if( showComment != null && showComment.equals("ON") )
         	campaignSnap.setShowComment("ON");
+        
+        campaignSnap.setResultPage( resultPage );
+        
         campaignSnap.getSelCols().addAll( selCols );
         campaignSnap.getCampaignIds().addAll( campaignIds );
         campaignSnap.getOuIds().addAll( ouIds );
@@ -131,8 +142,10 @@ public class CampaignTrackerXlAction implements Action
             e.printStackTrace();
         }
 
-        
-        fileName = "CampaignTracker_"+campaignSnap.getCurDateStr()+".xlsx";
+        if( campaignSnap.getResultPage() == 1)
+        	fileName = "MeaslesDashboard_"+campaignSnap.getCurDateStr()+".xlsx";
+        else
+        	fileName = "CampaignTracker_"+campaignSnap.getCurDateStr()+".xlsx";
         File outputReportFile = new File( outputReportPath );
         inputStream = new BufferedInputStream( new FileInputStream( outputReportFile ) );
     

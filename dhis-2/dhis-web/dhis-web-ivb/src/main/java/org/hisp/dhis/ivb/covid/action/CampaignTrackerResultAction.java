@@ -245,6 +245,14 @@ public class CampaignTrackerResultAction
     
     private String showComment;
     
+    private Integer resultPage = 0;
+	public Integer getResultPage() {
+		return resultPage;
+	}
+	public void setResultPage(Integer resultPage) {
+		this.resultPage = resultPage;
+	}
+    
     public String getShowComment() {
 		return showComment;
 	}
@@ -457,7 +465,9 @@ public class CampaignTrackerResultAction
         	campaignSnap.setGaviEligibleStatus("ON");
         if( showComment != null )
         	campaignSnap.setShowComment("ON");
-    	
+        
+        campaignSnap.setResultPage( resultPage );
+        
         campaignSnap.getSelCols().addAll( selectedOtherData );
         
         campaignSnap.getCampaignIds().addAll( selectedListVaccine );

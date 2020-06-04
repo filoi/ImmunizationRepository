@@ -331,6 +331,27 @@ public class CampaignHelper
         	}
         }
         
+        if( campaignSnap.getResultPage() == 1 ) {
+	        lookup = lookupService.getLookupByName( "MEASLES_COLUMNS_INFO" );
+	        String measlesColInfo = lookup.getValue();
+	        //colList = new ArrayList<GenericTypeObj>();
+	        for( String colInfo : measlesColInfo.split("@!@") ) {
+	        	if( campaignSnap.getSelCols().contains( colInfo.split("@-@")[0] ) ) {
+		        	GenericTypeObj colObj = new GenericTypeObj();
+		        	colObj.setCode( colInfo.split("@-@")[0] );
+		        	colObj.setName( colInfo.split("@-@")[1] );
+		        	colObj.setStrAttrib1( colInfo.split("@-@")[2] ); //deids
+		        	colObj.setStrAttrib2( colInfo.split("@-@")[3] ); //ps deids
+		        	campaignSnap.getColList().add( colObj );
+		        	deIdsByComma += ","+colInfo.split("@-@")[2];
+		        	psDeIdsByComma += ","+colInfo.split("@-@")[3];
+		        	for(String deIdStr : colObj.getStrAttrib1().split(",") ) {
+		        		deColMap.put(Integer.parseInt(deIdStr), colObj.getCode());
+		        	}
+		        	deColMap.put(Integer.parseInt(colObj.getStrAttrib2()), colObj.getCode());
+	        	}
+	        }
+        }
         
         //System.out.println(deIdsByComma);
         Map<String, GenericDataVO> dvDataMap = getLatestDataValuesForCampaignReport( deIdsByComma, ouIdsByComma );
@@ -373,7 +394,7 @@ public class CampaignHelper
 	        				vacDataMap.put(colCode, dvDataMap.get(dvKey));
 	        				if( colCode.trim().equals("COL_4") )
 	        					vacDataMap.put("COL_3", dvDataMap.get(dvKey));
-	        				else if( colCode.trim().equals("COL_8") ) {
+	        				else if( colCode.trim().equals("COL_8") || colCode.trim().equals("COL_15") ) {
 	        					String val = "";
 	        					try{ val = dvDataMap.get(dvKey).getStrVal1();}catch(Exception e) {}
 	        					try{ val = df.format(Double.parseDouble(val));}catch(Exception e) {}
@@ -445,7 +466,7 @@ public class CampaignHelper
     	        				flag = 1;
     	        				if( colCode.trim().equals("COL_4") )
     	        					dvo.setStrVal2(dvo.getStrVal1());
-    	        				else if( colCode.trim().equals("COL_8") ) {
+    	        				else if( colCode.trim().equals("COL_8") || colCode.trim().equals("COL_15") ) {
     	        					String val = "";
     	        					try{ val = dvo.getStrVal1();}catch(Exception e) {}
     	        					try{ val = df.format(Double.parseDouble(val));}catch(Exception e) {}
@@ -613,7 +634,11 @@ public class CampaignHelper
     		
     		int rowCount = 0;
     		
-			Sheet sheet = workbook.createSheet( "CampaignTracker" );
+    		String sheetName ="CampaignTracker";
+    		if( campaignSnap.getResultPage()==1)
+    			sheetName = "MeaslesDashboard";
+    		
+			Sheet sheet = workbook.createSheet( sheetName );
 			
 			//Main Header
 			Row row = sheet.createRow( rowCount++ );			
@@ -621,7 +646,10 @@ public class CampaignHelper
 			Cell cell = row.createCell( colCount++ );
 			cell.setCellStyle( headerStyle );
 			//sheet.addMergedRegion( new org.apache.poi.ss.util.CellRangeAddress( rowCount-1, rowCount-1, colCount-1, colCount+5 ) );
-			cell.setCellValue( "Campaign Tracker - current as of "+campaignSnap.getCurDateStr() );
+			if( campaignSnap.getResultPage()==1)
+				cell.setCellValue( "Measles Dashboard - current as of "+campaignSnap.getCurDateStr() );
+			else
+				cell.setCellValue( "Campaign Tracker - current as of "+campaignSnap.getCurDateStr() );
 			
 			//Sub Header
 			rowCount++;
