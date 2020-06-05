@@ -1746,6 +1746,11 @@ public class CampaignHelper
         		psRowMap.put(Integer.parseInt(psIdStr), rowObj.getCode());
         	}
         }
+        
+        GenericTypeObj rowObj = new GenericTypeObj();
+    	rowObj.setCode( "GTOTAL" );
+    	rowObj.setName( "Overall Total<br/>* please note some countries may be double-counted" );
+    	rowObjList.add( rowObj );
         campaignSnap.setRowObjList( rowObjList );
         
 		/*
@@ -1774,18 +1779,33 @@ public class CampaignHelper
              		//try{ System.out.println( ouGroupId + "_" +rowObjMap.get( sectionRowMap.get(section.getId()) ).getCode() + " = " + statusVal );}catch(Exception e) {}
 
          			String ougKey = ouGroupId+"_"+ rowObjMap.get( sectionRowMap.get(section.getId()) ).getCode();
-         			if( dataMap.get( ougKey ) == null )
-         				dataMap.put( ougKey, 1);
+         			if( dataMap.get( ougKey ) == null ) {
+         				dataMap.put( ougKey, 1);         				
+         			}
          			else {
          				dataMap.put( ougKey, dataMap.get(ougKey)+1 );
          			}
          			
          			String allOugKey = ALL_OUGROUP_ID+"_"+ rowObjMap.get( sectionRowMap.get(section.getId()) ).getCode();
-         			if( dataMap.get( allOugKey ) == null )
+         			if( dataMap.get( allOugKey ) == null ) {
          				dataMap.put( allOugKey, 1);
+         			}
          			else {
          				dataMap.put( allOugKey, dataMap.get(allOugKey)+1 );
-         			}         			
+         			}
+         			
+         			//Grand Total         			
+     				String tempKey = ouGroupId+"_GTOTAL";
+     				if( dataMap.get( tempKey ) == null ) 
+     					dataMap.put( tempKey, 1);
+     				else
+     					dataMap.put( tempKey, dataMap.get(tempKey)+1 );
+     				
+     				tempKey = ALL_OUGROUP_ID+"_GTOTAL";
+     				if( dataMap.get( tempKey ) == null ) 
+     					dataMap.put( tempKey, 1);
+     				else
+     					dataMap.put( tempKey, dataMap.get(tempKey)+1 );         			
          		}
         	}
         }
@@ -1824,7 +1844,20 @@ public class CampaignHelper
              				dataMap.put( allOugKey, 1);
              			else {
              				dataMap.put( allOugKey, dataMap.get(allOugKey)+1 );
-             			}         			
+             			}
+             			
+             			//Grand Total         			
+         				String tempKey = ouGroupId+"_GTOTAL";
+         				if( dataMap.get( tempKey ) == null ) 
+         					dataMap.put( tempKey, 1);
+         				else
+         					dataMap.put( tempKey, dataMap.get(tempKey)+1 );
+         				
+         				tempKey = ALL_OUGROUP_ID+"_GTOTAL";
+         				if( dataMap.get( tempKey ) == null ) 
+         					dataMap.put( tempKey, 1);
+         				else
+         					dataMap.put( tempKey, dataMap.get(tempKey)+1 );
              		}
         		}
         	}

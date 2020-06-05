@@ -179,17 +179,17 @@ jQuery(function() {
 	#set( $fontColor = "#000000" )
 	
 	<div class="removexl" style="float:right;vertical-align:middle;">				
-						<input type="submit" value="Download As Excel"/>&nbsp;
-						<input type="button" value="Print" onclick="javascript:printDiv('htmlContent')" />
-						<input type="button" value="Share" onclick="javascript: getShareLink()"/>
-					</div>	
+		<input type="submit" value="Download As Excel"/>&nbsp;
+		<input type="button" value="Print" onclick="javascript:printDiv('htmlContent')" />
+		<input type="button" value="Share" onclick="javascript: getShareLink()"/>
+	</div>	
     <div id="htmlContent" style="width:98%;margin:10px;">
 		<div style="width:98%;margin-bottom:20px;"><font size="2"><b>No. of countries with campaigns in 2020 that have been postponed because of COVID-19 *counting from March 2020</b> <i>- current as of $!campaignSnap.curDateStr</i></font></div>
 					
     	<table align="center" id="regionalDBTable" border="0" cellspacing="0" cellpadding="0" style="width:100%;">
            <thead>
                 <tr style="background:#F0F0F0;color:#0a2f76;">
-					<th rowspan="2" style="min-width:65px; width:65px;border: 1px solid #ccc;">Diseases</th>
+					<th rowspan="2" style="min-width:65px; width:65px;border: 1px solid #ccc;">Diseases/ Vaccines</th>
 					<th rowspan="2" style="min-width:65px; width:65px;border: 1px solid #ccc;">Total no. of countries</th>					
 					<th colspan="$!campaignSnap.ouGroups.size()" style="border: 1px solid #ccc;">No. of campaigns affected by regions</th>
 				</tr>
@@ -204,7 +204,7 @@ jQuery(function() {
 					#set( $key1 = "-1_${rowObj.code}")
 					#set( $cellData = "" )
 					#set( $cellData = $campaignSnap.cdbDataMap.get( $key1 ) )
-					<tr>
+					<tr #if($rowObj.code == "GTOTAL") style="font-weight: bold;" #end>
 						<td style="border: 1px solid #ccc;">$rowObj.name</td>
 						<td style="border: 1px solid #ccc;" align="center" >$cellData</td>
 						#foreach( $ouGroup in $campaignSnap.ouGroups )
