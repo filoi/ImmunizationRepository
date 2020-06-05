@@ -22,6 +22,9 @@ import org.hisp.dhis.dataset.DataSetService;
 import org.hisp.dhis.datavalue.DataValueAudit;
 import org.hisp.dhis.i18n.I18nFormat;
 import org.hisp.dhis.i18n.I18nService;
+import org.hisp.dhis.ivb.covid.action.CampaignHelper;
+import org.hisp.dhis.ivb.covid.action.CampaignVO;
+import org.hisp.dhis.ivb.util.GenericDataVO;
 import org.hisp.dhis.ivb.util.IVBUtil;
 import org.hisp.dhis.lookup.Lookup;
 import org.hisp.dhis.lookup.LookupService;
@@ -32,6 +35,8 @@ import org.hisp.dhis.oust.manager.SelectionTreeManager;
 import org.hisp.dhis.period.Period;
 import org.hisp.dhis.period.PeriodService;
 import org.hisp.dhis.period.QuarterlyPeriodType;
+import org.hisp.dhis.program.ProgramStage;
+import org.hisp.dhis.program.ProgramStageService;
 import org.hisp.dhis.user.CurrentUserService;
 import org.hisp.dhis.user.User;
 import org.hisp.dhis.user.UserAuthorityGroup;
@@ -130,11 +135,24 @@ public class GenerateUserAcitivityReportAction
     @Autowired
     private LookupService lookupService;
     
+    @Autowired
+    private ProgramStageService programStageService;
+
+    @Autowired
+    private CampaignHelper campaignHelper;
+    
     // -------------------------------------------------------------------------
     // Getter / Setters
     // -------------------------------------------------------------------------
-    
-    private String startDate;
+    private String includeEventCap;
+    public String getIncludeEventCap() {
+		return includeEventCap;
+	}
+	public void setIncludeEventCap(String includeEventCap) {
+		this.includeEventCap = includeEventCap;
+	}
+
+	private String startDate;
     
     public void setStartDate( String startDate )
     {
@@ -292,7 +310,18 @@ public class GenerateUserAcitivityReportAction
         return periods;
     }
     
-    // --------------------------------------------------------------------------
+    
+    private List<ProgramStage> programStages = new ArrayList<>();
+    public List<ProgramStage> getProgramStages() {
+		return programStages;
+	}
+
+    private Map<String, List<GenericDataVO>> eventDataMap = new HashMap<>();
+	public Map<String, List<GenericDataVO>> getEventDataMap() {
+		return eventDataMap;
+	}
+	
+	// --------------------------------------------------------------------------
     // Action implementation
     // --------------------------------------------------------------------------    
     public String execute()
@@ -323,6 +352,8 @@ public class GenerateUserAcitivityReportAction
             adminStatus = "No";
         }
      
+        
+        
         // ORGUNIT
         if(orgUnitIds.size() > 0)
         {
@@ -458,10 +489,34 @@ public class GenerateUserAcitivityReportAction
             
             dataValueAuditMap = ivbUtil.getDataValueAuditMapByUser_UserActivity( deIdsByComma, orgUnitIdsByComma, startD, endD, DataValueAudit.DVA_CT_HISOTRY ,user );
         }
-        else
-        {
-            return SUCCESS;
-        } 
+        if( includeEventCap != null ) {
+        	List<DataElement> eventDEs = new ArrayList<>();
+        	Set<DataElement> psDataElements = new HashSet<>();
+        	includeEventCap = "ON";
+        	 lookup = lookupService.getLookupByName( "CAMPAIGN_PROGRAM_STAGE_IDS" );
+             String psIdsByComma = "-1";
+             
+             for(String psId : lookup.getValue().split(",")) {
+             	ProgramStage ps = programStageService.getProgramStage( Integer.parseInt(psId) );
+             	if( ps!= null) {
+             		psDataElements.addAll( ps.getAllDataElements() );
+             		programStages.add( ps );
+             		psIdsByComma += ","+ps.getId();
+             	}
+             }
+             
+             String eventDeIdsByComma = "-1";
+             Collection<Integer> deIds = new ArrayList<Integer>( getIdentifiers( psDataElements ) ); 
+             if(deIds.size() > 0)
+            	 eventDeIdsByComma = getCommaDelimitedString( deIds );
+             
+             User user = null;
+             if(!reportType.isEmpty() && reportType.equals("BY_USER") )
+            	 user = userService.getUser( Integer.parseInt( selectedUser ) );
+             eventDataMap = campaignHelper.getEventData_UserActivity( psIdsByComma, eventDeIdsByComma, orgUnitIdsByComma, startD, endD, user );
+             
+             System.out.println( "Event Data Size: "+ eventDataMap.size() +" includeEventCap = "+ includeEventCap);
+        }
         
         //System.out.println( dataValueAuditMap.size() );
         //System.out.println( dataElements.size() );

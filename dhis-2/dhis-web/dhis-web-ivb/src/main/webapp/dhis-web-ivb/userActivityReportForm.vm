@@ -163,19 +163,21 @@ function validateForm1()
 	<div id="reportFilterDiv" >
  		<table style="width:90%;margin-left:5em;" cellpadding="4" cellspacing="2">
 			 <tr style="margin-bottom: 15px;">
-					<td  width="60%" colspan="2">
-                        #organisationUnitSelectionTree1( false, true, true )						
-					</td>					
-					<td width="40%">
-                        $i18n.getString( "from" ): <input type="text" id="dateFrom"  name="startDate" title="Date Format: YYYY / YYYY-Qn / YYYY-MM / YYYY-MM-DD e.g. 2012 / 2012-Q1 / 2012-01 / 2012-01-01" onblur="getDateFrom()" size="12" /> &nbsp; 
-						$i18n.getString( "to" ): <input type="text" id="dateTo" name="endDate" title="Date Format: YYYY / YYYY-Qn / YYYY-MM / YYYY-MM-DD e.g. 2012 / 2012-Q1 / 2012-01 / 2012-01-01" onblur="getDateTo()" size="12" /><br/><br/>
-						<br/><br/>
-						$i18n.getString( "report_type" ):<br/> 
-						<select id="reportType" name="reportType" onchange="getReportType()" style="width:100%;">							
-							<option value="BY_AREA_OF_WORK" selected >By Area of Work</option>
-							<option value="BY_USER">By User</option>
-                        </select>
-					</td>
+				<td  width="60%" colspan="2">
+                	#organisationUnitSelectionTree1( false, true, true )						
+				</td>					
+				<td width="40%">
+                	$i18n.getString( "from" ): <input type="text" id="dateFrom"  name="startDate" title="Date Format: YYYY / YYYY-Qn / YYYY-MM / YYYY-MM-DD e.g. 2012 / 2012-Q1 / 2012-01 / 2012-01-01" onblur="getDateFrom()" size="12" /> &nbsp; 
+					$i18n.getString( "to" ): <input type="text" id="dateTo" name="endDate" title="Date Format: YYYY / YYYY-Qn / YYYY-MM / YYYY-MM-DD e.g. 2012 / 2012-Q1 / 2012-01 / 2012-01-01" onblur="getDateTo()" size="12" /><br/><br/>
+					<br/><br/>
+					$i18n.getString( "report_type" ):<br/> 
+					<select id="reportType" name="reportType" onchange="getReportType()" style="width:100%;">							
+						<option value="BY_AREA_OF_WORK" selected >By Area of Work</option>
+						<option value="BY_USER">By User</option>
+                    </select>
+                    <br/><br/>
+                    <input type="checkbox" name="includeEventCap" /> Include Campaign data from event-capture
+				</td>
 			 </tr>
 			 <tr id="dataSetTr">
 					<td width="45%">

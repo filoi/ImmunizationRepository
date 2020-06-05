@@ -62,6 +62,7 @@ import org.hisp.dhis.organisationunit.OrganisationUnitGroupSet;
 import org.hisp.dhis.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.program.ProgramStage;
 import org.hisp.dhis.program.ProgramStageService;
+import org.hisp.dhis.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -219,6 +220,64 @@ public class CampaignHelper
         return latestDataValues;
     }
     
+    public Map<String, List<GenericDataVO>> getEventData_UserActivity( String psIdsByComma, String deIdsByComma, String ouIdsByComma, String startDate, String endDate, User user )
+    {
+    	Map<String, List<GenericDataVO>> eventDataMap = new HashMap<>();
+        
+        try
+        {
+            String query = "SELECT t2.programstageid, t1.programstageinstanceid, t2.organisationunitid, t1.dataelementid, t1.value, t1.storedby, DATE(t1.timestamp) as stored_on, DATE(t2.executiondate) report_date FROM trackedentitydatavalue as t1 " + 
+            					" INNER JOIN programstageinstance as t2 ON t1.programstageinstanceid = t2.programstageinstanceid " + 
+            					" WHERE t2.programstageid IN ("+ psIdsByComma +") AND t2.organisationunitid IN ("+ ouIdsByComma +") AND t1.dataelementid IN ("+ deIdsByComma +")";
+            				if( user != null )
+            					query += " AND t1.storedby = '"+ user.getUsername() +"' ";
+            				if( startDate != null && endDate != null )
+                                query += " AND DATE(t1.timestamp) BETWEEN '"+ startDate +"' AND '"+ endDate +"' ";
+            				query += " ORDER BY t1.timestamp DESC";
+            				
+            System.out.println("getEventData Query= "+query);
+            SqlRowSet rs = jdbcTemplate.queryForRowSet( query );
+            
+            while( rs.next() ){
+                Integer psId = rs.getInt( 1 );
+                Integer psInstId = rs.getInt( 2 );
+            	Integer ouId = rs.getInt( 3 );
+                Integer deId = rs.getInt( 4 );
+                String value = rs.getString( 5 );
+                String storedBy = rs.getString( 6 );
+                String storedOn = rs.getString(7);
+                String reportDate = rs.getString(8);
+
+                String baseKey = psId+"_"+ouId+"_"+deId;
+                /*
+                if( eventDataMap.get( baseKey) == null )
+                	eventDataMap.put(baseKey, new HashMap<>());
+                
+                if( eventDataMap.get( baseKey).get(psInstId) == null )
+                	eventDataMap.get( baseKey).put(psInstId, new CampaignVO());
+                
+                if( eventDataMap.get( baseKey).get(psInstId).getColDataMap() == null )
+                	eventDataMap.get( baseKey).get(psInstId).setColDataMap( new HashMap<>());
+                */
+
+                if( eventDataMap.get( baseKey) == null )
+                	eventDataMap.put(baseKey, new ArrayList<>());
+                
+                GenericDataVO dvo = new GenericDataVO();
+                dvo.setValue(value);
+                dvo.setStrVal1(reportDate);
+                dvo.setStrVal2(storedOn);
+                dvo.setStoredBy(storedBy);
+
+                eventDataMap.get( baseKey).add( dvo );
+            }
+        }
+        catch( Exception e ){
+        	e.printStackTrace();
+        }
+        
+        return eventDataMap;
+    }
     
     //programstageid +"_" + OrgUnitId as key and 
     //	value is hashmap where key is programstage instance id and value is CampaignVO
