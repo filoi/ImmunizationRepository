@@ -1,5 +1,7 @@
 package org.hisp.dhis.ivb.covid.action;
 
+import static org.hisp.dhis.common.IdentifiableObjectUtils.getIdentifiers;
+
 /*
  * Copyright (c) 2004-2012, University of Oslo
  * All rights reserved.
@@ -28,6 +30,7 @@ package org.hisp.dhis.ivb.covid.action;
  */
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -50,6 +53,7 @@ import org.hisp.dhis.dataset.SectionService;
 import org.hisp.dhis.dataset.comparator.SectionOrderComparator;
 import org.hisp.dhis.i18n.I18nService;
 import org.hisp.dhis.ivb.util.GenericTypeObj;
+import org.hisp.dhis.ivb.util.IVBUtil;
 import org.hisp.dhis.lookup.Lookup;
 import org.hisp.dhis.lookup.LookupService;
 import org.hisp.dhis.message.MessageService;
@@ -60,6 +64,8 @@ import org.hisp.dhis.organisationunit.OrganisationUnitGroupSet;
 import org.hisp.dhis.oust.manager.SelectionTreeManager;
 import org.hisp.dhis.ouwt.manager.OrganisationUnitSelectionManager;
 import org.hisp.dhis.user.CurrentUserService;
+import org.hisp.dhis.user.User;
+import org.hisp.dhis.user.UserAuthorityGroup;
 import org.hisp.dhis.user.UserGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -144,6 +150,9 @@ public class CampaignTrackerFormAction
     
     @Autowired
 	private SectionService sectionService;
+    
+    @Autowired
+    private IVBUtil ivbUtil;
     
     // -------------------------------------------------------------------------
     // Getters & Setters
@@ -273,14 +282,37 @@ public class CampaignTrackerFormAction
         }
         
         if( resultPage == 1 ) {
+        	lookup = lookupService.getLookupByName( Lookup.RESTRICTED_DE_ATTRIBUTE_ID );
+            int restrictedDeAttributeId = Integer.parseInt( lookup.getValue() );
+            Set<DataElement> restrictedDes = new HashSet<DataElement>( ivbUtil.getRestrictedDataElements( restrictedDeAttributeId ) );
+            User curUser = currentUserService.getCurrentUser();
+            Set<DataElement> userDes = new HashSet<DataElement>();
+            List<UserAuthorityGroup> userAuthorityGroups1 = new ArrayList<UserAuthorityGroup>( curUser.getUserCredentials().getUserAuthorityGroups() );
+            for ( UserAuthorityGroup userAuthorityGroup : userAuthorityGroups1 ){
+            	userDes.addAll( userAuthorityGroup.getDataElements() );
+            }
+            restrictedDes.removeAll( userDes );
+            Collection<Integer> restrictedDeIds = new ArrayList<Integer>( getIdentifiers( restrictedDes ) ); 
+
         	lookup = lookupService.getLookupByName( "MEASLES_COLUMNS_INFO" );
             String measlesColInfo = lookup.getValue();            
             for( String colInfo : measlesColInfo.split("@!@") ) {
             	GenericTypeObj colObj = new GenericTypeObj();
             	colObj.setCode( colInfo.split("@-@")[0] );
             	colObj.setName( colInfo.split("@-@")[1] );
-            	//colObj.setStrAttrib1( colInfo.split("@-@")[2] ); //deids
-            	colList.add( colObj );
+            	int restrictedFlag = 0;
+            	for(String deIdStr : colInfo.split("@-@")[2].split(",") ) {
+	        		int deId = Integer.parseInt(deIdStr);
+	        		if( restrictedDeIds.contains( deId ) ) {
+	        			restrictedFlag = 1;
+	        			break;
+	        		}
+	        	}
+            	int psDeId = Integer.parseInt(colInfo.split("@-@")[3] ); 
+            	if( restrictedDeIds.contains( psDeId ) )
+            		restrictedFlag = 1;
+            	if( restrictedFlag == 0) 
+            		colList.add( colObj );
             }
         }
         

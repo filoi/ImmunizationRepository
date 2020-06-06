@@ -62,7 +62,9 @@ import org.hisp.dhis.organisationunit.OrganisationUnitGroupSet;
 import org.hisp.dhis.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.program.ProgramStage;
 import org.hisp.dhis.program.ProgramStageService;
+import org.hisp.dhis.user.CurrentUserService;
 import org.hisp.dhis.user.User;
+import org.hisp.dhis.user.UserAuthorityGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -115,6 +117,10 @@ public class CampaignHelper
     
     @Autowired
     private OrganisationUnitService ouService;
+    
+    @Autowired
+    private CurrentUserService currentUserService;
+    
     //--------------------------------------------------------------------------
     // Input/Output
     //--------------------------------------------------------------------------
@@ -364,6 +370,17 @@ public class CampaignHelper
         lookup = lookupService.getLookupByName( "CAMPAIGN_GEOGRAPHIC_SCALE_DEID" );
         int geoScaleDeId = Integer.parseInt( lookup.getValue() );
         
+        lookup = lookupService.getLookupByName( Lookup.RESTRICTED_DE_ATTRIBUTE_ID );
+        int restrictedDeAttributeId = Integer.parseInt( lookup.getValue() );
+        Set<DataElement> restrictedDes = new HashSet<DataElement>( ivbUtil.getRestrictedDataElements( restrictedDeAttributeId ) );
+        User curUser = currentUserService.getCurrentUser();
+        Set<DataElement> userDes = new HashSet<DataElement>();
+        List<UserAuthorityGroup> userAuthorityGroups1 = new ArrayList<UserAuthorityGroup>( curUser.getUserCredentials().getUserAuthorityGroups() );
+        for ( UserAuthorityGroup userAuthorityGroup : userAuthorityGroups1 ){
+        	userDes.addAll( userAuthorityGroup.getDataElements() );
+        }
+        restrictedDes.removeAll( userDes );
+        Collection<Integer> restrictedDeIds = new ArrayList<Integer>( getIdentifiers( restrictedDes ) ); 
         
         //Selected Columns
         Map<Integer, String> deColMap = new HashMap<>();
@@ -390,24 +407,37 @@ public class CampaignHelper
         	}
         }
         
+        
         if( campaignSnap.getResultPage() == 1 ) {
 	        lookup = lookupService.getLookupByName( "MEASLES_COLUMNS_INFO" );
 	        String measlesColInfo = lookup.getValue();
 	        //colList = new ArrayList<GenericTypeObj>();
 	        for( String colInfo : measlesColInfo.split("@!@") ) {
 	        	if( campaignSnap.getSelCols().contains( colInfo.split("@-@")[0] ) ) {
+	        		int restrictedFlag = 0;
 		        	GenericTypeObj colObj = new GenericTypeObj();
 		        	colObj.setCode( colInfo.split("@-@")[0] );
 		        	colObj.setName( colInfo.split("@-@")[1] );
 		        	colObj.setStrAttrib1( colInfo.split("@-@")[2] ); //deids
 		        	colObj.setStrAttrib2( colInfo.split("@-@")[3] ); //ps deids
-		        	campaignSnap.getColList().add( colObj );
-		        	deIdsByComma += ","+colInfo.split("@-@")[2];
-		        	psDeIdsByComma += ","+colInfo.split("@-@")[3];
 		        	for(String deIdStr : colObj.getStrAttrib1().split(",") ) {
-		        		deColMap.put(Integer.parseInt(deIdStr), colObj.getCode());
+		        		int deId = Integer.parseInt(deIdStr);
+		        		if( restrictedDeIds.contains( deId ) ) {
+		        			restrictedFlag = 1;
+		        			break;
+		        		}
+		        		deColMap.put(deId, colObj.getCode());
 		        	}
-		        	deColMap.put(Integer.parseInt(colObj.getStrAttrib2()), colObj.getCode());
+		        	int psDeId = Integer.parseInt(colObj.getStrAttrib2()); 
+	            	if( restrictedDeIds.contains( psDeId ) )
+	            		restrictedFlag = 1;
+	            	
+		        	if( restrictedFlag == 0) {
+			        	deColMap.put(Integer.parseInt(colObj.getStrAttrib2()), colObj.getCode());
+			        	deIdsByComma += ","+colInfo.split("@-@")[2];
+			        	psDeIdsByComma += ","+colInfo.split("@-@")[3];
+			        	campaignSnap.getColList().add( colObj );
+		        	}
 	        	}
 	        }
         }
