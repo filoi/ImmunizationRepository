@@ -827,8 +827,7 @@
 		</action>
 
 		<action name="getAuthorities" class="org.hisp.dhis.ivb.action.GetUserAuthorityAction">
-			<result name="success" type="velocity-json">/dhis-web-ivb/authorityStatus.vm
-			</result>
+			<result name="success" type="velocity-json">/dhis-web-ivb/authorityStatus.vm</result>
 		</action>
 
 		<!-- Agenda Report -->

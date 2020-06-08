@@ -9,6 +9,7 @@
 "cmypDevTrackingReportAuthority":"${cmypDevTrackingReportAuthority}",
 "alertReportAuthority":"${alertReportAuthority}",
 "userActivityLogin":"${userActivityLoginReportAuthority}",
+"userActivityLoginMonitoring":"${userActivityLoginMonitoringAuthority}",
 "countryEPI":"${countryEPIAuthority}",
 "iscReports":"${iscReportAuthority}"
 }

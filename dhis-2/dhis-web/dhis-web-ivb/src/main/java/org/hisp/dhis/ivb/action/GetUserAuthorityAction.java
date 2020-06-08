@@ -208,103 +208,59 @@ public class GetUserAuthorityAction
         }
 
         if ( userAuthorities.contains( "F_DATAVALUE_CONFLICT" ) )
-        {
-            userConflictAuthority = "Yes";
-        }
+        	userConflictAuthority = "Yes";        
         else
-        {
             userConflictAuthority = "No";
-        }
-
-        if ( userAuthorities.contains( "F_USER_REPORT_VIEW" ) )
-        {
-            userActivityReportAuthority = "Yes";
-        }
-        else
-        {
-            userActivityReportAuthority = "No";
-        }
-
-        if ( userAuthorities.contains( "M_dhis-web-dashboard-integration" ) )
-        {
-            seeUserDashboardAuthority = "Yes";
-        }
-        else
-        {
-            seeUserDashboardAuthority = "No";
-        }
-
-        if ( userAuthorities.contains( "F_AGG_ENGINE_VIEW" ) )
-        {
-            aggEngineAuthority = "Yes";
-        }
-        else
-        {
-            aggEngineAuthority = "No";
-        }
-
-        if ( userAuthorities.contains( "F_LOOKUP_VIEW" ) )
-        {
-            lookupAuthority = "Yes";
-        }
-        else
-        {
-            lookupAuthority = "No";
-        }
-
-        if ( userAuthorities.contains( "M_dhis-web-maintenance-user" ) )
-        {
-            maintenanceModuleAuthority = "Yes";
-        }
-        else
-        {
-            maintenanceModuleAuthority = "No";
-        }
-
-        if ( userAuthorities.contains( "F_PROG_REVIEW_TECH_ASSISTANCE_REPORT" ) )
-        {
-            progReviewTAReportAuthority = "Yes";
-        }
-        else
-        {
-            progReviewTAReportAuthority = "No";
-        }
         
+        if ( userAuthorities.contains( "F_USER_REPORT_VIEW" ) )
+            userActivityReportAuthority = "Yes";        
+        else
+            userActivityReportAuthority = "No";
+        
+        if ( userAuthorities.contains( "M_dhis-web-dashboard-integration" ) )
+            seeUserDashboardAuthority = "Yes";
+        else
+            seeUserDashboardAuthority = "No";
+        
+        if ( userAuthorities.contains( "F_AGG_ENGINE_VIEW" ) )
+            aggEngineAuthority = "Yes";        
+        else
+            aggEngineAuthority = "No";
+        
+        if ( userAuthorities.contains( "F_LOOKUP_VIEW" ) )
+            lookupAuthority = "Yes";        
+        else
+            lookupAuthority = "No";
+        
+        if ( userAuthorities.contains( "M_dhis-web-maintenance-user" ) )
+            maintenanceModuleAuthority = "Yes";
+        else
+            maintenanceModuleAuthority = "No";
+        
+        if ( userAuthorities.contains( "F_PROG_REVIEW_TECH_ASSISTANCE_REPORT" ) )
+            progReviewTAReportAuthority = "Yes";        
+        else
+            progReviewTAReportAuthority = "No";
+                
         if ( userAuthorities.contains( "F_CMYP_DEV_TRACKING_REPORT" ) )
-        {
             cmypDevTrackingReportAuthority = "Yes";
-        }
         else
-        {
             cmypDevTrackingReportAuthority = "No";
-        }
-
+        
         if ( userAuthorities.contains( "F_ALERT_REPORT" ) )
-        {
             alertReportAuthority = "Yes";
-        }
         else
-        {
         	alertReportAuthority = "No";
-        }
-
+        
         if ( userAuthorities.contains( "F_USERACTIVITY_LOGIN_REPORT" ) )
-        {
         	userActivityLoginReportAuthority = "Yes";
-        }
         else
-        {
         	userActivityLoginReportAuthority = "No";
-        }
         
         if ( userAuthorities.contains( "ACTIVITY_MONITORING" ) )
-        {
         	userActivityLoginMonitoringAuthority = "Yes";
-        }
         else
-        {
         	userActivityLoginMonitoringAuthority = "No";
-        }
 
         if ( userAuthorities.contains( "F_COUNTRY_EPI_PROFILE" ) )
         	countryEPIAuthority = "Yes";
@@ -316,7 +272,7 @@ public class GetUserAuthorityAction
         else
         	iscReportAuthority = "No";
 
-        System.out.println("iscReportAuthority = " + iscReportAuthority  );
+        //System.out.println("iscReportAuthority = " + iscReportAuthority  );
         
         return SUCCESS;
     }
