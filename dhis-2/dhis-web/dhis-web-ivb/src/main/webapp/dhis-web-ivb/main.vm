@@ -133,7 +133,7 @@
 			{
 				document.getElementById("userActivityLogin").style.display = 'block';
 			}
-			if(jQuery.trim(auth.userActivityLoginMonitoringAuthority) == "Yes")
+			if(jQuery.trim(auth.userActivityLoginMonitoring) == "Yes")
 			{
 				document.getElementById("userActivityLoginMonitoring").style.display = 'block';
 			}
