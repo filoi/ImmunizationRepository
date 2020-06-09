@@ -209,7 +209,7 @@ $(function() {
 			        <td width="45%">
 			            <select id="selectedListDataset" name="selectedOtherData" ondblclick="moveSelectedById( 'selectedListDataset', 'availableListDataset' )" multiple="multiple" style="height: 165px; width: 100%; margin-top: 22px;"></select>
 			        </td>
-					<td>
+					<td style="display:none">
                         <a href="javascript:moveUpDataElement('selectedListDataset');"><img src="../images/move_up.png"/></a><br/><br/>
                         <a href="javascript:moveDownDataElement('selectedListDataset');"><img src="../images/move_down.png"/></a><br/><br/>
             		</td> 

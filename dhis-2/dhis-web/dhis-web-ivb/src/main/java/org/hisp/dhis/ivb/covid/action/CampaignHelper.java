@@ -241,7 +241,7 @@ public class CampaignHelper
                                 query += " AND DATE(t1.timestamp) BETWEEN '"+ startDate +"' AND '"+ endDate +"' ";
             				query += " ORDER BY t1.timestamp DESC";
             				
-            System.out.println("getEventData Query= "+query);
+            //System.out.println("getEventData Query= "+query);
             SqlRowSet rs = jdbcTemplate.queryForRowSet( query );
             
             while( rs.next() ){
@@ -387,25 +387,8 @@ public class CampaignHelper
         String deIdsByComma = "-1";
         String psDeIdsByComma = "-1";
         psDeIdsByComma += "," +subNationalDeId;
-        lookup = lookupService.getLookupByName( "CAMPAIGN_COLUMNS_INFO" );
-        String campaignColInfo = lookup.getValue();
-        //colList = new ArrayList<GenericTypeObj>();
-        for( String colInfo : campaignColInfo.split("@!@") ) {
-        	if( campaignSnap.getSelCols().contains( colInfo.split("@-@")[0] ) ) {
-	        	GenericTypeObj colObj = new GenericTypeObj();
-	        	colObj.setCode( colInfo.split("@-@")[0] );
-	        	colObj.setName( colInfo.split("@-@")[1] );
-	        	colObj.setStrAttrib1( colInfo.split("@-@")[2] ); //deids
-	        	colObj.setStrAttrib2( colInfo.split("@-@")[3] ); //ps deids
-	        	campaignSnap.getColList().add( colObj );
-	        	deIdsByComma += ","+colInfo.split("@-@")[2];
-	        	psDeIdsByComma += ","+colInfo.split("@-@")[3];
-	        	for(String deIdStr : colObj.getStrAttrib1().split(",") ) {
-	        		deColMap.put(Integer.parseInt(deIdStr), colObj.getCode());
-	        	}
-	        	deColMap.put(Integer.parseInt(colObj.getStrAttrib2()), colObj.getCode());
-        	}
-        }
+        
+        
         
         
         if( campaignSnap.getResultPage() == 1 ) {
@@ -440,6 +423,27 @@ public class CampaignHelper
 		        	}
 	        	}
 	        }
+        }
+        else {
+        	lookup = lookupService.getLookupByName( "CAMPAIGN_COLUMNS_INFO" );
+            String campaignColInfo = lookup.getValue();
+            //colList = new ArrayList<GenericTypeObj>();
+            for( String colInfo : campaignColInfo.split("@!@") ) {
+            	if( campaignSnap.getSelCols().contains( colInfo.split("@-@")[0] ) ) {
+    	        	GenericTypeObj colObj = new GenericTypeObj();
+    	        	colObj.setCode( colInfo.split("@-@")[0] );
+    	        	colObj.setName( colInfo.split("@-@")[1] );
+    	        	colObj.setStrAttrib1( colInfo.split("@-@")[2] ); //deids
+    	        	colObj.setStrAttrib2( colInfo.split("@-@")[3] ); //ps deids
+    	        	campaignSnap.getColList().add( colObj );
+    	        	deIdsByComma += ","+colInfo.split("@-@")[2];
+    	        	psDeIdsByComma += ","+colInfo.split("@-@")[3];
+    	        	for(String deIdStr : colObj.getStrAttrib1().split(",") ) {
+    	        		deColMap.put(Integer.parseInt(deIdStr), colObj.getCode());
+    	        	}
+    	        	deColMap.put(Integer.parseInt(colObj.getStrAttrib2()), colObj.getCode());
+            	}
+            }
         }
         
         //System.out.println(deIdsByComma);

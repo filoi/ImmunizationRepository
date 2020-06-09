@@ -3133,7 +3133,7 @@ public class IVBUtil
     {
         List<Period> periods = new ArrayList<Period>();
         DatabaseInfo dataBaseInfo = databaseInfoProvider.getDatabaseInfo();
-        System.out.println("dataBaseInfo--"+dataBaseInfo);
+        //System.out.println("dataBaseInfo--"+dataBaseInfo);
 
         try
         {
@@ -3221,7 +3221,7 @@ public class IVBUtil
                 String value = rs.getString( 4 );
                 String storedBy = rs.getString( 5 );
                 String lastUpdated = rs.getString( 6 );
-                System.out.println("lastUpdated---"+lastUpdated);
+                //System.out.println("lastUpdated---"+lastUpdated);
                 
                 String comment = rs.getString( 7 );
                 Integer status = rs.getInt( 8 );
@@ -3536,7 +3536,7 @@ public class IVBUtil
     {
     	Set<DataElement> restrictedDes = new HashSet<DataElement>();
 
-    	 System.out.println("restricted attribute--- "+restrictedDeAttributeId);
+    	 //System.out.println("restricted attribute--- "+restrictedDeAttributeId);
     	 
         try
         {

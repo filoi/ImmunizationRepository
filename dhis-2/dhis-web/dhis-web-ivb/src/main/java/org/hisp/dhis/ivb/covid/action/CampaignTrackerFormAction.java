@@ -270,19 +270,8 @@ public class CampaignTrackerFormAction
         
         //Collections.sort( campaignList, new SectionOrderComparator() );
         
-        Lookup lookup = lookupService.getLookupByName( "CAMPAIGN_COLUMNS_INFO" );
-        String campaignColInfo = lookup.getValue();
-        colList = new ArrayList<GenericTypeObj>();
-        for( String colInfo : campaignColInfo.split("@!@") ) {
-        	GenericTypeObj colObj = new GenericTypeObj();
-        	colObj.setCode( colInfo.split("@-@")[0] );
-        	colObj.setName( colInfo.split("@-@")[1] );
-        	//colObj.setStrAttrib1( colInfo.split("@-@")[2] ); //deids
-        	colList.add( colObj );
-        }
-        
         if( resultPage == 1 ) {
-        	lookup = lookupService.getLookupByName( Lookup.RESTRICTED_DE_ATTRIBUTE_ID );
+        	Lookup lookup = lookupService.getLookupByName( Lookup.RESTRICTED_DE_ATTRIBUTE_ID );
             int restrictedDeAttributeId = Integer.parseInt( lookup.getValue() );
             Set<DataElement> restrictedDes = new HashSet<DataElement>( ivbUtil.getRestrictedDataElements( restrictedDeAttributeId ) );
             User curUser = currentUserService.getCurrentUser();
@@ -295,7 +284,8 @@ public class CampaignTrackerFormAction
             Collection<Integer> restrictedDeIds = new ArrayList<Integer>( getIdentifiers( restrictedDes ) ); 
 
         	lookup = lookupService.getLookupByName( "MEASLES_COLUMNS_INFO" );
-            String measlesColInfo = lookup.getValue();            
+            String measlesColInfo = lookup.getValue();
+            colList = new ArrayList<GenericTypeObj>();
             for( String colInfo : measlesColInfo.split("@!@") ) {
             	GenericTypeObj colObj = new GenericTypeObj();
             	colObj.setCode( colInfo.split("@-@")[0] );
@@ -314,6 +304,18 @@ public class CampaignTrackerFormAction
             	if( restrictedFlag == 0) 
             		colList.add( colObj );
             }
+        }
+        else {
+        	 Lookup lookup = lookupService.getLookupByName( "CAMPAIGN_COLUMNS_INFO" );
+             String campaignColInfo = lookup.getValue();
+             colList = new ArrayList<GenericTypeObj>();
+             for( String colInfo : campaignColInfo.split("@!@") ) {
+             	GenericTypeObj colObj = new GenericTypeObj();
+             	colObj.setCode( colInfo.split("@-@")[0] );
+             	colObj.setName( colInfo.split("@-@")[1] );
+             	//colObj.setStrAttrib1( colInfo.split("@-@")[2] ); //deids
+             	colList.add( colObj );
+             }
         }
         
         /*
