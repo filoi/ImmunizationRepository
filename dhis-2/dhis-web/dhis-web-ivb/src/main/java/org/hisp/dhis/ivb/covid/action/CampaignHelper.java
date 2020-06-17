@@ -1842,7 +1842,7 @@ public class CampaignHelper
         
         GenericTypeObj rowObj = new GenericTypeObj();
     	rowObj.setCode( "GTOTAL" );
-    	rowObj.setName( "Overall Total<br/>* please note some countries may be double-counted" );
+    	rowObj.setName( "Total affected" );
     	rowObjList.add( rowObj );
         campaignSnap.setRowObjList( rowObjList );
         
@@ -1854,6 +1854,7 @@ public class CampaignHelper
         Map<String, GenericDataVO> dvDataMap = getLatestDataValuesForCampaignReport( deIdsByComma, ouIdsByComma );
         int ALL_OUGROUP_ID = -1;
         HashMap<String, Integer> dataMap = new HashMap<>();
+        Map<OrganisationUnit, Set<String>> tempMap = new HashMap<>();
         //Arranging aggregated data
         for( OrganisationUnit ou : whoOrgUnits ) {
         	int ouGroupId = 0;
@@ -1870,7 +1871,11 @@ public class CampaignHelper
          		
          		if( statusValues.contains( statusVal ) && sectionRowMap.get(section.getId()) != null ) {
              		//try{ System.out.println( ouGroupId + "_" +rowObjMap.get( sectionRowMap.get(section.getId()) ).getCode() + " = " + statusVal );}catch(Exception e) {}
-
+         			
+         			if( tempMap.get(ou) == null )
+         				tempMap.put(ou, new HashSet<>() );         			
+         			tempMap.get(ou).add( rowObjMap.get( sectionRowMap.get(section.getId()) ).getCode() );
+         			
          			String ougKey = ouGroupId+"_"+ rowObjMap.get( sectionRowMap.get(section.getId()) ).getCode();
          			if( dataMap.get( ougKey ) == null ) {
          				dataMap.put( ougKey, 1);         				
@@ -1925,6 +1930,10 @@ public class CampaignHelper
          			if( statusValues.contains( statusVal ) && psRowMap.get(ps.getId()) != null ) {
                  		//try{ System.out.println( ouGroupId + "_" +rowObjMap.get( sectionRowMap.get(section.getId()) ).getCode() + " = " + statusVal );}catch(Exception e) {}
 
+             			if( tempMap.get(ou) == null )
+             				tempMap.put(ou, new HashSet<>() );         			
+             			tempMap.get(ou).add( rowObjMap.get( psRowMap.get(ps.getId()) ).getCode() );
+         				
              			String ougKey = ouGroupId+"_"+ rowObjMap.get( psRowMap.get(ps.getId()) ).getCode();
              			if( dataMap.get( ougKey ) == null )
              				dataMap.put( ougKey, 1);
@@ -1954,6 +1963,33 @@ public class CampaignHelper
              		}
         		}
         	}
+        }
+        
+        for( OrganisationUnit ou : tempMap.keySet() ) {
+        	int ouGroupId = 0;
+        	try{ ouGroupId = ou.getGroupInGroupSet( whoRegionsGroupSet ).getId(); }catch(Exception e) {}
+        	if( ouGroupId == 0)
+        		continue;
+ 			for( String rowKey : tempMap.get(ou) ) { 				 			
+				String allOugKey = ALL_OUGROUP_ID+"_C_"+ rowKey; 				
+ 				if( dataMap.get( allOugKey ) == null ) 
+ 					dataMap.put( allOugKey, 1);
+ 				else
+ 					dataMap.put( allOugKey, dataMap.get(allOugKey)+1 );
+ 			
+ 				//Grand Total         			
+				String tempKey = ouGroupId+"_C_GTOTAL";
+				if( dataMap.get( tempKey ) == null ) 
+ 					dataMap.put( tempKey, 1);
+ 				else
+ 					dataMap.put( tempKey, dataMap.get(tempKey)+1 );
+				
+				tempKey = ALL_OUGROUP_ID+"_C_GTOTAL";
+				if( dataMap.get( tempKey ) == null ) 
+ 					dataMap.put( tempKey, 1);
+ 				else
+ 					dataMap.put( tempKey, dataMap.get(tempKey)+1 );
+ 			}
         }
         
         campaignSnap.setCdbDataMap( dataMap );

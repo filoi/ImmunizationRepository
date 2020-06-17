@@ -190,7 +190,8 @@ jQuery(function() {
            <thead>
                 <tr style="background:#F0F0F0;color:#0a2f76;">
 					<th rowspan="2" style="min-width:65px; width:65px;border: 1px solid #ccc;">Diseases/ Vaccines</th>
-					<th rowspan="2" style="min-width:65px; width:65px;border: 1px solid #ccc;">Total no. of countries</th>					
+					<th rowspan="2" style="min-width:65px; width:65px;border: 1px solid #ccc;">No. of countries with at least one VPD immunization campaign was affected (postponed, fully or partially) </th>
+					<th rowspan="2" style="min-width:65px; width:65px;border: 1px solid #ccc;">No. of campaigns postponed, fully or partially</th>					
 					<th colspan="$!campaignSnap.ouGroups.size()" style="border: 1px solid #ccc;">No. of campaigns affected by regions</th>
 				</tr>
 				<tr style="background:#F0F0F0;color:#0a2f76;">
@@ -200,12 +201,16 @@ jQuery(function() {
                 </tr>
             </thead>
 			<tbody>
-				#foreach( $rowObj in $campaignSnap.rowObjList )
-					#set( $key1 = "-1_${rowObj.code}")
-					#set( $cellData = "" )
-					#set( $cellData = $campaignSnap.cdbDataMap.get( $key1 ) )
+				#foreach( $rowObj in $campaignSnap.rowObjList )					
 					<tr #if($rowObj.code == "GTOTAL") style="font-weight: bold;" #end>
 						<td style="border: 1px solid #ccc;">$rowObj.name</td>
+						#set( $key1 = "-1_C_${rowObj.code}")
+						#set( $cellData = "" )
+						#set( $cellData = $campaignSnap.cdbDataMap.get( $key1 ) )
+						<td style="border: 1px solid #ccc;" align="center" >$cellData</td>
+						#set( $key1 = "-1_${rowObj.code}")
+						#set( $cellData = "" )
+						#set( $cellData = $campaignSnap.cdbDataMap.get( $key1 ) )
 						<td style="border: 1px solid #ccc;" align="center" >$cellData</td>
 						#foreach( $ouGroup in $campaignSnap.ouGroups )
 							#set( $key1 = "${ouGroup.id}_${rowObj.code}")
