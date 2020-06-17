@@ -1842,7 +1842,7 @@ public class CampaignHelper
         
         GenericTypeObj rowObj = new GenericTypeObj();
     	rowObj.setCode( "GTOTAL" );
-    	rowObj.setName( "Total affected" );
+    	rowObj.setName( "Total postponed" );
     	rowObjList.add( rowObj );
         campaignSnap.setRowObjList( rowObjList );
         
