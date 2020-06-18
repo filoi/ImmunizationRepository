@@ -207,7 +207,7 @@ jQuery(function() {
 						#set( $key1 = "-1_C_${rowObj.code}")
 						#set( $cellData = "" )
 						#set( $cellData = $campaignSnap.cdbDataMap.get( $key1 ) )
-						<td style="border: 1px solid #ccc;" align="center" >$cellData</td>
+						<td style="border: 1px solid #ccc;" align="center" >$cellData#if($rowObj.code == "GTOTAL")*#end</td>
 						#set( $key1 = "-1_${rowObj.code}")
 						#set( $cellData = "" )
 						#set( $cellData = $campaignSnap.cdbDataMap.get( $key1 ) )
