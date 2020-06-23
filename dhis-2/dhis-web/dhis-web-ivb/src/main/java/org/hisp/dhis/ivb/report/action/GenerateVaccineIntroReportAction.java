@@ -430,12 +430,14 @@ public class GenerateVaccineIntroReportAction
 
         dataSetSections = new ArrayList<Section>();
         List<String> sectionNames = new ArrayList<String>();
+        Map<String, Section> sectionMap = new HashMap<>();
         for ( Integer sectionId : selectedListVaccine )
         {
             Section section = sectionService.getSection( sectionId );
             dataSetSections.add( section );
             
             sectionNames.add( section.getName().trim() );
+            sectionMap.put(section.getName().trim(), section);
         }
 
         // Getting start and end period from introStartDate && introEndDate
@@ -518,6 +520,9 @@ public class GenerateVaccineIntroReportAction
                         if ( deAttributeValue.getAttribute().getId() == vaccineAttributeConstant.getValue()
                             && deAttributeValue.getValue() != null && sectionNames.contains( deAttributeValue.getValue().trim() ) )
                         {
+                        	Section section = sectionMap.get( deAttributeValue.getValue().trim() );
+                        	if( !section.getSources().contains( orgUnit ) )
+                        		continue;
                         	//System.out.println("5");
                         	DataValue dv = dataValueService.getLatestDataValue( dataElement, optionCombo, orgUnit );
                             if ( dv != null && dv.getValue() != null )
@@ -607,7 +612,7 @@ public class GenerateVaccineIntroReportAction
                     List<DataElement> dataElements = new ArrayList<DataElement>( dataElementGroup.getMembers() );
                     for ( DataElement dataElement : dataElements )
                     {
-                    	System.out.println("12");
+                    	//System.out.println("12");
                         Set<AttributeValue> dataElementAttributeValues = dataElement.getAttributeValues();
                         if ( dataElementAttributeValues != null && dataElementAttributeValues.size() > 0 )
                         {
@@ -616,6 +621,9 @@ public class GenerateVaccineIntroReportAction
                                 if ( deAttributeValue.getAttribute().getId() == vaccineAttributeConstant.getValue()
                                     && deAttributeValue.getValue() != null && sectionNames.contains( deAttributeValue.getValue().trim() ) )
                                 {
+                                	Section section = sectionMap.get( deAttributeValue.getValue().trim() );
+                                	if( !section.getSources().contains( orgUnit ) )
+                                		continue;
                                 	//System.out.println("13 "+dataElement.getName() + );
                                     DataValue dv = dataValueService.getLatestDataValue( dataElement, optionCombo, orgUnit );
                                    
