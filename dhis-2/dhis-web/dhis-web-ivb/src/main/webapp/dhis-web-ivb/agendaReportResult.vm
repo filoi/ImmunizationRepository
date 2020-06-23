@@ -111,11 +111,13 @@ jQuery(function() {
             </thead>
             
             <tbody id="list">
-                #foreach( $orgUnit in $gaviApplicationsOrgUnitList )                    
+                #foreach( $orgUnit in $gaviApplicationsOrgUnitList )
+                    #set( $sectionResultMap = "" )
                     #set( $sectionResultMap = $gaviOrgUnitResultMap.get( $orgUnit ) )
-                    #foreach( $dataSetSection in $dataSetSections )                        
+                    #foreach( $dataSetSection in $dataSetSections )
+			#set( $valueResultMap = "" )                        
                         #set( $valueResultMap = $sectionResultMap.get( $dataSetSection.name ) )
-                        #if($valueResultMap.get( $gaviAppYearMonthDEGroup.id ) && $valueResultMap.get( $gaviAppYearMonthDEGroup.id ) != " " && $valueResultMap.get( $gaviAppStatus.id ) && $valueResultMap.get( $gaviAppStatus.id ) != " ")
+                        #if($valueResultMap && $valueResultMap.get( $gaviAppYearMonthDEGroup.id ) && $valueResultMap.get( $gaviAppYearMonthDEGroup.id ) != " " && $valueResultMap.get( $gaviAppStatus.id ) && $valueResultMap.get( $gaviAppStatus.id ) != " ")
                         <tr width="100%" bgcolor="#FBEFEF">
                             <td style="display:none;vertical-align: middle;">$orgUnit.code</td>
                             <td align="left" style="vertical-align: middle;">$!orgUnit.getParent().shortName</td>
@@ -177,7 +179,9 @@ jQuery(function() {
         #foreach( $dataSetSection in $dataSetSections )
             #set( $count = 1 )
             #foreach( $orgUnit in $orgUnitList )
+		#set( $sectionResultMap = "" )
                 #set( $sectionResultMap = $orgUnitResultMap.get( $orgUnit ) )
+		#set( $valueResultMap = "" )
                 #set( $valueResultMap = $sectionResultMap.get( $dataSetSection.name ) )
                 #if($valueResultMap.get( $introYearDEGroup.id ) && $valueResultMap.get( $introYearDEGroup.id ) != " ") 
 					
