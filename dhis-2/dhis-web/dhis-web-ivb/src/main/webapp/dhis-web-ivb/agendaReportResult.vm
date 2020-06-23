@@ -179,9 +179,9 @@ jQuery(function() {
         #foreach( $dataSetSection in $dataSetSections )
             #set( $count = 1 )
             #foreach( $orgUnit in $orgUnitList )
-		#set( $sectionResultMap = "" )
+		        #set( $sectionResultMap = "" )
                 #set( $sectionResultMap = $orgUnitResultMap.get( $orgUnit ) )
-		#set( $valueResultMap = "" )
+		        #set( $valueResultMap = "" )
                 #set( $valueResultMap = $sectionResultMap.get( $dataSetSection.name ) )
                 #if($valueResultMap.get( $introYearDEGroup.id ) && $valueResultMap.get( $introYearDEGroup.id ) != " ") 
 					

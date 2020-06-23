@@ -226,13 +226,14 @@ $(function() {
             </thead>
             <tbody id="list">
                 #foreach( $orgUnit in $orgUnitList )
-		    #set( $sectionResultMap = "")
+		    		#set( $sectionResultMap = "")
                     #set( $sectionResultMap = $orgUnitResultMap.get( $orgUnit ) )
                     #set( $sectionCommentMap = "" )
                     #set( $sectionCommentMap = $orgUnitCommentMap.get( $orgUnit ) )
                     
                     #set( $mark = false )
                     #foreach( $dataSetSection in $dataSetSections )
+                    #if( $dataSetSection.getSources().contains( $orgUnit ) )
                         #if( $mark )
                             #set( $mark = false )
                         #else
@@ -241,11 +242,11 @@ $(function() {
                         #set( $valueResultMap = "" )
                         #set( $valueResultMap = $sectionResultMap.get( $dataSetSection.name ) )
 
-			#set( $valueCommentMap = "" )
+						#set( $valueCommentMap = "" )
                         #set( $valueCommentMap = $sectionCommentMap.get( $dataSetSection.name ) )
                         
-			#if( $valueResultMap != "" || $valueCommentMap != "" )
-			#if( $dateSelection == "N" || ($valueResultMap.get( $introYearDEGroup.id ) && $valueResultMap.get( $introYearDEGroup.id ) != " ") )
+					#if( $valueResultMap != "" || $valueCommentMap != "" )
+					#if( $dateSelection == "N" || ($valueResultMap.get( $introYearDEGroup.id ) && $valueResultMap.get( $introYearDEGroup.id ) != " ") )
                       <!--  <tr width="100%" #if( $mark ) bgcolor="#E0ECF8" #else bgcolor = "#FFFFFF" #end>-->
 					   <tr width="100%" #if( $mark ) bgcolor="white" #else bgcolor = "white" #end>
                             #if( $isoCode == "ON" ) <td style="vertical-align: middle;">$orgUnit.code</td> #end
@@ -286,7 +287,8 @@ $(function() {
                             #end
                         </tr>
                         #end
-			#end
+						#end
+                    #end
                     #end
                 #end
             </tbody>
