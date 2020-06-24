@@ -1984,13 +1984,17 @@ public class CampaignHelper
  				else
  					dataMap.put( tempKey, dataMap.get(tempKey)+1 );
 				
+				/*
 				tempKey = ALL_OUGROUP_ID+"_C_GTOTAL";
 				if( dataMap.get( tempKey ) == null ) 
  					dataMap.put( tempKey, 1);
  				else
  					dataMap.put( tempKey, dataMap.get(tempKey)+1 );
- 			}
+ 				*/	
+ 			} 			
         }
+        String tempKey = ALL_OUGROUP_ID+"_C_GTOTAL";
+		dataMap.put( tempKey, tempMap.size());
         
         campaignSnap.setCdbDataMap( dataMap );
     	
