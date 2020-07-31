@@ -48,6 +48,7 @@ public class CampaignSnapshot
     private String plannedColor = "#D11509";
     private String postponedColor = "#F78526";
     private String bothMatchColor = "#04A20B";
+    private List<String> statusList = new ArrayList<>();
     private Map<String, String> statusColorMap = new HashMap<>();    
     private  Map<String, List<CampaignVO>> ccDataMap;   
 	private List<String> monthNames = new ArrayList<>();
@@ -245,6 +246,12 @@ public class CampaignSnapshot
 	}
 	public void setResultPage(Integer resultPage) {
 		this.resultPage = resultPage;
+	}
+	public List<String> getStatusList() {
+		return statusList;
+	}
+	public void setStatusList(List<String> statusList) {
+		this.statusList = statusList;
 	}
 	
 }

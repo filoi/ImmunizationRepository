@@ -204,7 +204,7 @@ jQuery(function() {
 		<tr>
 			<td align="right">
 				<table align="right">
-					#foreach( $statusMapKey in $campaignSnap.statusColorMap.keySet() )
+					#foreach( $statusMapKey in $campaignSnap.statusList )
 						#set( $tempStatusColor = "#FFFFFF" )
 						#set( $tempStatusColor = $campaignSnap.statusColorMap.get("$statusMapKey") )
 						#if( $statusMapKey== "May postpone" )

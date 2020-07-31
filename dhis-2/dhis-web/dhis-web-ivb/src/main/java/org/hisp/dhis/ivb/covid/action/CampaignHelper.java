@@ -992,7 +992,7 @@ public class CampaignHelper
 			dataFontUnderline.setUnderline(Font.U_SINGLE);
 			dataFontUnderline.setColor(IndexedColors.BLACK.getIndex());
 			
-			for( String statusMapKey : campaignSnap.getStatusColorMap().keySet() ) {
+			for( String statusMapKey : campaignSnap.getStatusList() ) {
 				if( statusMapKey.equalsIgnoreCase("May postpone") )
 					statusMapKey = "Might postpone";
 				
@@ -1374,6 +1374,7 @@ public class CampaignHelper
          lookup = lookupService.getLookupByName( "CAMPAIGN_CALENDAR_STATUS_COLOR_MAP" );
          String statusColorInfo = lookup.getValue();
          for(String statusColor : statusColorInfo.split("@!@") ) {
+        	 campaignSnap.getStatusList().add( statusColor.split("@-@")[0] );
         	 campaignSnap.getStatusColorMap().put(statusColor.split("@-@")[0], statusColor.split("@-@")[1]);
          }
          
