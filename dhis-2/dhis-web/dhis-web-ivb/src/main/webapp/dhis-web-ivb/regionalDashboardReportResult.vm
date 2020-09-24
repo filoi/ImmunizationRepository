@@ -196,7 +196,7 @@ jQuery(function() {
 					#foreach( $de in $regionalDBSnapshot.getDs_deMap().get( $dataSet.id ) )
 						<tr >
 						<td class="freeze_left_column">$dataSet.shortName</td>
-						<td class="freeze_left_column" title="$!de.strAttrib2">$de.name</td>
+						<td class="freeze_left_column" title="$!de.strAttrib2">$!de.alias</td>
 						#foreach( $orgUnit in $regionalDBSnapshot.getSelOrgUnits() )
 							#set( $dvObjKey = "" )
 							#set( $dvObjKey = "$orgUnit.id:$de.id" )

@@ -73,7 +73,7 @@ public class RegionalDashboardHelper
     		alertColorNotFlagged = lookupService.getLookupByName( Lookup.REGIONAL_DASHBOARD_ALERT_COLOR_NOT_FLAGGED ).getValue().split( ROOT_SEPERATOR )[ regionalDBSnapshot.getRegionalDBCount() ];
     		
     		//------------Gettings Dataelement name and flag criteria (meta-data)--------------------
-    		String query = "select t3.datasetid as dsid, t1.dataelementid as deid, t4.\"name\" as dename, t4.\"code\" as decode, t2.\"value\" as flag_criteria, t4.optionsetid optionsetid from dataelementattributevalues as t1\r\n" + 
+    		String query = "select t3.datasetid as dsid, t1.dataelementid as deid, t4.\"name\" as dename, t4.\"formname\" as dealias, t4.\"code\" as decode, t2.\"value\" as flag_criteria, t4.optionsetid optionsetid from dataelementattributevalues as t1\r\n" + 
     						" inner join attributevalue as t2 on t1.attributevalueid = t2.attributevalueid\r\n" + 
     						" inner join datasetmembers as t3 on t1.dataelementid = t3.dataelementid\r\n" + 
     						" inner join dataelement as t4 on t1.dataelementid = t4.dataelementid\r\n" + 
@@ -87,6 +87,7 @@ public class RegionalDashboardHelper
     			deObj.setId( rs.getInt("deid") );
     			deObj.setName( rs.getString("dename") );
     			deObj.setCode( rs.getString("decode") );
+    			deObj.setAlias( rs.getString("dealias") );
     			String flagCriteria = null;
     			try { flagCriteria = rs.getString("flag_criteria").split( ROOT_SEPERATOR )[ regionalDBSnapshot.getRegionalDBCount() ]; }
     			catch(Exception e){}

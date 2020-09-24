@@ -4,6 +4,7 @@ public class GenericTypeObj
 {
 	private Integer id;
 	private String name;
+	private String alias;
 	private String shortName;  
 	private String code;
 
@@ -56,5 +57,12 @@ public class GenericTypeObj
 	public void setShortName(String shortName) {
 		this.shortName = shortName;
 	}
+	public String getAlias() {
+		return alias;
+	}
+	public void setAlias(String alias) {
+		this.alias = alias;
+	}
+	
 	
 }
