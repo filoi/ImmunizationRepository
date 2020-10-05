@@ -196,7 +196,7 @@ jQuery(function() {
 					#foreach( $de in $regionalDBSnapshot.getDs_deMap().get( $dataSet.id ) )
 						<tr >
 						<td class="freeze_left_column">$dataSet.shortName</td>
-						<td class="freeze_left_column" title="$!de.strAttrib2">$!de.alias</td>
+						<td class="freeze_left_column" title="$!de.strAttrib2">#if( $de.alias && $!de.alias!="")$!de.alias#else$!de.name#end</td>
 						#foreach( $orgUnit in $regionalDBSnapshot.getSelOrgUnits() )
 							#set( $dvObjKey = "" )
 							#set( $dvObjKey = "$orgUnit.id:$de.id" )
@@ -241,7 +241,7 @@ jQuery(function() {
 					#foreach( $de in $regionalDBSnapshot.getDs_deMap().get( $dataSet.id ) )
 						<tr style="border: none !important;">						
 						<td style="border: 1px solid #ccc;vertical-align: middle;">$dataSet.shortName</td>
-						<td style="border: 1px solid #ccc;vertical-align: middle;">$de.name</td>
+						<td style="border: 1px solid #ccc;vertical-align: middle;">#if( $de.alias && $!de.alias!="")$!de.alias#else$!de.name#end</td>
 						#if( $includeComment == "YES" )
 							<td align="left" style="border: 1px solid #ccc;vertical-align: middle;">$!de.strAttrib2</td>
 						#end
