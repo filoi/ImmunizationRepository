@@ -539,6 +539,12 @@
 							<li><a href="campaignDashboard.action"><b>Campaign Overview</b></a></li>
 							<li><a href="campaignTrackerForm.action?resultPage=1"><b>Measles Dashboard</b></a></li>
 						</ul>
+					</li>
+					<li><a href="#"><b>COVID-19 Introduction Report</b></a>
+						<ul>
+							<li><a href="covidIntroTrackerForm.action"><b>Introduction Tracker</b></a></li>
+							<li><a href="covidCountryProfileForm.action"><b>COVID-19 Country Profile</b></a></li>
+						</ul>
 					</li>	
 					<li><a href="tabularReportForm.action"><b>$i18n.getString( "tabular_report" )</b></a></li>
 					<li id="cmypDevTrackingReport" style="display:none;"><a href="cmypDevTrackingReportForm.action"><b>$i18n.getString( "cmyp_development_tracking" )</b></a></li>
