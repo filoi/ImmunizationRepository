@@ -719,9 +719,11 @@
 	<div class="warningMsg">
 		#if( $reportWarning == "Y" )
 			$i18n.getString( "report_inline_security_warning" )
+		#elseif( $reportWarning == "Y2" )
+		  $i18n.getString( "report_inline_security_warning2" )
 		#else
-		  $i18n.getString( "inline_security_warning" )
-	   #end
+		  $i18n.getString( "inline_security_warning" )  
+	    #end
 	</div>
 	
 	</div>

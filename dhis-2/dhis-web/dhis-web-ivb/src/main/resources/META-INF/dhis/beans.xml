@@ -1965,4 +1965,10 @@
 		scope="prototype">
 		<property name="jdbcTemplate" ref="jdbcTemplate" />
 	</bean>
+	<!-- Covid Country Profile -->
+	<bean id="org.hisp.dhis.ivb.covid.action.CovidCountryProfileResultAction"
+        class="org.hisp.dhis.ivb.covid.action.CovidCountryProfileResultAction"
+        scope="prototype">
+        <property name="selectionTreeManager" ref="org.hisp.dhis.oust.manager.SelectionTreeManager" />
+    </bean>
 </beans>

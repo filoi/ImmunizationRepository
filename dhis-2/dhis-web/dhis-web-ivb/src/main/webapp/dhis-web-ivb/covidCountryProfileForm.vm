@@ -1,0 +1,83 @@
+#set( $reportWarning = "Y2" )
+
+<script type="text/javascript">
+	
+	function getOrgUnitId(orgUnits)
+    { 
+    	$("#orgUnitUID").val(orgUnits[0]);	
+    }
+
+    function generateHTMLreport()
+    {
+    	var countryTags = $countryList;
+    	    	
+    	var bValue = false;
+    	
+		var countryId = $("#orgUnitUID").val();
+    	for(var i=0;i<=countryTags.length-1;i++)
+		{
+			if(countryTags[i] == countryId )
+			{
+				bValue = true;
+			}
+		}
+		
+		if(bValue == false)
+		{
+			alert('Please Select Country');
+    		return false;
+		} 
+			
+    	    		
+    }
+	
+	function treeSelected( unitIds )
+	{		
+		$("#orgUnitUID").val(unitIds);
+	}
+	
+	jQuery(document).ready(function() {
+	
+		//moveAllById( 'availableListDe', 'selectedListDe' );    
+	    
+	    selectionTreeSelection.setListenerFunction( treeSelected );	
+		selectionTreeSelection.setMultipleSelectionAllowed( false );
+		//selectionTree.clearSelectedOrganisationUnits();
+		selectionTree.buildSelectionTree();
+	});
+</script>
+
+<br/>
+<div style="font-size:16px; width:93%; margin:auto;" class="ui-widget-header ui-corner-all"><b>Covid Country Profile</b></div>
+<form id="countryFileForm" method="get" action="covidCountryProfileResult.action" onsubmit="return generateHTMLreport()">
+
+ 	<input type="hidden" name="orgUnitUID" id="orgUnitUID"/>
+
+ 	<div id="reportFilterDiv" >
+
+ 		<table style="width:90%;margin:auto;" cellpadding="4" cellspacing="2">
+ 			<tr>
+ 				<td width="40%">
+ 					$i18n.getString( "select_country" )<br/>
+ 					<div id="selectionTree" class="ui-widget-content ui-corner-all" style="height: 166px; width: 375px; overflow:auto;"></div>
+ 					<!--
+ 					<div id="orgUnitTreeContainer" class="ui-widget-content ui-corner-all" style="height: 166px; width: 375px; overflow:auto;">
+ 						<div id="selectionTree" ></div>
+ 					</div>
+ 					-->
+				 </td>
+				 <td>&nbsp;</td>
+	 			<td>&nbsp;</td>				  				 
+			</tr> 			
+ 				
+ 			<tr>
+			 	<td>
+			 		<input type="submit" value="$i18n.getString( 'get_report' )" id="submit" />		 		
+	 			</td>
+	 			<td>&nbsp;</td>
+	 			<td>&nbsp;</td>
+ 			</tr>
+		 </table>
+    </div>
+	<br/><br/>
+</form>

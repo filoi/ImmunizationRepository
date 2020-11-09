@@ -7,6 +7,7 @@ public class GenericTypeObj
 	private String alias;
 	private String shortName;  
 	private String code;
+	private Integer sortOrderNo;
 
 	private Integer intAttrib1;
 	
@@ -62,6 +63,12 @@ public class GenericTypeObj
 	}
 	public void setAlias(String alias) {
 		this.alias = alias;
+	}
+	public Integer getSortOrderNo() {
+		return sortOrderNo;
+	}
+	public void setSortOrderNo(Integer sortOrderNo) {
+		this.sortOrderNo = sortOrderNo;
 	}
 	
 	

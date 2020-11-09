@@ -1,29 +1,20 @@
 package org.hisp.dhis.ivb.covid.action;
 
-import static org.hisp.dhis.common.IdentifiableObjectUtils.getIdentifiers;
-
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.hisp.dhis.common.comparator.IdentifiableObjectCodeComparator;
-import org.hisp.dhis.common.comparator.IdentifiableObjectNameComparator;
 import org.hisp.dhis.configuration.ConfigurationService;
-import org.hisp.dhis.dataset.DataSet;
 import org.hisp.dhis.dataset.DataSetService;
-import org.hisp.dhis.datavalue.DataValue;
 import org.hisp.dhis.i18n.I18nService;
 import org.hisp.dhis.ivb.util.CovidIntroHelper;
 import org.hisp.dhis.ivb.util.CovidIntroSnapshot;
 import org.hisp.dhis.ivb.util.IVBUtil;
-import org.hisp.dhis.ivb.util.RegionalDBSnapshot;
-import org.hisp.dhis.ivb.util.RegionalDashboardHelper;
 import org.hisp.dhis.lookup.Lookup;
 import org.hisp.dhis.lookup.LookupService;
 import org.hisp.dhis.message.MessageService;
+import org.hisp.dhis.option.Option;
+import org.hisp.dhis.option.OptionService;
+import org.hisp.dhis.option.OptionSet;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroupService;
 import org.hisp.dhis.organisationunit.OrganisationUnitService;
@@ -38,7 +29,7 @@ import com.opensymphony.xwork2.Action;
 /**
  * @author BHARATH
  */
-public class CovidIntroTrackerResultction implements Action
+public class CovidCountryProfileResultAction implements Action
 {
     // -------------------------------------------------------------------------
     // Dependencies
@@ -78,51 +69,20 @@ public class CovidIntroTrackerResultction implements Action
     @Autowired
     private CovidIntroHelper covidIntroHelper;
 
+    @Autowired
+    private OptionService optionService;
+    
     // -------------------------------------------------------------------------
     // Setters
     // -------------------------------------------------------------------------
-    private List<String> indTypes;
-    private String isoCode;
-    private String whoRegion;
-    private String unicefRegion;
-    private String incomeLevel;
-    private String gaviEligibleStatus;
-    private String showIndType;
-    private String includeComment;
-    private String showNonZero;
-    
-    public void setIndTypes(List<String> indTypes) {
-		this.indTypes = indTypes;
+    private String orgUnitUID;
+	public void setOrgUnitUID(String orgUnitUID) {
+		this.orgUnitUID = orgUnitUID;
 	}
-	public void setIsoCode(String isoCode) {
-		this.isoCode = isoCode;
-	}
-	public void setWhoRegion(String whoRegion) {
-		this.whoRegion = whoRegion;
-	}
-	public void setUnicefRegion(String unicefRegion) {
-		this.unicefRegion = unicefRegion;
-	}
-	public void setIncomeLevel(String incomeLevel) {
-		this.incomeLevel = incomeLevel;
-	}
-	public void setGaviEligibleStatus(String gaviEligibleStatus) {
-		this.gaviEligibleStatus = gaviEligibleStatus;
-	}
-	public void setShowIndType(String showIndType) {
-		this.showIndType = showIndType;
-	}
-	public void setIncludeComment(String includeComment) {
-		this.includeComment = includeComment;
-	}
-    public void setShowNonZero(String showNonZero) {
-		this.showNonZero = showNonZero;
-	}
-    
+   
     // -------------------------------------------------------------------------
     // Getters
     // -------------------------------------------------------------------------
-
 
 
 	private String language;
@@ -173,25 +133,7 @@ public class CovidIntroTrackerResultction implements Action
             adminStatus = "No";
         }
        
-        //Show / Hide Columns
-    	if( isoCode != null )
-    		covidIntroSnapshot.setIsoCode("ON");
-        if( whoRegion != null )
-        	covidIntroSnapshot.setWhoRegion("ON");
-        if( unicefRegion != null )
-        	covidIntroSnapshot.setUnicefRegion("ON");
-        if( incomeLevel != null )
-        	covidIntroSnapshot.setIncomeLevel("ON");
-        if( gaviEligibleStatus != null )
-        	covidIntroSnapshot.setGaviEligibleStatus("ON");
-        if( includeComment != null )
-        	covidIntroSnapshot.setIncludeComment("ON");
-        if( showIndType != null )
-        	covidIntroSnapshot.setShowIndType("ON");
-        if( showNonZero != null )
-        	covidIntroSnapshot.setNonZeroCountries("ON");
-       
-        
+
         Lookup lookup = lookupService.getLookupByName( Lookup.REGIONAL_DASHBOARD_REPORT_FLAG_ATTRIBTE_ID );
         Integer flagAttributeId = Integer.parseInt( lookup.getValue() );
         covidIntroSnapshot.setFlagAttributeId( flagAttributeId );
@@ -200,22 +142,16 @@ public class CovidIntroTrackerResultction implements Action
         Integer itAttributeId = Integer.parseInt( lookup.getValue() );
         covidIntroSnapshot.setIndTypeAttributeId( itAttributeId );
         
+        lookup = lookupService.getLookupByName( "GENERAL_DE_GROUP_ID" );
+        Integer genDegId = Integer.parseInt( lookup.getValue() );
+        covidIntroSnapshot.setGeneralDeGroupId( genDegId );
+        
         lookup = lookupService.getLookupByName( "UNICEF_REGIONS_GROUPSET" );
         covidIntroSnapshot.setUnicefRegionsGroupSet(orgUnitGroupService.getOrganisationUnitGroupSet( Integer.parseInt( lookup.getValue() ) ) );
         List<OrganisationUnit> orgUnitList = new ArrayList<OrganisationUnit>();
-        if(selectionTreeManager.getReloadedSelectedOrganisationUnits() != null){ 
-            orgUnitList =  new ArrayList<OrganisationUnit>( selectionTreeManager.getReloadedSelectedOrganisationUnits() ) ;            
-            List<OrganisationUnit> lastLevelOrgUnit = new ArrayList<OrganisationUnit>();
-            List<OrganisationUnit> userOrgUnits = new ArrayList<OrganisationUnit>( currentUserService.getCurrentUser().getDataViewOrganisationUnits() );
-            for( OrganisationUnit orgUnit : userOrgUnits ){
-                if ( orgUnit.getHierarchyLevel() == 3  )
-                    lastLevelOrgUnit.add( orgUnit );
-                else
-                    lastLevelOrgUnit.addAll( orgUnitService.getOrganisationUnitsAtLevel( 3, orgUnit ) );
-            }
-            orgUnitList.retainAll( lastLevelOrgUnit );
-        }
-        Collections.sort(orgUnitList, new IdentifiableObjectCodeComparator() );
+        OrganisationUnit selOrgUnit = orgUnitService.getOrganisationUnit( orgUnitUID );
+        orgUnitList.add( selOrgUnit );
+        covidIntroSnapshot.setSelOrgUnit( selOrgUnit );
         covidIntroSnapshot.setSelOrgUnits( orgUnitList );
         String ouIdsByComma = "-1";
         for( OrganisationUnit ou : covidIntroSnapshot.getSelOrgUnits() ) {
@@ -223,14 +159,16 @@ public class CovidIntroTrackerResultction implements Action
         }
         covidIntroSnapshot.setOuIdsByComma( ouIdsByComma );
 
-        covidIntroSnapshot.setIndTypes( indTypes );
+        lookup = lookupService.getLookupByName( "COVID_INTRO_INDICATOR_TYPE_OPTIONSET_UID" );
+        OptionSet itOptionSet = optionService.getOptionSet( lookup.getValue() );
         String indTypesByComma = "'-1'";
-        for( String indType : indTypes ){
-        	indTypesByComma += ",'" + indType +"'";
+        for( Option indTypeOption : itOptionSet.getOptions() ){
+        	covidIntroSnapshot.getIndTypes().add( indTypeOption.getCode() );
+        	indTypesByComma += ",'" + indTypeOption.getCode() +"'";
         }
         covidIntroSnapshot.setIndTypesByComma( indTypesByComma );
         
-        covidIntroSnapshot = covidIntroHelper.getCovidIntroSnapshot( covidIntroSnapshot, 1 );
+        covidIntroSnapshot = covidIntroHelper.getCovidIntroSnapshot( covidIntroSnapshot, 2 );
         
       
         return SUCCESS;

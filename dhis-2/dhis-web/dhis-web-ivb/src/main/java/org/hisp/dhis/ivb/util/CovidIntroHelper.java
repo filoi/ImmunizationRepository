@@ -11,11 +11,14 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.hisp.dhis.dataelement.DataElement;
+import org.hisp.dhis.dataelement.DataElementGroup;
+import org.hisp.dhis.dataelement.DataElementService;
+import org.hisp.dhis.dataset.DataSet;
 import org.hisp.dhis.lookup.LookupService;
 import org.hisp.dhis.option.Option;
 import org.hisp.dhis.option.OptionService;
 import org.hisp.dhis.option.OptionSet;
-import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -25,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CovidIntroHelper 
 {
 
+	 
 	public static final String FLAG_CRITERIA_NA = "NA";
 	
 	public static final String ALERT_COLOR_NODATA = "WHITE";
@@ -49,7 +53,7 @@ public class CovidIntroHelper
 	public static final String CONDITION_MORETHAN_X_MONTHS_AGO = "MORETHAN_X_MONTHS_AGO";
 	public static final String CONDITION_AFTER = "AFTER";
 	
-    private String alertColorNoData = "#FFFFFF";
+    private String alertColorNoData = "#fcfdfd";
     private String alertColorFlagged = "";
     private String alertColorNotFlagged = "";
 
@@ -64,10 +68,15 @@ public class CovidIntroHelper
     @Autowired
     private LookupService lookupService;
     
+    @Autowired
+    private DataElementService deService;
+    
+    
     //----------------------------------------------------------------
     // Methods
     //-----------------------------------------------------------------
-    public CovidIntroSnapshot getCovidIntroTrackerSnapshot( CovidIntroSnapshot covidIntroSnapshot )
+    //page = 1 for Covid Intro Tracker and page =2 for Covid Country Profile
+    public CovidIntroSnapshot getCovidIntroSnapshot( CovidIntroSnapshot covidIntroSnapshot, int page )
     {
     	//Map<String, List<Integer>> it_deIdMap = new HashMap<>();
     	//Map<Integer, GenericTypeObj> deMap = new HashMap<Integer, GenericTypeObj>();
@@ -84,7 +93,7 @@ public class CovidIntroHelper
     						" where t2.attributeid = "+covidIntroSnapshot.getIndTypeAttributeId()+" AND t2.value IN ("+covidIntroSnapshot.getIndTypesByComma()+")"+
     						" order by ind_type, t4.rdb_sort";
     		*/
-    		String query = "select t1.dataelementid as deid, t4.\"name\" as dename, t4.\"formname\" as dealias, t4.\"code\" as decode, t2.\"value\" as ind_type, t4.optionsetid optionsetid  \r\n"+
+    		String query = "select t1.dataelementid as deid, t4.\"name\" as dename, t4.\"formname\" as dealias, t4.\"code\" as decode, t2.\"value\" as ind_type, t4.optionsetid optionsetid, t4.rdb_sort as sort_no  \r\n"+
 					" from dataelementattributevalues as t1\r\n" + 
 					" inner join attributevalue as t2 on t1.attributevalueid = t2.attributevalueid\r\n" + 
 					" inner join dataelement as t4 on t1.dataelementid = t4.dataelementid\r\n" + 
@@ -102,15 +111,35 @@ public class CovidIntroHelper
     			deObj.setCode( rs1.getString("decode") );
     			deObj.setAlias( rs1.getString("dealias") );
     			deObj.setIntAttrib1( rs1.getInt("optionsetid") );
+    			deObj.setSortOrderNo( rs1.getInt("sort_no") );
     			
     			deIdsByComma += "," + deid;
     			if( covidIntroSnapshot.getIt_deIdMap().get( indType ) == null )
     				covidIntroSnapshot.getIt_deIdMap().put(indType, new ArrayList<>());
     			covidIntroSnapshot.getIt_deIdMap().get( indType ).add( deid );
     			covidIntroSnapshot.getDeMap().put( deObj.getId(), deObj );
-    		}    		
+    		}
     		
-    		//------------Getting Dataelement name and flag criteria (meta-data)--------------------
+    		Set<Integer> generalDeIds = null;
+    		if( page == 2 ){ //adding dataelementids from General dataset
+    			generalDeIds = new HashSet<>();
+    			DataElementGroup genDeg = deService.getDataElementGroup( covidIntroSnapshot.getGeneralDeGroupId() );
+    			for( DataElement de : genDeg.getMembers() ){
+    				GenericTypeObj deObj = new GenericTypeObj();
+        			deObj.setId( de.getId() );
+        			deObj.setName( de.getName() );
+        			deObj.setCode( de.getCode() );
+        			deObj.setAlias( de.getFormName() );
+        			try{ deObj.setIntAttrib1( de.getOptionSet().getId() ); }catch(Exception e){}
+        			
+    				deIdsByComma += "," + de.getId();
+    				covidIntroSnapshot.getDeMap().put( deObj.getId(), deObj );
+    				generalDeIds.add( de.getId() );
+    			}
+    		}
+    		
+    		
+    		//------------Getting Dataelement's  flag criteria (meta-data)--------------------
     		/*
     		query = "select t1.dataelementid as deid, t4.\"name\" as dename, t4.\"formname\" as dealias, t4.\"code\" as decode, t2.\"value\" as flag_criteria, t4.optionsetid optionsetid from dataelementattributevalues as t1\r\n" + 
     						" inner join attributevalue as t2 on t1.attributevalueid = t2.attributevalueid\r\n" +     						
@@ -159,20 +188,22 @@ public class CovidIntroHelper
     			covidIntroSnapshot.getDeMap().put( deObj.getId(), deObj );
     			*/
             }
+		
     		    		
     		//------------Getting Data for selected orgunit(s) and dataelement(s)--------------------
     		covidIntroSnapshot.setDeIdsByComma(deIdsByComma);
-    		getCovidIntroTrackerData( covidIntroSnapshot );
+    		getCovidIntroTrackerData( covidIntroSnapshot, page, generalDeIds );
     		
     		/*
     		for( String indType : covidIntroSnapshot.getIndTypes() ){
     			for( int deId : covidIntroSnapshot.getIt_deIdMap().get( indType ) ){
     				GenericTypeObj deObj = covidIntroSnapshot.getDeMap().get( deId );
-    				System.out.println( indType + " -- " + deObj.getName() );
+    				System.out.println( indType + " -- " + deObj.getName() + " -- "+ deObj.getSortOrderNo() );
     				
     			}
     		}
     		*/
+    		
     		
     		//System.out.println( "Show Nonzero countries only : "+ covidIntroSnapshot.getNonZeroCountries() );
     		/*
@@ -181,6 +212,18 @@ public class CovidIntroHelper
     				System.out.println( ou.getName() + ", "+ ou.getCode() +" has data");
     			else
     				System.out.println( ou.getName() + ", "+ ou.getCode() +" has no data");
+    		}
+    		*/
+    		
+    		/*
+    		for( String indType : covidIntroSnapshot.getIndTypes() ){
+    			for( int deId : covidIntroSnapshot.getIt_deIdMap().get( indType ) ){
+    				GenericTypeObj deObj = covidIntroSnapshot.getDeMap().get( deId );
+    				GenericDataVO dataVo = covidIntroSnapshot.getDataMap().get( covidIntroSnapshot.getSelOrgUnit().getId()+":"+deId );
+    				if( dataVo != null )
+    					System.out.println( indType + " -- " + deObj.getName() + " -- "+ dataVo.getAlertColor() );
+    				
+    			}
     		}
     		*/
     	}
@@ -193,7 +236,7 @@ public class CovidIntroHelper
     
     
     
-    public void getCovidIntroTrackerData( CovidIntroSnapshot covidIntroSnapshot )
+    public void getCovidIntroTrackerData( CovidIntroSnapshot covidIntroSnapshot, int page, Set<Integer> generalDeIds )
     {
         Map<Integer, Map<String, Option>> optionMap = new HashMap<Integer, Map<String, Option>>();
         for( OptionSet optionSet : optionService.getAllOptionSets() ) {
@@ -220,7 +263,7 @@ public class CovidIntroHelper
                              " AND dv.periodid=asd1.periodid";
             //System.out.println("Query3: "+ query );
             SqlRowSet rs = jdbcTemplate.queryForRowSet( query );
-            
+            Date tempDate = null;
             while ( rs.next() )
             {
                 Integer ouId = rs.getInt( 1 );
@@ -265,8 +308,14 @@ public class CovidIntroHelper
                 dataVo.setLastUpdated( lastUpdated );
                 dataVo.setAlertColor( validateFlagCriteria( dataVo,  deObj.getStrAttrib1() ) );
                 
-                covidIntroSnapshot.getDataMap().put( ouId+":"+deId, dataVo );               
+                covidIntroSnapshot.getDataMap().put( ouId+":"+deId, dataVo );
+                if( page == 2 && generalDeIds.contains( deId ) && (tempDate == null || tempDate.before( lastUpdated ) ) )
+                    tempDate = lastUpdated;
             }
+            
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat( "yyyy-MM-dd" );
+            if( tempDate != null )
+            	covidIntroSnapshot.setLastUpdated( simpleDateFormat.format( tempDate ) );
         }
         catch ( Exception e ){
         	e.printStackTrace();

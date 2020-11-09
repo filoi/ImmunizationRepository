@@ -1,3 +1,4 @@
+#set( $reportWarning = "Y2" )
 <style type="text/css">
 	.multiselect {
 	    max-height: 25em;
@@ -188,7 +189,7 @@ $(function() {
 		 			<input type="checkbox" name="incomeLevel" /> $i18n.getString( "income_level" )<br/>
 		 			<input type="checkbox" name="gaviEligibleStatus" /> $i18n.getString( "gavi_eligibility_status" )<br/> -->
 		 			<input type="checkbox" name="showIndType" /> Show Indicator Type<br/>
-		 			<input type="checkbox" name="showComment" /> Include comments in excel export <br/><br/><br/>
+		 			<input type="checkbox" name="includeComment" /> Include comments in excel export <br/><br/><br/>
 		 			<input type="submit" value="$i18n.getString( 'get_report' )" id="submit" /> 
                  </td>               
              </tr>

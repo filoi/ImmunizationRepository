@@ -1483,6 +1483,22 @@
 			<param name="stylesheets">css/ivb-dataentry.css,css/jquery.fancybox.css,css/jquerycssmenu.css,css/jquery.treeview.css,../dhis-web-commons/select2/select2.css</param>
 		</action>
 	
+		<!-- Covid Country Profile -->
+		<action name="covidCountryProfileForm"
+			class="org.hisp.dhis.ivb.report.action.CountryActivitiesFormAction">
+			<result name="success" type="velocity">/dhis-web-ivb/main.vm</result>
+			<param name="page">/dhis-web-ivb/covidCountryProfileForm.vm</param>
+			<param name="javascripts">../dhis-web-commons/oust/oust.js,javascript/ivb_report.js,javascript/jquerycssmenu.js,javascript/request.js,javascript/jquery.treeview.js</param>
+			<param name="stylesheets">css/ivb-dataentry.css,css/jquerycssmenu.css,css/jquery.treeview.css</param>
+			<interceptor-ref name="organisationUnitTreeStack" />
+		</action>
+		<action name="covidCountryProfileResult"
+			class="org.hisp.dhis.ivb.covid.action.CovidCountryProfileResultAction">
+			<result name="success" type="velocity">/dhis-web-ivb/main.vm</result>
+			<param name="page">/dhis-web-ivb/covidCountryProfileResult.vm</param>
+			<param name="javascripts">javascript/jquery.treeview.js,javascript/ivb-dataentry.js,javascript/jquery.fancybox.js,javascript/jquerycssmenu.js,javascript/request.js,javascript/jquery.treeview.js,../dhis-web-commons/select2/select2.min.js</param>
+			<param name="stylesheets">css/ivb-dataentry.css,css/jquery.fancybox.css,css/jquerycssmenu.css,css/jquery.treeview.css,../dhis-web-commons/select2/select2.css</param>
+		</action>
 						
 		<!--  for download map to excel -->
    <!--  <action name="exportToExcel" class="org.hisp.dhis.ivb.exp.excel.ExportToExcelAction">

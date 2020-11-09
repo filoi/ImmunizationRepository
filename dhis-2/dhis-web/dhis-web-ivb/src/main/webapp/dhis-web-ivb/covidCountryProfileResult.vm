@@ -1,0 +1,327 @@
+#set( $reportWarning = "Y2" )
+
+<script type="text/javascript">
+
+    $(document).ready(function(){
+        var value1  = $('#GNI').html();
+        $('#GNI').html(value1.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+
+        var value2  = $('#WUENIC').html();
+        $('#WUENIC').html(value2+"%");
+
+        var value3  = $('#JRF').html();
+        $('#JRF').html(value3+"%");
+    });
+
+jQuery(function() {
+    $('#toUser').show();
+    $('#recipients').select2({
+       minimumInputLength: 1,
+       multiple: true, 
+       width: "546px",      
+       ajax: {
+           url: 'getMessageRecipients.action',
+           dataType: 'json',
+           data: function(term, page) {
+                return {
+                    filter: term
+                }
+           },
+           results: function(data, page) {
+               return { results: data.matches }
+           }
+       }
+    });
+});
+</script>
+
+<script>
+	function getShareLink()
+	{		
+		$('#shareSubject').val('Country File Report for '+ '$organisationUnit.name');
+		$('#shareText').val('Link to view the report: \n \n' + document.location.href);
+		$( "#shareLinkToUser" ).dialog('open');		
+	}
+    var percentageRequiredList= $percentageRequiredDe;
+
+
+</script>
+<style >
+	th, td
+	{		
+		vertical-align: middle;
+	}
+</style>
+<form id="form1" name="form1" action="exportToWorkBook.action" method="post" onsubmit="return exportToExcel()" target="_newtab" accept-charset="UTF-8">
+	<textarea name="htmlCode" id="htmlCode" style="display:none">a</textarea>
+	<table style="width:98%;">
+		<tr>
+			<td align="left"><font size="3"><b>Covid Country Profile</b></font></td>
+			<td align="right" style="vertical-align:middle;">
+				<input type="button" onclick="location.href='covidCountryProfileForm.action'" value="Change Selections"/>
+				<input type="submit" value="Download As Excel"/>&nbsp;
+				<input type="button" value="Print" onclick="javascript:prepPrintCoupon('htmlContent')" />
+				<input type="button" value="Share" onclick="javascript: getShareLink()"/>
+			</td>
+		</tr>	
+	</table>
+	
+	<hr/>
+		
+	#set( $falgURL = $covidIntroSnapshot.getSelOrgUnit().code +".png" )
+	<input type="hidden" value="$falgURL" id="hiddenImgPath" />
+	
+	
+	<div id="htmlContent" style="width:90%;margin:auto;" >
+        <table cellspacing="0" cellpadding="0" border="0" width="100%" bgcolor="#FBEFEF">
+            <tr>
+		 	    <td align="right" id="flagImage"><img src="images/flags/$falgURL"/></td>
+		 		<td>
+		 		   <h2>$covidIntroSnapshot.getSelOrgUnit().name ( $covidIntroSnapshot.getSelOrgUnit().code )</h2> 
+		 			$i18n.getString( "last_updated_on" ) : $!covidIntroSnapshot.getLastUpdated()
+		 		</td>
+		 		<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>	 		    
+            </tr>
+		    <tr>
+                <td align="right" width="5%"></td>
+		        <td>&nbsp;</td>
+            </tr> 		
+		</table>
+		
+		<table width="100%" style="margin:auto;" bgcolor="#FBEFEF">
+			<tr style="height:30px;">
+				<td width="25%">$i18n.getString( "header_GNI" )</td>
+				#set( $dvObjKey = "" )
+				#set( $dvObjKey = "$covidIntroSnapshot.getSelOrgUnit().id:1" )
+				#set( $dvObj = "" )
+				#set( $dvObj = $!covidIntroSnapshot.getDataMap().get( $dvObjKey ) )	
+				<td id="GNI" width="15%">$!dvObj.value</td>
+						
+				<td width="10%">&nbsp;</td>
+				
+				<td width="25%">$i18n.getString( "header_income_status" )</td>
+				#set( $dvObjKey = "" )
+				#set( $dvObjKey = "$covidIntroSnapshot.getSelOrgUnit().id:3" )
+				#set( $dvObj = "" )
+				#set( $dvObj = $!covidIntroSnapshot.getDataMap().get( $dvObjKey ) )	
+				<td width="15%">$!dvObj.value</td>				
+				
+				<td width="10%">&nbsp;</td>
+			 </tr>
+			 <tr style="height:30px;">			 	
+				<td width="25%">$i18n.getString( "header_dtp3_WUENIC" )</td>
+				#set( $dvObjKey = "" )
+				#set( $dvObjKey = "$covidIntroSnapshot.getSelOrgUnit().id:200" )
+				#set( $dvObj = "" )
+				#set( $dvObj = $!covidIntroSnapshot.getDataMap().get( $dvObjKey ) )
+				<td id="WUENIC" width="15%">$!dvObj.value</td>
+							
+				<td width="10%">&nbsp;</td>
+				
+				<td width="25%">$i18n.getString( "header_GAVI" )</td>
+				#set( $dvObjKey = "" )
+				#set( $dvObjKey = "$covidIntroSnapshot.getSelOrgUnit().id:4" )
+				#set( $dvObj = "" )
+				#set( $dvObj = $!covidIntroSnapshot.getDataMap().get( $dvObjKey ) )				
+				<td width="15%">$!dvObj.value</td>				
+				
+				<td width="10%">&nbsp;</td>
+			</tr>
+			 <tr style="height:30px;">
+				
+				<td width="25%">$i18n.getString( "header_dtp3_JRF" )</td>
+				#set( $dvObjKey = "" )
+				#set( $dvObjKey = "$covidIntroSnapshot.getSelOrgUnit().id:201" )
+				#set( $dvObj = "" )
+				#set( $dvObj = $!covidIntroSnapshot.getDataMap().get( $dvObjKey ) )
+				<td id="JRF" width="15%">$!dvObj.value</td>
+				
+				<td width="10%">&nbsp;</td>
+				
+				<td width="25%">$i18n.getString( "header_cmyp_start_date_end_date" )</td>
+				#set( $dvObjKey = "" )
+				#set( $dvObjKey = "$covidIntroSnapshot.getSelOrgUnit().id:104" )
+				#set( $dvObj = "" )
+				#set( $dvObj = $!covidIntroSnapshot.getDataMap().get( $dvObjKey ) )
+				#set( $dvVal = "" )
+				#set( $dvVal = $dvObj.value )
+				#set( $dvObjKey = "" )
+				#set( $dvObjKey = "$covidIntroSnapshot.getSelOrgUnit().id:105" )
+				#set( $dvObj = "" )
+				#set( $dvObj = $!covidIntroSnapshot.getDataMap().get( $dvObjKey ) )
+				<td width="15%">$!dvVal - $!dvObj.value</td>
+				<td width="10%"></td>
+			</tr>
+			
+		</table>
+
+		<hr/>
+		
+		#foreach( $indType in $covidIntroSnapshot.indTypes )
+			<table style="margin:auto;width:100%;" width="100%" cellspacing="0" cellpadding="0" border="0">
+				<tr>					
+					<td width="100%"><h3>$indType</h3></td>
+				</tr>				
+				<tr>
+					<td width="100%">		
+						<table class="altrowstable" style="margin:auto;background:#fcfdfd" width="100%">
+							<tr>								
+								<th width="43%" align="left">Data Element</th>
+								<th width="12%" align="left">Value</th>
+								<th width="24%" align="left">Comment</th>								
+								<th width="15%" align="left">Source</th>								
+							</tr>
+							#foreach( $deId in $covidIntroSnapshot.getIt_deIdMap().get( $indType ) )
+								#set( $de = "" )
+								#set( $de = $covidIntroSnapshot.getDeMap().get( $deId ) )
+								#set( $dvObjKey = "" )
+								#set( $dvObjKey = "$covidIntroSnapshot.getSelOrgUnit().id:$deId" )
+								#set( $dvObj = "" )
+								#set( $dvObj = $!covidIntroSnapshot.getDataMap().get( $dvObjKey ) )	
+								<tr>
+									<td width="43%" align="left" valign="middle" style="vertical-align:middle;">$!de.name</td>                                    
+                                    <td id="${de.id}" width="12%" align="left" valign="middle" style="vertical-align: middle;background:$dvObj.getAlertColor();">$!dvObj.value</td>
+                                   	<td width="25%" align="left" valign="middle" style="vertical-align:middle;">$!dvObj.comment</td>
+									<td width="15%" align="left" valign="middle" style="vertical-align:middle;">$!dvObj.storedBy $!dvObj.lastUpdated</td>
+								</tr>
+							#end
+						</table>
+					</td>
+				</tr>				
+			</table>
+	        <hr/>
+        #end
+		<br/><br/><br/>
+		<table style="margin:auto;display:none;color: #9F6000;background-color: #FEEFB3;border: 1px solid;" width="100%">
+			<tr>
+				<td colspan="4" style="vertical-align:middle;">$i18n.getString( "report_inline_security_warning3" )</td>
+			</tr>
+		</table>
+</div>
+
+</form>
+<div id="shareLinkToUser" title="Share Link to User">
+		<fieldset>
+			<label for="toUser">$i18n.getString( "maintenance_users" )</label>
+			<input type="hidden" name="recipients" id="recipients" class="text ui-widget-content ui-corner-all" placeholder="Enter User Name"/>
+			<br/><br/>
+			<label for="shareSubject">$i18n.getString( "feedback_subject" )</label>
+			<input type="text" id="shareSubject" name="shareSubject" class="text ui-widget-content ui-corner-all" />
+			<label for="shareText">$i18n.getString( "feedback_text" )</label>
+			<textarea id="shareText" name="shareText" class="text ui-widget-content ui-corner-all" rows="6">				
+			</textarea>
+		</fieldset>
+</div>
+<style>
+	label, #toUser ,#shareText ,#shareSubject{ 
+		display:block;
+	}
+		#recipients ,#shareText ,#shareSubject	{ 
+		margin-bottom:12px;
+		width:95%; 
+		padding: .4em; 
+	}	
+	#shareLinkToUser fieldset	{ 
+		padding:0;
+		border:0;
+		margin-top:25px;
+	}
+</style>
+<script>
+	jQuery(function() {
+	    var emailIds = 'null';
+		$( "#shareLinkToUser" ).dialog({
+				autoOpen: false,
+				height: 420,
+				width: 595,
+				modal: true,
+				show: "blind",
+				hide: "explode",
+				buttons: {
+				"$i18n.getString( 'send' )":function() {									
+					location.href = 'mailto:' + $('#recipients').val().replace(/[,]/g,';') +
+                	'?subject=' + $('#shareSubject').val() +
+                	'&body=' + escape(document.getElementById('shareText').value) ;
+					$( this ).dialog( "close" );
+				},
+				Cancel: function() {
+					$( this ).dialog( "close" );
+				}
+			},
+			close: function() {				
+			}
+		});
+	});
+	function printDiv( divID ) 
+	{
+		//Get the HTML of div
+        var divElements = document.getElementById(divID).innerHTML;
+        
+        //Get the HTML of whole page
+        var oldPage = document.body.innerHTML;
+
+        //Reset the page's HTML with div's HTML only
+        document.body.innerHTML = divElements ;
+
+       	//Print Page
+        window.print();
+
+        //Restore orignal HTML
+        document.body.innerHTML = oldPage;        
+		
+		window.location.reload();
+	}
+	
+	var originalContents,coupon;
+	function prepPrintCoupon(couponID){
+  		originalContents = document.body.innerHTML;
+  		coupon=couponID;
+  		var printable = document.getElementById(couponID);
+  		var printContents = printable.innerHTML;
+  		document.body.innerHTML = printContents;
+  		setTimeout(printCoupon,50);
+	}
+	function printCoupon(){
+		window.print();
+		setTimeout(endPrintCoupon,50);
+	}
+	function endPrintCoupon(){
+  		document.body.innerHTML = originalContents;
+  	document.getElementById(coupon).scrollIntoView(true);
+	}
+	
+	
+</script>
+<script>
+	function exportToExcel()
+	{	
+		var currentFlaggedImgPath = $('.flagedImg').find('img').attr('src');
+		var currentUnFlaggedImgPath = $('.unFlagedImg').find('img').attr('src');
+		
+		countryFlagPath = $('#flagImage').find('img').attr('src');
+		
+		var imagePath = $('#hiddenImgPath').val();
+		var redFlag = $('#redFlag').val();
+		var greyFlag = $('#greyFlag').val();
+		
+		$('#flagImage').find('img').remove();
+		$('.flagedImg').find('img').remove();
+		$('.unFlagedImg').find('img').remove();
+		
+		$('#flagImage').text('');
+		$('.flagedImg').append('<font size=\"20\" color=\"red\">*</font>')
+		$('.unFlagedImg').append('<font size=\"20\" color=\"#A4A4A4\">*</font>');
+		
+		document.getElementById('htmlCode').value = document.getElementById('htmlContent').innerHTML;	
+		
+		$('.flagedImg').text('');
+		$('.unFlagedImg').text('');		
+		
+		$('#flagImage').append('<img src=\"'+countryFlagPath+'\" \>');
+		$('.flagedImg').append('<img src=\"'+currentFlaggedImgPath+'\" width=\"20\" height=\"20\" style=\"float:left;\" \>');
+		$('.unFlagedImg').append('<img src=\"'+currentUnFlaggedImgPath+'\" width=\"20\" height=\"20\" style=\"float:left;\" \>');
+		
+        return true;
+	}
+	
+</script>

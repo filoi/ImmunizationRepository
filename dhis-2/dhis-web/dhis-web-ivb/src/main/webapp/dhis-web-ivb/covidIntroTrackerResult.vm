@@ -2,7 +2,7 @@
 
 <script type="text/javascript" src="freeze_table/tableFreezer.js"></script>
    
-#set( $reportWarning = "Y" )
+#set( $reportWarning = "Y2" )
 
 <style >   
 	.table-condensed>thead>tr>th, .table-condensed>tbody>tr>th,
@@ -222,7 +222,7 @@ jQuery(function() {
  		<br/><br/><br/>
         <table style="margin:auto;display:none;color: #9F6000;background-color: #FEEFB3;border: 1px solid;" width="100%">
             <tr>
-                <td colspan="5">$i18n.getString( "inline_security_warning" )</td>
+                <td colspan="5">$i18n.getString( "report_inline_security_warning2" )</td>
             </tr>
         </table>
 	</div>    	
@@ -287,7 +287,7 @@ jQuery(function() {
  		<br/><br/><br/>
         <table style="margin:auto;display:none;color: #9F6000;background-color: #FEEFB3;border: 1px solid;" width="100%">
             <tr>
-                <td colspan="5">$i18n.getString( "inline_security_warning" )</td>
+                <td colspan="5">$i18n.getString( "report_inline_security_warning3" )</td>
             </tr>
         </table>
  	

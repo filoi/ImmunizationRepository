@@ -29,14 +29,18 @@ public class CovidIntroSnapshot
 	 private String indTypesByComma = "";
 	 private Integer flagAttributeId = 0;
 	 private Integer indTypeAttributeId = 0;
+	 private Integer generalDeGroupId = 0;
+	 private OrganisationUnit selOrgUnit;
 	 
-	 //other params
+	 
+
+	//other params
 	 private String deIdsByComma = "-1";
 	 private Map<String, List<Integer>> it_deIdMap = new HashMap<>();
 	 private Map<Integer, GenericTypeObj> deMap = new HashMap<>();
 	 private Map<String, GenericDataVO> dataMap = new HashMap<>();
 	 private Set<Integer> nonZeroOrgUnitIds = new HashSet<>();
-	 
+	 private String lastUpdated;
 	 
 	private String dsIdsByComma = "-1";
 	
@@ -50,8 +54,18 @@ public class CovidIntroSnapshot
 	//-------------------------------------------------------------------
 	//Getters & Setters
 	//-------------------------------------------------------------------
+	
+	
 	public OrganisationUnitGroupSet getUnicefRegionsGroupSet() {
 		return unicefRegionsGroupSet;
+	}
+
+	public OrganisationUnit getSelOrgUnit() {
+		return selOrgUnit;
+	}
+
+	public void setSelOrgUnit(OrganisationUnit selOrgUnit) {
+		this.selOrgUnit = selOrgUnit;
 	}
 
 	public void setUnicefRegionsGroupSet(OrganisationUnitGroupSet unicefRegionsGroupSet) {
@@ -225,6 +239,22 @@ public class CovidIntroSnapshot
 
 	public void setNonZeroOrgUnitIds(Set<Integer> nonZeroOrgUnitIds) {
 		this.nonZeroOrgUnitIds = nonZeroOrgUnitIds;
+	}
+
+	public Integer getGeneralDeGroupId() {
+		return generalDeGroupId;
+	}
+
+	public void setGeneralDeGroupId(Integer generalDeGroupId) {
+		this.generalDeGroupId = generalDeGroupId;
+	}
+
+	public String getLastUpdated() {
+		return lastUpdated;
+	}
+
+	public void setLastUpdated(String lastUpdated) {
+		this.lastUpdated = lastUpdated;
 	}
 	
 	
