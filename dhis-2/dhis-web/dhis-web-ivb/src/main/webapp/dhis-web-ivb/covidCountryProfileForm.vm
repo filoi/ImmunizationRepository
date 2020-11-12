@@ -48,7 +48,7 @@
 </script>
 
 <br/>
-<div style="font-size:16px; width:93%; margin:auto;" class="ui-widget-header ui-corner-all"><b>Covid Country Profile</b></div>
+<div style="font-size:16px; width:93%; margin:auto;" class="ui-widget-header ui-corner-all"><b>Covid-19 Country Report</b></div>
 <form id="countryFileForm" method="get" action="covidCountryProfileResult.action" onsubmit="return generateHTMLreport()">
 
  	<input type="hidden" name="orgUnitUID" id="orgUnitUID"/>

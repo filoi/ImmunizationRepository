@@ -532,7 +532,7 @@
 			<li id="report"><a href="#"><b>$i18n.getString( "menu_global_reports" )</b></a>
 				<ul>										
 					<li id="alertReport" style="display:none;"><a href="alertReportForm.action"><b>$i18n.getString( "alerts" )</b></a></li>
-					<li><a href="#"><b>Covid-19 Campaign Tracker</b></a>
+					<li><a href="#"><b>Campaign Delay Tracker (due to Covid-19)</b></a>
 						<ul>
 							<li><a href="campaignTrackerForm.action"><b>Campaign Tracker</b></a></li>
 							<li><a href="campaignCalendarForm.action?resultPage=0"><b>Campaign Calendar</b></a></li>
@@ -540,10 +540,11 @@
 							<li><a href="campaignTrackerForm.action?resultPage=1"><b>Measles Dashboard</b></a></li>
 						</ul>
 					</li>
-					<li><a href="#"><b>COVID-19 Introduction Report</b></a>
+					<li><a href="#"><b>Covid-19 Introduction Report</b></a>
 						<ul>
-							<li><a href="covidIntroTrackerForm.action"><b>Introduction Tracker</b></a></li>
-							<li><a href="covidCountryProfileForm.action"><b>COVID-19 Country Profile</b></a></li>
+							<li><a href="covidIntroTrackerForm.action"><b>Covid-19 Global Monitoring Dashboard</b></a></li>
+							<li><a href="covidIntroTrackerForm.action?covidPage=1"><b>Covid-19 Vaccine Introduction Tracker</b></a></li>
+							<li><a href="covidCountryProfileForm.action"><b>Covid-19 Country Report</b></a></li>
 						</ul>
 					</li>	
 					<li><a href="tabularReportForm.action"><b>$i18n.getString( "tabular_report" )</b></a></li>

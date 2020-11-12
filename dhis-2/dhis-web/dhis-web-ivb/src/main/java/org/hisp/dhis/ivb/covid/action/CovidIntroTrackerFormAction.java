@@ -65,7 +65,15 @@ public class CovidIntroTrackerFormAction implements Action
     // -------------------------------------------------------------------------
     // Getters & Setters
     // -------------------------------------------------------------------------
-    private List<Option> indTypeOptions = new ArrayList<>();
+    private int covidPage = 0;
+    public void setCovidPage(int covidPage) {
+		this.covidPage = covidPage;
+	}
+	public int getCovidPage() {
+		return covidPage;
+	}
+
+	private List<Option> indTypeOptions = new ArrayList<>();
 	public List<Option> getIndTypeOptions() {
 		return indTypeOptions;
 	}
@@ -90,7 +98,6 @@ public class CovidIntroTrackerFormAction implements Action
         return adminStatus;
     }
     
-
 	public String execute()
     {
         userName = currentUserService.getCurrentUser().getUsername();

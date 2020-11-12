@@ -161,8 +161,15 @@ $(function() {
 
 <br/>
 
-<div style="font-size:16px; width:93%; margin:auto;" class="ui-widget-header ui-corner-all"><b>Covid Introduction Tracker</b></div>
-<form id="vacIntroReportForm" method="get" action="covidIntroTrackerResult.action" onsubmit="return generateHTMLreport()">
+#set( $resultActionName = "covidIntroTrackerResult.action")
+#if( $covidPage == 1 )
+	<div style="font-size:16px; width:93%; margin:auto;" class="ui-widget-header ui-corner-all"><b>Covid-19 Vaccine Introduction Tracker</b></div>
+	#set( $resultActionName = "covidVaccineIntroTrackerResult.action")
+#else
+	<div style="font-size:16px; width:93%; margin:auto;" class="ui-widget-header ui-corner-all"><b>Covid-19 Global Monitoring Dashboard</b></div>
+#end
+
+<form id="vacIntroReportForm" method="get" action="$resultActionName" onsubmit="return generateHTMLreport()">
     <input type="hidden" name="orgUnitId" id="orgUnitId"/>
     <div id="reportFilterDiv" >
         <table style="width:95%;margin:auto;table-layout:fixed;" cellpadding="4" cellspacing="2">
@@ -173,6 +180,12 @@ $(function() {
                         #organisationUnitSelectionTree1( false, true, true )
                     </div>                    
                     <input type="checkbox" name="showNonZero" /> Show countries with data only
+                    #if( $covidPage == 1 )
+	                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	                    <input type="checkbox" name="includeComment" /> Include comments in excel export
+			 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			 			<input type="submit" value="$i18n.getString( 'get_report' )" id="submit" /> 
+                    #end
                  </td>
                  <td width="45%" valign="top">
                  	Filter by Type of Indicator<br/> 					
@@ -182,15 +195,21 @@ $(function() {
 							<label class="dsname"><input type="checkbox" name="indTypes" class="dscbs" value="$indTypeOption.code" checked="checked" />$indTypeOption.name</label>
 						#end
 				  	</div>
-                    <br/><br/><br/>
-                    <!-- <input type="checkbox" name="isoCode" /> $i18n.getString( "iso_code" )<br/>
-		 			<input type="checkbox" name="whoRegion" /> $i18n.getString( "who_region" )<br/>
-		 			<input type="checkbox" name="unicefRegion" /> $i18n.getString( "unicef_region" )<br/>
-		 			<input type="checkbox" name="incomeLevel" /> $i18n.getString( "income_level" )<br/>
-		 			<input type="checkbox" name="gaviEligibleStatus" /> $i18n.getString( "gavi_eligibility_status" )<br/> -->
-		 			<input type="checkbox" name="showIndType" /> Show Indicator Type<br/>
-		 			<input type="checkbox" name="includeComment" /> Include comments in excel export <br/><br/><br/>
-		 			<input type="submit" value="$i18n.getString( 'get_report' )" id="submit" /> 
+                    <br/><br/>
+                    #if( $covidPage == 1 )
+	                    <input type="checkbox" name="isoCode" /> $i18n.getString( "iso_code" )<br/>
+			 			<input type="checkbox" name="whoRegion" /> $i18n.getString( "who_region" )<br/>
+			 			<input type="checkbox" name="unicefRegion" /> $i18n.getString( "unicef_region" )<br/>
+			 			<input type="checkbox" name="incomeLevel" /> $i18n.getString( "income_level" )<br/>
+			 			<input type="checkbox" name="gaviEligibleStatus" /> $i18n.getString( "gavi_eligibility_status" )<br/> 
+		 			#end
+		 			
+		 			#if( $covidPage == 0 )
+		 				<br/>
+		 				<input type="checkbox" name="showIndType" /> Show Indicator Type<br/>
+		 				<input type="checkbox" name="includeComment" /> Include comments in excel export <br/><br/><br/>
+		 				<input type="submit" value="$i18n.getString( 'get_report' )" id="submit" />
+		 			#end	 
                  </td>               
              </tr>
              

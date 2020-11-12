@@ -56,7 +56,7 @@ jQuery(function() {
 	<textarea name="htmlCode" id="htmlCode" style="display:none">a</textarea>
 	<table style="width:98%;">
 		<tr>
-			<td align="left"><font size="3"><b>Covid Country Profile</b></font></td>
+			<td align="left"><font size="3"><b>Covid-19 Country Report</b></font></td>
 			<td align="right" style="vertical-align:middle;">
 				<input type="button" onclick="location.href='covidCountryProfileForm.action'" value="Change Selections"/>
 				<input type="submit" value="Download As Excel"/>&nbsp;
@@ -152,7 +152,26 @@ jQuery(function() {
 				<td width="15%">$!dvVal - $!dvObj.value</td>
 				<td width="10%"></td>
 			</tr>
-			
+			<tr style="height:30px;">			 	
+				<td width="25%">World Bank (WB) Covid-19 Support</td>
+				#set( $dvObjKey = "" )
+				#set( $dvObjKey = "$covidIntroSnapshot.getSelOrgUnit().id:1422142" )
+				#set( $dvObj = "" )
+				#set( $dvObj = $!covidIntroSnapshot.getDataMap().get( $dvObjKey ) )
+				<td width="15%">$!dvObj.value</td>
+							
+				<td width="10%">&nbsp;</td>
+				
+				<td width="25%">COVAX Facility</td>
+				#set( $dvObjKey = "" )
+				#set( $dvObjKey = "$covidIntroSnapshot.getSelOrgUnit().id:1422143" )
+				#set( $dvObj = "" )
+				#set( $dvObj = $!covidIntroSnapshot.getDataMap().get( $dvObjKey ) )				
+				<td width="15%">$!dvObj.value</td>				
+				
+				<td width="10%">&nbsp;</td>
+			</tr>
+	
 		</table>
 
 		<hr/>

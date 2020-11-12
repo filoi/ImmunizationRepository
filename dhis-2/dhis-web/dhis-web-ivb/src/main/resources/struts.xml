@@ -1482,7 +1482,17 @@
 			<param name="javascripts">javascript/jquery.treeview.js,javascript/ivb-dataentry.js,javascript/jquery.fancybox.js,javascript/jquerycssmenu.js,javascript/request.js,javascript/jquery.treeview.js,../dhis-web-commons/select2/select2.min.js</param>
 			<param name="stylesheets">css/ivb-dataentry.css,css/jquery.fancybox.css,css/jquerycssmenu.css,css/jquery.treeview.css,../dhis-web-commons/select2/select2.css</param>
 		</action>
-	
+		
+		<!-- Covid Vaccine Introduction Tracker -->
+		<action name="covidVaccineIntroTrackerResult"
+			class="org.hisp.dhis.ivb.covid.action.CovidIntroTrackerResultction">
+			<result name="success" type="velocity">/dhis-web-ivb/main.vm</result>
+			<param name="page">/dhis-web-ivb/covidVaccineIntroTrackerResult.vm</param>
+			<param name="javascripts">javascript/jquery.treeview.js,javascript/ivb-dataentry.js,javascript/jquery.fancybox.js,javascript/jquerycssmenu.js,javascript/request.js,javascript/jquery.treeview.js,../dhis-web-commons/select2/select2.min.js</param>
+			<param name="stylesheets">css/ivb-dataentry.css,css/jquery.fancybox.css,css/jquerycssmenu.css,css/jquery.treeview.css,../dhis-web-commons/select2/select2.css</param>
+		</action>
+		
+			
 		<!-- Covid Country Profile -->
 		<action name="covidCountryProfileForm"
 			class="org.hisp.dhis.ivb.report.action.CountryActivitiesFormAction">

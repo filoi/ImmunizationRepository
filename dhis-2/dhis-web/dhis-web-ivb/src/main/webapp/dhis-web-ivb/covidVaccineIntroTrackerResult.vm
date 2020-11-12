@@ -163,9 +163,9 @@ jQuery(function() {
 
 	<table style="width:98%;">
 		<tr>
-			<td align="left"><font size="3"><b>Covid-19 Global Monitoring Dashboard</b></font></td>
+			<td align="left"><font size="3"><b>Covid-19 Vaccine Introduction Tracker</b></font></td>
 			<td align="right" style="vertical-align:middle;">
-				<input type="button" onclick="location.href='covidIntroTrackerForm.action'" value="Change Selections"/>
+				<input type="button" onclick="location.href='covidIntroTrackerForm.action?covidPage=1'" value="Change Selections"/>
 				<input type="submit" value="Download As Excel"/>&nbsp;
 				<input type="button" value="Print" onclick="javascript:printDiv('htmlContent')" />
 				<input type="button" value="Share" onclick="javascript: getShareLink()"/>
@@ -177,43 +177,57 @@ jQuery(function() {
     	<table align="center" id="regionalDBTable" border="0" cellspacing="0" cellpadding="0" class="table table-bordered table-condensed freeze_header" style="width:99%;">
            <thead>
                 <tr>
-                	#if( $!covidIntroSnapshot.showIndType == "ON" )
-						<th class="freeze_left_column" style="min-width:50px; width:50px">Indicator Type</th>
-					#end	
-					<th class="freeze_left_column" style="min-width:250px; width:250px">$i18n.getString( "data_element" )</th>					
-					
-					#foreach( $orgUnit in $covidIntroSnapshot.getSelOrgUnits() )
-						#if( $!covidIntroSnapshot.nonZeroCountries == "ON" && $covidIntroSnapshot.getNonZeroOrgUnitIds().contains( $orgUnit.id ) )				
-						<th align="center" style="vertical-align: middle;" title="$!orgUnit.name">$orgUnit.code</th>
-						#elseif( $!covidIntroSnapshot.nonZeroCountries != "ON" )
-						<th align="center" style="vertical-align: middle;" title="$!orgUnit.name">$orgUnit.code</th>
+                	#if( $covidIntroSnapshot.isoCode == "ON" ) <th style="min-width:30px; width:30px;" class="freeze_left_column">$i18n.getString( "iso_code" )</th>#end 
+	                #if( $covidIntroSnapshot.whoRegion == "ON" ) <th style="min-width:50px; width:50px;" class="freeze_left_column">$i18n.getString( "who_region" )</th> #end
+	              	#if( $covidIntroSnapshot.unicefRegion == "ON" )  <th style="min-width:50px; width:50px;" class="freeze_left_column">$i18n.getString( "unicef_region" )</th>#end
+	                <th style="min-width:50px; width:50px;" class="freeze_left_column">$i18n.getString( "country" )</th>
+	                #if( $covidIntroSnapshot.incomeLevel == "ON" )   <th class="freeze_left_column">$i18n.getString( "income_level" )</th>#end 
+	              	#if( $covidIntroSnapshot.gaviEligibleStatus == "ON" )  <th class="freeze_left_column">$i18n.getString( "gavi_eligibility_status" )</th>#end 
+                                	
+					#foreach( $indType in $covidIntroSnapshot.indTypes )
+						#foreach( $deId in $covidIntroSnapshot.getIt_deIdMap().get( $indType ) )
+							#set( $de = "" )
+							#set( $de = $covidIntroSnapshot.getDeMap().get( $deId ) )
+							<th title="$!de.strAttrib2">#if( $de.alias && $!de.alias!="")$!de.alias#else$!de.name#end</th>
 						#end
-					#end					
+					#end
                 </tr>
             </thead>
 			<tbody>
-				#foreach( $indType in $covidIntroSnapshot.indTypes )
-					#foreach( $deId in $covidIntroSnapshot.getIt_deIdMap().get( $indType ) )
-						#set( $de = "" )
-						#set( $de = $covidIntroSnapshot.getDeMap().get( $deId ) )
-						<tr >
-							#if( $!covidIntroSnapshot.showIndType == "ON" )
-							<td class="freeze_left_column">$indType</td>
-							#end	
-							<td class="freeze_left_column" title="$!de.strAttrib2">#if( $de.alias && $!de.alias!="")$!de.alias#else$!de.name#end</td>
-							#foreach( $orgUnit in $covidIntroSnapshot.getSelOrgUnits() )
-								#set( $dvObjKey = "" )
-								#set( $dvObjKey = "$orgUnit.id:$de.id" )
-							
+				#foreach( $orgUnit in $covidIntroSnapshot.getSelOrgUnits() )
+					#if( ($!covidIntroSnapshot.nonZeroCountries == "ON" && $covidIntroSnapshot.getNonZeroOrgUnitIds().contains( $orgUnit.id )) ||  $!covidIntroSnapshot.nonZeroCountries != "ON" )
+						<tr>
+							#if( $covidIntroSnapshot.isoCode == "ON" ) <td class="freeze_left_column">$orgUnit.code</td> #end
+	                        #if( $covidIntroSnapshot.whoRegion == "ON" ) <td class="freeze_left_column">$!orgUnit.getParent().shortName</td> #end
+	                        #if( $covidIntroSnapshot.unicefRegion == "ON" ) <td class="freeze_left_column">$orgUnit.getGroupInGroupSet( $covidIntroSnapshot.unicefRegionsGroupSet ).getShortName()</td> #end
+	                        <td class="freeze_left_column" align="left">$!orgUnit.shortName</td>
+                       		#if( $covidIntroSnapshot.incomeLevel == "ON" )
+                       			#set( $dvObjKey = "" )
+								#set( $dvObjKey = "$orgUnit.id:3" )
+								
 								#set( $dvObj = "" )
 								#set( $dvObj = $!covidIntroSnapshot.getDataMap().get( $dvObjKey ) )	
-								#if( $!covidIntroSnapshot.nonZeroCountries == "ON" && $covidIntroSnapshot.getNonZeroOrgUnitIds().contains( $orgUnit.id ) )
-								<td align="center" style="vertical-align: middle;color:#ffffff;background:$dvObj.getAlertColor();" title="$!dvObj.comment">&nbsp;$!dvObj.value&nbsp;</td>
-								#elseif( $!covidIntroSnapshot.nonZeroCountries != "ON" ) 
-								<td align="center" style="vertical-align: middle;color:#ffffff;background:$dvObj.getAlertColor();" title="$!dvObj.comment">&nbsp;$!dvObj.value&nbsp;</td>
+                           		<td class="freeze_left_column">$!dvObj.value</td>
+                       		#end	
+                       		#if( $covidIntroSnapshot.gaviEligibleStatus == "ON" )
+                       			#set( $dvObjKey = "" )
+								#set( $dvObjKey = "$orgUnit.id:4" )
+								
+								#set( $dvObj = "" )
+								#set( $dvObj = $!covidIntroSnapshot.getDataMap().get( $dvObjKey ) )	
+                           		<td class="freeze_left_column">$!dvObj.value</td>
+                       		#end						
+							#foreach( $indType in $covidIntroSnapshot.indTypes )
+								#foreach( $deId in $covidIntroSnapshot.getIt_deIdMap().get( $indType ) )
+									#set( $dvObjKey = "" )
+									#set( $dvObjKey = "$orgUnit.id:$de.id" )
+									
+									#set( $dvObj = "" )
+									#set( $dvObj = $!covidIntroSnapshot.getDataMap().get( $dvObjKey ) )	
+									<td align="center" style="vertical-align: middle;color:#ffffff;background:$dvObj.getAlertColor();" title="$!dvObj.comment">&nbsp;$!dvObj.value&nbsp;</td>
 								#end
 							#end
-						</tr>
+						</tr>	
 					#end
 				#end
     		</tbody>

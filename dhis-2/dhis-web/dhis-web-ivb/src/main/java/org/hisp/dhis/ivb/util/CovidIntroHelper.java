@@ -12,13 +12,17 @@ import java.util.Map;
 import java.util.Set;
 
 import org.hisp.dhis.dataelement.DataElement;
+import org.hisp.dhis.dataelement.DataElementCategoryOptionCombo;
 import org.hisp.dhis.dataelement.DataElementGroup;
 import org.hisp.dhis.dataelement.DataElementService;
 import org.hisp.dhis.dataset.DataSet;
+import org.hisp.dhis.datavalue.DataValue;
+import org.hisp.dhis.lookup.Lookup;
 import org.hisp.dhis.lookup.LookupService;
 import org.hisp.dhis.option.Option;
 import org.hisp.dhis.option.OptionService;
 import org.hisp.dhis.option.OptionSet;
+import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -78,10 +82,7 @@ public class CovidIntroHelper
     //page = 1 for Covid Intro Tracker and page =2 for Covid Country Profile
     public CovidIntroSnapshot getCovidIntroSnapshot( CovidIntroSnapshot covidIntroSnapshot, int page )
     {
-    	//Map<String, List<Integer>> it_deIdMap = new HashMap<>();
-    	//Map<Integer, GenericTypeObj> deMap = new HashMap<Integer, GenericTypeObj>();
-    	
-    	String deIdsByComma = "-1";
+    	String deIdsByComma = "3,4";
     	
     	try {
     		//DataElement list based on selected Indicator Types
@@ -93,7 +94,23 @@ public class CovidIntroHelper
     						" where t2.attributeid = "+covidIntroSnapshot.getIndTypeAttributeId()+" AND t2.value IN ("+covidIntroSnapshot.getIndTypesByComma()+")"+
     						" order by ind_type, t4.rdb_sort";
     		*/
-    		String query = "select t1.dataelementid as deid, t4.\"name\" as dename, t4.\"formname\" as dealias, t4.\"code\" as decode, t2.\"value\" as ind_type, t4.optionsetid optionsetid, t4.rdb_sort as sort_no  \r\n"+
+    		String query = "select t4.dataelementid as deid, t4.\"name\" as dename, t4.\"formname\" as dealias, t4.\"code\" as decode, t4.optionsetid optionsetid, t4.rdb_sort as sort_no  \r\n"+
+					" from dataelement as t4\r\n" + 
+					" where t4.dataelementid IN ("+deIdsByComma+")";
+    		SqlRowSet rs2 = jdbcTemplate.queryForRowSet( query );
+    		while ( rs2.next() ){
+    			GenericTypeObj deObj = new GenericTypeObj();
+    			deObj.setId( rs2.getInt("deid") );
+    			deObj.setName( rs2.getString("dename") );
+    			deObj.setCode( rs2.getString("decode") );
+    			deObj.setAlias( rs2.getString("dealias") );
+    			deObj.setIntAttrib1( rs2.getInt("optionsetid") );
+    			deObj.setSortOrderNo( rs2.getInt("sort_no") );
+    			
+    			covidIntroSnapshot.getDeMap().put( deObj.getId(), deObj );
+    		}
+    		
+    		query = "select t1.dataelementid as deid, t4.\"name\" as dename, t4.\"formname\" as dealias, t4.\"code\" as decode, t2.\"value\" as ind_type, t4.optionsetid optionsetid, t4.rdb_sort as sort_no  \r\n"+
 					" from dataelementattributevalues as t1\r\n" + 
 					" inner join attributevalue as t2 on t1.attributevalueid = t2.attributevalueid\r\n" + 
 					" inner join dataelement as t4 on t1.dataelementid = t4.dataelementid\r\n" + 
@@ -193,6 +210,8 @@ public class CovidIntroHelper
     		//------------Getting Data for selected orgunit(s) and dataelement(s)--------------------
     		covidIntroSnapshot.setDeIdsByComma(deIdsByComma);
     		getCovidIntroTrackerData( covidIntroSnapshot, page, generalDeIds );
+    		
+    		
     		
     		/*
     		for( String indType : covidIntroSnapshot.getIndTypes() ){
