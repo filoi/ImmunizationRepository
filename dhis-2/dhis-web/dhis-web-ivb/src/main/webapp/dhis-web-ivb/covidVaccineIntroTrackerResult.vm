@@ -220,7 +220,7 @@ jQuery(function() {
 							#foreach( $indType in $covidIntroSnapshot.indTypes )
 								#foreach( $deId in $covidIntroSnapshot.getIt_deIdMap().get( $indType ) )
 									#set( $dvObjKey = "" )
-									#set( $dvObjKey = "$orgUnit.id:$de.id" )
+									#set( $dvObjKey = "$orgUnit.id:$deId" )
 									
 									#set( $dvObj = "" )
 									#set( $dvObj = $!covidIntroSnapshot.getDataMap().get( $dvObjKey ) )	
@@ -241,61 +241,65 @@ jQuery(function() {
         </table>
 	</div>    	
 
-    <div id="htmlContent" style="width:98%;margin:10px;display:none;">    
-    	<table align="center" id="regionalDBTable1" border="0" cellspacing="0" cellpadding="0" class="">
+    <div id="htmlContent" style="width:98%;margin:10px;display:none;">
+    	<table align="center" id="regionalDBTable1" border="0" cellspacing="0" cellpadding="0">
            
                 <tr style="border: none;">
-					#if( $!covidIntroSnapshot.showIndType == "ON" )
-					<th style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">Indicator Type</th>
-					#end
-					<th style="min-width:250px; width:250px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">$i18n.getString( "data_element" )</th>					
-					#if( $!covidIntroSnapshot.includeComment == "ON" )
-						<th style="min-width:100px; width:100px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">Flag Criteria</th>
-					#end
-					#foreach( $orgUnit in $covidIntroSnapshot.getSelOrgUnits() )						
-						#if( $!covidIntroSnapshot.nonZeroCountries == "ON" && $covidIntroSnapshot.getNonZeroOrgUnitIds().contains( $orgUnit.id ) )
-						<th align="center" style="vertical-align: middle;border: 1px solid #ccc;font-size: 11px;background: #F0F0F0;color:#0a2f76;" title="$!orgUnit.name" #if( $!covidIntroSnapshot.includeComment == "ON" ) colspan="2" #end>$orgUnit.code</th>
-						#elseif( $!covidIntroSnapshot.nonZeroCountries != "ON" ) 
-						<th align="center" style="vertical-align: middle;border: 1px solid #ccc;font-size: 11px;background: #F0F0F0;color:#0a2f76;" title="$!orgUnit.name" #if( $!covidIntroSnapshot.includeComment == "ON" ) colspan="2" #end>$orgUnit.code</th>
+					#if( $!covidIntroSnapshot.isoCode == "ON" )<th style="min-width:20px; width:20px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">$i18n.getString( "iso_code" )</th>#end
+	                #if( $covidIntroSnapshot.whoRegion == "ON" ) <th style="min-width:50px; width:50px;border: 1px solid #ccc;" class="freeze_left_column">$i18n.getString( "who_region" )</th> #end
+	              	#if( $covidIntroSnapshot.unicefRegion == "ON" )  <th style="min-width:50px; width:50px;border: 1px solid #ccc;" class="freeze_left_column">$i18n.getString( "unicef_region" )</th>#end
+	                <th style="min-width:50px; width:50px;border: 1px solid #ccc;" class="freeze_left_column">$i18n.getString( "country" )</th>
+	                #if( $covidIntroSnapshot.incomeLevel == "ON" )   <th style="min-width:50px; width:50px;border: 1px solid #ccc;" class="freeze_left_column">$i18n.getString( "income_level" )</th>#end 
+	              	#if( $covidIntroSnapshot.gaviEligibleStatus == "ON" )  <th style="min-width:50px; width:50px;border: 1px solid #ccc;" class="freeze_left_column">$i18n.getString( "gavi_eligibility_status" )</th>#end 
+                                	
+					#foreach( $indType in $covidIntroSnapshot.indTypes )
+						#foreach( $deId in $covidIntroSnapshot.getIt_deIdMap().get( $indType ) )
+							#set( $de = "" )
+							#set( $de = $covidIntroSnapshot.getDeMap().get( $deId ) )
+							<th style="border: 1px solid #ccc;" #if( $!covidIntroSnapshot.includeComment == "ON" ) colspan="2" #end>#if( $de.alias && $!de.alias!="")$!de.alias#else$!de.name#end</th>
 						#end
-					#end					
+					#end														
                 </tr>
             
-			
-				#foreach( $indType in $covidIntroSnapshot.indTypes )
-					#foreach( $deId in $covidIntroSnapshot.getIt_deIdMap().get( $indType ) )
-						#set( $de = "" )
-						#set( $de = $covidIntroSnapshot.getDeMap().get( $deId ) )
-						<tr style="border: none !important;">						
-							#if( $!covidIntroSnapshot.showIndType == "ON" )
-							<td style="border: 1px solid #ccc;vertical-align: middle;">$indType</td>
-							#end
-							<td style="border: 1px solid #ccc;vertical-align: middle;">#if( $de.alias && $!de.alias!="")$!de.alias#else$!de.name#end</td>
-							#if( $!covidIntroSnapshot.includeComment == "ON" )
-								<td align="left" style="border: 1px solid #ccc;vertical-align: middle;">$!de.strAttrib2</td>
-							#end
-							#foreach( $orgUnit in $covidIntroSnapshot.getSelOrgUnits() )
-								#set( $dvObjKey = "" )
-								#set( $dvObjKey = "$orgUnit.id:$de.id" )
+				#foreach( $orgUnit in $covidIntroSnapshot.getSelOrgUnits() )
+					#if( ($!covidIntroSnapshot.nonZeroCountries == "ON" && $covidIntroSnapshot.getNonZeroOrgUnitIds().contains( $orgUnit.id )) ||  $!covidIntroSnapshot.nonZeroCountries != "ON" )
+						<tr>
+							#if( $covidIntroSnapshot.isoCode == "ON" ) <td style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;" class="freeze_left_column">$orgUnit.code</td> #end
+	                        #if( $covidIntroSnapshot.whoRegion == "ON" ) <td style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;" class="freeze_left_column">$!orgUnit.getParent().shortName</td> #end
+	                        #if( $covidIntroSnapshot.unicefRegion == "ON" ) <td style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;" class="freeze_left_column">$orgUnit.getGroupInGroupSet( $covidIntroSnapshot.unicefRegionsGroupSet ).getShortName()</td> #end
+	                        <td style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;" class="freeze_left_column" align="left">$!orgUnit.shortName</td>
+                       		#if( $covidIntroSnapshot.incomeLevel == "ON" )
+                       			#set( $dvObjKey = "" )
+								#set( $dvObjKey = "$orgUnit.id:3" )
 								
 								#set( $dvObj = "" )
 								#set( $dvObj = $!covidIntroSnapshot.getDataMap().get( $dvObjKey ) )	
-								#if( $!covidIntroSnapshot.nonZeroCountries == "ON" && $covidIntroSnapshot.getNonZeroOrgUnitIds().contains( $orgUnit.id ) )
-									<td align="center" style="vertical-align: middle;background:$dvObj.getAlertColor();border: 1px solid #ccc;color:#ffffff;">$!dvObj.value</td>
-									#if( $!covidIntroSnapshot.includeComment == "ON" )
-										<td align="center" style="vertical-align: middle;background:$dvObj.getAlertColor();border: 1px solid #ccc;color:#ffffff;">$!dvObj.comment</td>
-									#end
-								#elseif( $!covidIntroSnapshot.nonZeroCountries != "ON" ) 
-									<td align="center" style="vertical-align: middle;background:$dvObj.getAlertColor();border: 1px solid #ccc;color:#ffffff;">$!dvObj.value</td>
+                           		<td style="border: 1px solid #ccc;vertical-align: middle;" class="freeze_left_column">$!dvObj.value</td>
+                       		#end	
+                       		#if( $covidIntroSnapshot.gaviEligibleStatus == "ON" )
+                       			#set( $dvObjKey = "" )
+								#set( $dvObjKey = "$orgUnit.id:4" )
+								
+								#set( $dvObj = "" )
+								#set( $dvObj = $!covidIntroSnapshot.getDataMap().get( $dvObjKey ) )	
+                           		<td style="border: 1px solid #ccc;vertical-align: middle;" class="freeze_left_column">$!dvObj.value</td>
+                       		#end						
+							#foreach( $indType in $covidIntroSnapshot.indTypes )
+								#foreach( $deId in $covidIntroSnapshot.getIt_deIdMap().get( $indType ) )
+									#set( $dvObjKey = "" )
+									#set( $dvObjKey = "$orgUnit.id:$deId" )
+									
+									#set( $dvObj = "" )
+									#set( $dvObj = $!covidIntroSnapshot.getDataMap().get( $dvObjKey ) )	
+									<td align="center" style="border: 1px solid #ccc;vertical-align: middle;background:$dvObj.getAlertColor();color:#ffffff;">&nbsp;$!dvObj.value&nbsp;</td>
 									#if( $!covidIntroSnapshot.includeComment == "ON" )
 										<td align="center" style="vertical-align: middle;background:$dvObj.getAlertColor();border: 1px solid #ccc;color:#ffffff;">$!dvObj.comment</td>
 									#end
 								#end
 							#end
-						</tr>
+						</tr>	
 					#end
-				#end
-    		
+				#end    		
 		</table>
            		
  		<br/><br/><br/>
