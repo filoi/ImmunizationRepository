@@ -191,6 +191,7 @@ public class GetUserAuthorityAction
 		this.iscReportAuthority = iscReportAuthority;
 	}
 
+	
 	public String execute()
     {
         User curUser = currentUserService.getCurrentUser();
@@ -272,8 +273,49 @@ public class GetUserAuthorityAction
         else
         	iscReportAuthority = "No";
 
+        if( userAuthorities.contains( "COVID_INTRO_TRACKER" ) )
+        	covidIntroTracker = "Yes";
+        else
+        	covidIntroTracker = "No";
+
+        if( userAuthorities.contains( "COVID_VACCINE_INTRO_TRACKER" ) )
+        	covidVaccineIntroTracker = "Yes";
+        else
+        	covidVaccineIntroTracker = "No";
+
+        if( userAuthorities.contains( "COVID_COUNTRY_REPORT" ) )
+        	covidCountryReport = "Yes";
+        else
+        	covidCountryReport = "No";
+
         //System.out.println("iscReportAuthority = " + iscReportAuthority  );
         
         return SUCCESS;
     }
+	
+	private String covidIntroTracker;
+	private String covidVaccineIntroTracker;
+	private String covidCountryReport;
+
+	public String getCovidIntroTracker() {
+		return covidIntroTracker;
+	}
+	public void setCovidIntroTracker(String covidIntroTracker) {
+		this.covidIntroTracker = covidIntroTracker;
+	}
+	public String getCovidVaccineIntroTracker() {
+		return covidVaccineIntroTracker;
+	}
+	public void setCovidVaccineIntroTracker(String covidVaccineIntroTracker) {
+		this.covidVaccineIntroTracker = covidVaccineIntroTracker;
+	}
+	public String getCovidCountryReport() {
+		return covidCountryReport;
+	}
+	public void setCovidCountryReport(String covidCountryReport) {
+		this.covidCountryReport = covidCountryReport;
+	}
+
+	
+	
 }

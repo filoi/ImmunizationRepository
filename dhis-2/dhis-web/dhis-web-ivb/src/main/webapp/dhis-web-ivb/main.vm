@@ -112,59 +112,64 @@
          success: function(json){     
 			var auth = json;
 			
-			if(auth.iscReports == "Yes"){	
+			if(auth.iscReports == "Yes")
 				document.getElementById("menu_isc_reports").style.visibility = 'visible';
-			}
 			
 			if(jQuery.trim(auth.conflict) == "Yes")
-			{				
 				document.getElementById("userConflict").style.display = 'block';				
-			}
 			
 			if(jQuery.trim(auth.countryEPI) == "Yes")
-			{				
 				document.getElementById("countryEPI").style.display = 'block';				
-			}
+
 			if(jQuery.trim(auth.activity) == "Yes")
-			{
 				document.getElementById("userActivity").style.display = 'block';
-			}
+
 			if(jQuery.trim(auth.userActivityLogin) == "Yes")
-			{
 				document.getElementById("userActivityLogin").style.display = 'block';
-			}
+
 			if(jQuery.trim(auth.userActivityLoginMonitoring) == "Yes")
-			{
 				document.getElementById("userActivityLoginMonitoring").style.display = 'block';
-			}
+
 			if(jQuery.trim(auth.dashboard) == "Yes")
-			{
 				document.getElementById("userDashboard").style.display = 'block';
-			}
+
 			if(jQuery.trim(auth.aggEngine) == "Yes")
-			{				
 				document.getElementById("aggregationQueryBuilder").style.visibility = 'visible';
-			}
+
 			if(jQuery.trim(auth.lookup) == "Yes")
-			{				
 				document.getElementById("lookup").style.visibility = 'visible';
-			}
+
 			if(jQuery.trim(auth.maintenanceModules) == "Yes")
-			{				
 				document.getElementById("menu_maintenance").style.visibility = 'visible';
-			}
+
 			if(jQuery.trim(auth.progReviewTAReportAuthority) == "Yes")
-			{							
 				document.getElementById("progReviewTAReport").style.display = 'block';
-			}
+
 			if(jQuery.trim(auth.cmypDevTrackingReportAuthority) == "Yes")
-			{							
 				document.getElementById("cmypDevTrackingReport").style.display = 'block';
-			}
+
 			if(jQuery.trim(auth.alertReportAuthority) == "Yes")
-			{				
 				document.getElementById("alertReport").style.display = 'block';				
+
+			var flag = 0;
+			if(jQuery.trim(auth.covidIntroTracker) == "Yes"){
+				flag = 1;
+				document.getElementById("covidIntroTracker").style.display = 'block';
 			}
+
+			if(jQuery.trim(auth.covidVaccineIntroTracker) == "Yes"){
+				flag = 1;
+				document.getElementById("covidVaccineIntroTracker").style.display = 'block';				
+			}
+
+			if(jQuery.trim(auth.covidCountryReport) == "Yes"){
+				flag = 1;
+				document.getElementById("covidCountryReport").style.display = 'block';				
+			}
+			
+			if( flag == 0)
+				document.getElementById("covidIntroReportMenu").style.display = 'none';				
+			
 			
          }
       });
@@ -540,11 +545,11 @@
 							<li><a href="campaignTrackerForm.action?resultPage=1"><b>Measles Dashboard</b></a></li>
 						</ul>
 					</li>
-					<li><a href="#"><b>Covid-19 Introduction Report</b></a>
+					<li id="covidIntroReportMenu"><a href="#"><b>Covid-19 Introduction Report</b></a>
 						<ul>
-							<li><a href="covidIntroTrackerForm.action"><b>Covid-19 Global Monitoring Dashboard</b></a></li>
-							<li><a href="covidIntroTrackerForm.action?covidPage=1"><b>Covid-19 Vaccine Introduction Tracker</b></a></li>
-							<li><a href="covidCountryProfileForm.action"><b>Covid-19 Country Report</b></a></li>
+							<li id="covidIntroTracker" style="display:none;"><a href="covidIntroTrackerForm.action"><b>Covid-19 Global Monitoring Dashboard</b></a></li>
+							<li id="covidVaccineIntroTracker" style="display:none;"><a href="covidIntroTrackerForm.action?covidPage=1"><b>Covid-19 Vaccine Introduction Tracker</b></a></li>
+							<li id="covidCountryReport" style="display:none;"><a href="covidCountryProfileForm.action"><b>Covid-19 Country Report</b></a></li>
 						</ul>
 					</li>	
 					<li><a href="tabularReportForm.action"><b>$i18n.getString( "tabular_report" )</b></a></li>

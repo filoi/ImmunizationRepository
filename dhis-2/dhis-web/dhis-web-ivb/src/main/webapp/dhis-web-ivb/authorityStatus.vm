@@ -11,5 +11,8 @@
 "userActivityLogin":"${userActivityLoginReportAuthority}",
 "userActivityLoginMonitoring":"${userActivityLoginMonitoringAuthority}",
 "countryEPI":"${countryEPIAuthority}",
-"iscReports":"${iscReportAuthority}"
+"iscReports":"${iscReportAuthority}",
+"covidIntroTracker":"${covidIntroTracker}",
+"covidVaccineIntroTracker":"${covidVaccineIntroTracker}",
+"covidCountryReport":"${covidCountryReport}"
 }
