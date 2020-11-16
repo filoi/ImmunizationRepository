@@ -733,6 +733,11 @@
 	</div>
 	
 	</div>
+	
+	<div class="warningMsg2" style='width: 55%; z-index:901; left:40%;#if( $reportWarning != "Y2" )display:none;#end'>		
+		$i18n.getString( "report_inline_security_warning2" )
+	</div>
+	
 	<style>
 		.warningMsg {
 		    color: #9F6000;
@@ -748,6 +753,20 @@
 		    bottom:0;
 		    position: absolute;  
 		    top:100%; 
+		}
+		.warningMsg2 {
+		    color: #9F6000;
+		    background-color: #FEEFB3;
+		    background-image: url('images/page_warning.png');
+		    border: 1px solid;		    
+		    background-repeat: no-repeat;
+		    background-position: 10px center;
+			padding:10px 0px 0px 45px;			
+		    margin:5px 0;
+		    height:65px;	
+			position:fixed;
+			top:25px;
+			right: 10px;			
 		}
 	</style>
 </body>

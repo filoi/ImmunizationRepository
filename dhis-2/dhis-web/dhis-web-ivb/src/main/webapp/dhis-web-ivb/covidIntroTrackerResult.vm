@@ -227,9 +227,14 @@ jQuery(function() {
         </table>
 	</div>    	
 
-    <div id="htmlContent" style="width:98%;margin:10px;display:none;">    
-    	<table align="center" id="regionalDBTable1" border="0" cellspacing="0" cellpadding="0" class="">
-           
+    <div id="htmlContent" style="width:98%;margin:10px;display:none;">
+        <table style="margin:auto;display:none;color: #9F6000;background-color: #FEEFB3;border: 1px solid;" width="100%">
+            <tr>
+                <td colspan="5">$i18n.getString( "report_inline_security_warning3" )</td>
+            </tr>
+        </table>
+		<br/><br/><br/>		    
+    	<table align="center" id="regionalDBTable1" border="0" cellspacing="0" cellpadding="0" class="">           
                 <tr style="border: none;">
 					#if( $!covidIntroSnapshot.showIndType == "ON" )
 					<th style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">Indicator Type</th>
@@ -282,15 +287,7 @@ jQuery(function() {
 					#end
 				#end
     		
-		</table>
-           		
- 		<br/><br/><br/>
-        <table style="margin:auto;display:none;color: #9F6000;background-color: #FEEFB3;border: 1px solid;" width="100%">
-            <tr>
-                <td colspan="5">$i18n.getString( "report_inline_security_warning3" )</td>
-            </tr>
-        </table>
- 	
+		</table>           	 	
 	</div>    	
 
 </form>

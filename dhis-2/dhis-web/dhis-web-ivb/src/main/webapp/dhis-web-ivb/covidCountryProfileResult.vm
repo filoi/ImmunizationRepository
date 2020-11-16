@@ -73,6 +73,13 @@ jQuery(function() {
 	
 	
 	<div id="htmlContent" style="width:90%;margin:auto;" >
+		<table style="margin:auto;display:none;color: #9F6000;background-color: #FEEFB3;border: 1px solid;" width="100%">
+			<tr>
+				<td colspan="4" style="vertical-align:middle;">$i18n.getString( "report_inline_security_warning3" )</td>
+			</tr>
+		</table>
+		<br/><br/><br/>
+        
         <table cellspacing="0" cellpadding="0" border="0" width="100%" bgcolor="#FBEFEF">
             <tr>
 		 	    <td align="right" id="flagImage"><img src="images/flags/$falgURL"/></td>
@@ -210,12 +217,7 @@ jQuery(function() {
 			</table>
 	        <hr/>
         #end
-		<br/><br/><br/>
-		<table style="margin:auto;display:none;color: #9F6000;background-color: #FEEFB3;border: 1px solid;" width="100%">
-			<tr>
-				<td colspan="4" style="vertical-align:middle;">$i18n.getString( "report_inline_security_warning3" )</td>
-			</tr>
-		</table>
+
 </div>
 
 </form>

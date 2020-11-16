@@ -242,6 +242,14 @@ jQuery(function() {
 	</div>    	
 
     <div id="htmlContent" style="width:98%;margin:10px;display:none;">
+    	
+        <table style="margin:auto;display:none;color: #9F6000;background-color: #FEEFB3;border: 1px solid;" width="100%">
+            <tr>
+                <td colspan="5">$i18n.getString( "report_inline_security_warning3" )</td>
+            </tr>
+        </table>
+    	<br/><br/><br/>
+    	
     	<table align="center" id="regionalDBTable1" border="0" cellspacing="0" cellpadding="0">
            
                 <tr style="border: none;">
@@ -300,15 +308,7 @@ jQuery(function() {
 						</tr>	
 					#end
 				#end    		
-		</table>
-           		
- 		<br/><br/><br/>
-        <table style="margin:auto;display:none;color: #9F6000;background-color: #FEEFB3;border: 1px solid;" width="100%">
-            <tr>
-                <td colspan="5">$i18n.getString( "report_inline_security_warning3" )</td>
-            </tr>
-        </table>
- 	
+		</table> 	
 	</div>    	
 
 </form>
