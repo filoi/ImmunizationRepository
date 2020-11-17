@@ -637,6 +637,7 @@ public class LoadDataEntryFormAction
         }
         userName = curUser.getUsername();
 
+        
         List<OrganisationUnit> organUnit = new ArrayList<OrganisationUnit>( currentUserService.getCurrentUser()
             .getOrganisationUnits() );
 
@@ -645,6 +646,7 @@ public class LoadDataEntryFormAction
             userOrgUnit.addAll( ivbUtil.getLeafOrganisationUnits( orgU.getId() ) );
         }
 
+        Set<DataSet> userDataSets = new HashSet<>();
         List<UserAuthorityGroup> userAuthorityGroups = new ArrayList<UserAuthorityGroup>( curUser.getUserCredentials()
             .getUserAuthorityGroups() );
 
@@ -668,6 +670,7 @@ public class LoadDataEntryFormAction
             {
                 viewCommentAuthority = "No";
             }
+            userDataSets.addAll( userAuthorityGroup.getDataSets() );
         }
 
         if ( i18nService.getCurrentLocale() == null )
@@ -767,8 +770,22 @@ public class LoadDataEntryFormAction
         DataSet selDataSet = null;
         Section selDataSetSection = null;
 
+        Set<String> userDataSetUIDs = new HashSet<>();
+        Set<Integer> userDSSectionIds = new HashSet<>();
+        for( DataSet userDs : userDataSets ){
+        	userDataSetUIDs.add( userDs.getUid() );
+        	for(Section userSection : userDs.getSections() ){
+        		userDSSectionIds.add( userSection.getId() );
+        	}
+        }
+        
         if ( dataSetSectionId != null )
         {
+        	if( !userDSSectionIds.contains( dataSetSectionId ) ){
+                statusMessage = "Sorry, you don't have permission to access this key indicator, please contact admin.";
+                return SUCCESS;
+        	}
+        	
             selDataSetSection = sectionService.getSection( Integer.parseInt( dataSetSectionId ) );
 
             if ( dataSetSectionId == null || selDataSetSection == null )
@@ -803,6 +820,11 @@ public class LoadDataEntryFormAction
         }
         else if ( dataSetUId != null )
         {
+        	if( !userDataSetUIDs.contains( dataSetUId ) ){
+                statusMessage = "Sorry, you don't have permission to access this key indicator, please contact admin.";
+                return SUCCESS;
+        	}
+        	
             List<String> datasetList = new ArrayList<String>();
 
             datasetList.add( dataSetUId );
