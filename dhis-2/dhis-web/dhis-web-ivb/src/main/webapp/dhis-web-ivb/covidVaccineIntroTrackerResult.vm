@@ -180,7 +180,11 @@ jQuery(function() {
                 	#if( $covidIntroSnapshot.isoCode == "ON" ) <th style="min-width:30px; width:30px;" class="freeze_left_column">$i18n.getString( "iso_code" )</th>#end 
 	                #if( $covidIntroSnapshot.whoRegion == "ON" ) <th style="min-width:50px; width:50px;" class="freeze_left_column">$i18n.getString( "who_region" )</th> #end
 	              	#if( $covidIntroSnapshot.unicefRegion == "ON" )  <th style="min-width:50px; width:50px;" class="freeze_left_column">$i18n.getString( "unicef_region" )</th>#end
+
 	                <th style="min-width:50px; width:50px;" class="freeze_left_column">$i18n.getString( "country" )</th>
+	                #if( $covidIntroSnapshot.showCovaxFacility == "ON" )  <th style="min-width:50px; width:50px;" class="freeze_left_column">COVAX Facility</th>#end
+	              	#if( $covidIntroSnapshot.showWBSupport == "ON" )  <th style="min-width:50px; width:50px;" class="freeze_left_column">WB Covid-19 Support</th>#end
+	                
 	                #if( $covidIntroSnapshot.incomeLevel == "ON" )   <th class="freeze_left_column">$i18n.getString( "income_level" )</th>#end 
 	              	#if( $covidIntroSnapshot.gaviEligibleStatus == "ON" )  <th class="freeze_left_column">$i18n.getString( "gavi_eligibility_status" )</th>#end 
                                 	
@@ -201,6 +205,22 @@ jQuery(function() {
 	                        #if( $covidIntroSnapshot.whoRegion == "ON" ) <td class="freeze_left_column">$!orgUnit.getParent().shortName</td> #end
 	                        #if( $covidIntroSnapshot.unicefRegion == "ON" ) <td class="freeze_left_column">$orgUnit.getGroupInGroupSet( $covidIntroSnapshot.unicefRegionsGroupSet ).getShortName()</td> #end
 	                        <td class="freeze_left_column" align="left">$!orgUnit.shortName</td>
+                       		#if( $covidIntroSnapshot.showCovaxFacility == "ON" )
+                       			#set( $dvObjKey = "" )
+								#set( $dvObjKey = "$orgUnit.id:1422143" )
+								
+								#set( $dvObj = "" )
+								#set( $dvObj = $!covidIntroSnapshot.getDataMap().get( $dvObjKey ) )	
+                           		<td class="freeze_left_column">$!dvObj.value</td>
+                       		#end
+                       		#if( $covidIntroSnapshot.showWBSupport == "ON" )
+                       			#set( $dvObjKey = "" )
+								#set( $dvObjKey = "$orgUnit.id:1422142" )
+								
+								#set( $dvObj = "" )
+								#set( $dvObj = $!covidIntroSnapshot.getDataMap().get( $dvObjKey ) )	
+                           		<td class="freeze_left_column">$!dvObj.value</td>
+                       		#end
                        		#if( $covidIntroSnapshot.incomeLevel == "ON" )
                        			#set( $dvObjKey = "" )
 								#set( $dvObjKey = "$orgUnit.id:3" )
@@ -254,17 +274,21 @@ jQuery(function() {
            
                 <tr style="border: none;">
 					#if( $!covidIntroSnapshot.isoCode == "ON" )<th style="min-width:20px; width:20px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">$i18n.getString( "iso_code" )</th>#end
-	                #if( $covidIntroSnapshot.whoRegion == "ON" ) <th style="min-width:50px; width:50px;border: 1px solid #ccc;" class="freeze_left_column">$i18n.getString( "who_region" )</th> #end
-	              	#if( $covidIntroSnapshot.unicefRegion == "ON" )  <th style="min-width:50px; width:50px;border: 1px solid #ccc;" class="freeze_left_column">$i18n.getString( "unicef_region" )</th>#end
-	                <th style="min-width:50px; width:50px;border: 1px solid #ccc;" class="freeze_left_column">$i18n.getString( "country" )</th>
-	                #if( $covidIntroSnapshot.incomeLevel == "ON" )   <th style="min-width:50px; width:50px;border: 1px solid #ccc;" class="freeze_left_column">$i18n.getString( "income_level" )</th>#end 
-	              	#if( $covidIntroSnapshot.gaviEligibleStatus == "ON" )  <th style="min-width:50px; width:50px;border: 1px solid #ccc;" class="freeze_left_column">$i18n.getString( "gavi_eligibility_status" )</th>#end 
+	                #if( $covidIntroSnapshot.whoRegion == "ON" ) <th style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;" >$i18n.getString( "who_region" )</th> #end
+	              	#if( $covidIntroSnapshot.unicefRegion == "ON" )  <th style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;" >$i18n.getString( "unicef_region" )</th>#end
+	                
+	                <th style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;" >$i18n.getString( "country" )</th>
+	                #if( $covidIntroSnapshot.showCovaxFacility == "ON" )  <th style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;" >COVAX Facility</th>#end
+	              	#if( $covidIntroSnapshot.showWBSupport == "ON" )  <th style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;" >WB Covid-19 Support</th>#end
+	                
+	                #if( $covidIntroSnapshot.incomeLevel == "ON" )   <th style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">$i18n.getString( "income_level" )</th>#end 
+	              	#if( $covidIntroSnapshot.gaviEligibleStatus == "ON" )  <th style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">$i18n.getString( "gavi_eligibility_status" )</th>#end 
                                 	
 					#foreach( $indType in $covidIntroSnapshot.indTypes )
 						#foreach( $deId in $covidIntroSnapshot.getIt_deIdMap().get( $indType ) )
 							#set( $de = "" )
 							#set( $de = $covidIntroSnapshot.getDeMap().get( $deId ) )
-							<th style="border: 1px solid #ccc;" #if( $!covidIntroSnapshot.includeComment == "ON" ) colspan="2" #end>#if( $de.alias && $!de.alias!="")$!de.alias#else$!de.name#end</th>
+							<th style="border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;" #if( $!covidIntroSnapshot.includeComment == "ON" ) colspan="2" #end>#if( $de.alias && $!de.alias!="")$!de.alias#else$!de.name#end</th>
 						#end
 					#end														
                 </tr>
@@ -272,10 +296,26 @@ jQuery(function() {
 				#foreach( $orgUnit in $covidIntroSnapshot.getSelOrgUnits() )
 					#if( ($!covidIntroSnapshot.nonZeroCountries == "ON" && $covidIntroSnapshot.getNonZeroOrgUnitIds().contains( $orgUnit.id )) ||  $!covidIntroSnapshot.nonZeroCountries != "ON" )
 						<tr>
-							#if( $covidIntroSnapshot.isoCode == "ON" ) <td style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;" class="freeze_left_column">$orgUnit.code</td> #end
-	                        #if( $covidIntroSnapshot.whoRegion == "ON" ) <td style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;" class="freeze_left_column">$!orgUnit.getParent().shortName</td> #end
-	                        #if( $covidIntroSnapshot.unicefRegion == "ON" ) <td style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;" class="freeze_left_column">$orgUnit.getGroupInGroupSet( $covidIntroSnapshot.unicefRegionsGroupSet ).getShortName()</td> #end
-	                        <td style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;" class="freeze_left_column" align="left">$!orgUnit.shortName</td>
+							#if( $covidIntroSnapshot.isoCode == "ON" ) <td style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;">$orgUnit.code</td> #end
+	                        #if( $covidIntroSnapshot.whoRegion == "ON" ) <td style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;">$!orgUnit.getParent().shortName</td> #end
+	                        #if( $covidIntroSnapshot.unicefRegion == "ON" ) <td style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;">$orgUnit.getGroupInGroupSet( $covidIntroSnapshot.unicefRegionsGroupSet ).getShortName()</td> #end
+	                        <td style="min-width:50px; width:50px;border: 1px solid #ccc;vertical-align: middle;" align="left">$!orgUnit.shortName</td>
+                       		#if( $covidIntroSnapshot.showCovaxFacility == "ON" )
+                       			#set( $dvObjKey = "" )
+								#set( $dvObjKey = "$orgUnit.id:1422143" )
+								
+								#set( $dvObj = "" )
+								#set( $dvObj = $!covidIntroSnapshot.getDataMap().get( $dvObjKey ) )	
+                           		<td style="border: 1px solid #ccc;vertical-align: middle;">$!dvObj.value</td>
+                       		#end
+                       		#if( $covidIntroSnapshot.showWBSupport == "ON" )
+                       			#set( $dvObjKey = "" )
+								#set( $dvObjKey = "$orgUnit.id:1422142" )
+								
+								#set( $dvObj = "" )
+								#set( $dvObj = $!covidIntroSnapshot.getDataMap().get( $dvObjKey ) )	
+                           		<td style="border: 1px solid #ccc;vertical-align: middle;">$!dvObj.value</td>
+                       		#end
                        		#if( $covidIntroSnapshot.incomeLevel == "ON" )
                        			#set( $dvObjKey = "" )
 								#set( $dvObjKey = "$orgUnit.id:3" )

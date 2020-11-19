@@ -82,9 +82,17 @@ public class CovidIntroHelper
     //page = 1 for Covid Intro Tracker and page =2 for Covid Country Profile
     public CovidIntroSnapshot getCovidIntroSnapshot( CovidIntroSnapshot covidIntroSnapshot, int page )
     {
-    	String deIdsByComma = "3,4";
+    	String deIdsByComma = "-1";
     	
     	try {
+    		 Lookup lookup = lookupService.getLookupByName( "COVID_INTRO_FILTER_DEIDS" );
+             String filterDeIds = lookup.getValue();
+             for(String filterDeId : filterDeIds.split(",") ){
+            	int deId = Integer.parseInt(filterDeId);
+            	deIdsByComma += ","+ deId;
+             	covidIntroSnapshot.getFilterDeIds().add( deId );
+             }
+             
     		//DataElement list based on selected Indicator Types
     		/*
     		String query = "select t2.\"value\" as ind_type, t1.dataelementid as deid  \r\n"+
@@ -206,7 +214,8 @@ public class CovidIntroHelper
     			*/
             }
 		
-    		    		
+           
+    		
     		//------------Getting Data for selected orgunit(s) and dataelement(s)--------------------
     		covidIntroSnapshot.setDeIdsByComma(deIdsByComma);
     		getCovidIntroTrackerData( covidIntroSnapshot, page, generalDeIds );
@@ -312,8 +321,14 @@ public class CovidIntroHelper
                 		value = null;
                 }
 
-                if( value != null && !value.trim().equals("") )
-                	covidIntroSnapshot.getNonZeroOrgUnitIds().add( ouId );
+                
+                if( value != null && !value.trim().equals("") ){
+                	if( covidIntroSnapshot.getFilterDeIds() != null && covidIntroSnapshot.getFilterDeIds().size()>0 && covidIntroSnapshot.getFilterDeIds().contains(deId) )
+                		{  }
+                	else{
+                		covidIntroSnapshot.getNonZeroOrgUnitIds().add( ouId );                		 
+                	}
+                }
                 
                 String comment = rs.getString( 5 );
                 String storedBy = rs.getString( 6 );

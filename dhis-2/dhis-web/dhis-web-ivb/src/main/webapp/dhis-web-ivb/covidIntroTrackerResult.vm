@@ -200,7 +200,7 @@ jQuery(function() {
 							#if( $!covidIntroSnapshot.showIndType == "ON" )
 							<td class="freeze_left_column">$indType</td>
 							#end	
-							<td class="freeze_left_column" title="$!de.strAttrib2">#if( $de.alias && $!de.alias!="")$!de.alias#else$!de.name#end</td>
+							<td class="freeze_left_column" title="$!de.strAttrib2">$!de.name</td>
 							#foreach( $orgUnit in $covidIntroSnapshot.getSelOrgUnits() )
 								#set( $dvObjKey = "" )
 								#set( $dvObjKey = "$orgUnit.id:$de.id" )
@@ -261,7 +261,7 @@ jQuery(function() {
 							#if( $!covidIntroSnapshot.showIndType == "ON" )
 							<td style="border: 1px solid #ccc;vertical-align: middle;">$indType</td>
 							#end
-							<td style="border: 1px solid #ccc;vertical-align: middle;">#if( $de.alias && $!de.alias!="")$!de.alias#else$!de.name#end</td>
+							<td style="border: 1px solid #ccc;vertical-align: middle;">$!de.name</td>
 							#if( $!covidIntroSnapshot.includeComment == "ON" )
 								<td align="left" style="border: 1px solid #ccc;vertical-align: middle;">$!de.strAttrib2</td>
 							#end

@@ -90,8 +90,23 @@ public class CovidIntroTrackerResultction implements Action
     private String showIndType;
     private String includeComment;
     private String showNonZero;
+    private String showCovaxFacility;
+	private String showWBSupport;
     
-    public void setIndTypes(List<String> indTypes) {
+    
+    public String getShowCovaxFacility() {
+		return showCovaxFacility;
+	}
+	public void setShowCovaxFacility(String showCovaxFacility) {
+		this.showCovaxFacility = showCovaxFacility;
+	}
+	public String getShowWBSupport() {
+		return showWBSupport;
+	}
+	public void setShowWBSupport(String showWBSupport) {
+		this.showWBSupport = showWBSupport;
+	}
+	public void setIndTypes(List<String> indTypes) {
 		this.indTypes = indTypes;
 	}
 	public void setIsoCode(String isoCode) {
@@ -190,6 +205,10 @@ public class CovidIntroTrackerResultction implements Action
         	covidIntroSnapshot.setShowIndType("ON");
         if( showNonZero != null )
         	covidIntroSnapshot.setNonZeroCountries("ON");
+        if( showCovaxFacility != null )
+        	covidIntroSnapshot.setShowCovaxFacility("ON");
+        if( showWBSupport != null )
+        	covidIntroSnapshot.setShowWBSupport("ON");
        
         
         Lookup lookup = lookupService.getLookupByName( Lookup.REGIONAL_DASHBOARD_REPORT_FLAG_ATTRIBTE_ID );

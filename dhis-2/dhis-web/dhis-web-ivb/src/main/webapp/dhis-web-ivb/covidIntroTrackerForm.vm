@@ -197,11 +197,22 @@ $(function() {
 				  	</div>
                     <br/><br/>
                     #if( $covidPage == 1 )
-	                    <input type="checkbox" name="isoCode" /> $i18n.getString( "iso_code" )<br/>
-			 			<input type="checkbox" name="whoRegion" /> $i18n.getString( "who_region" )<br/>
-			 			<input type="checkbox" name="unicefRegion" /> $i18n.getString( "unicef_region" )<br/>
-			 			<input type="checkbox" name="incomeLevel" /> $i18n.getString( "income_level" )<br/>
-			 			<input type="checkbox" name="gaviEligibleStatus" /> $i18n.getString( "gavi_eligibility_status" )<br/> 
+                    	<table>
+                    		<tr>
+                    			<td>
+				                    <input type="checkbox" name="isoCode" /> $i18n.getString( "iso_code" )<br/>
+						 			<input type="checkbox" name="whoRegion" /> $i18n.getString( "who_region" )<br/>
+						 			<input type="checkbox" name="unicefRegion" /> $i18n.getString( "unicef_region" )<br/>
+						 			<input type="checkbox" name="incomeLevel" /> $i18n.getString( "income_level" )<br/>
+						 			<input type="checkbox" name="gaviEligibleStatus" /> $i18n.getString( "gavi_eligibility_status" )<br/>
+						 		</td>
+						 		<td>&nbsp;</td>
+						 		<td style="vertical-align: top;">
+						 			<input type="checkbox" name="showCovaxFacility" /> COVAX Facility<br/>
+						 			<input type="checkbox" name="showWBSupport" /> World Bank (WB) Covid-19 Support<br/>
+						 		</td>
+						 	</tr>
+						 </table>			 
 		 			#end
 		 			
 		 			#if( $covidPage == 0 )

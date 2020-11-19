@@ -22,6 +22,8 @@ public class CovidIntroSnapshot
 	 private String showIndType;
 	 private String includeComment;
 	 private String nonZeroCountries="";
+	 private String showCovaxFacility;
+	 private String showWBSupport;
 	 private OrganisationUnitGroupSet unicefRegionsGroupSet;
 	 private List<OrganisationUnit> selOrgUnits = new ArrayList<>();
 	 private List<String> indTypes = new ArrayList<>();
@@ -31,7 +33,7 @@ public class CovidIntroSnapshot
 	 private Integer indTypeAttributeId = 0;
 	 private Integer generalDeGroupId = 0;
 	 private OrganisationUnit selOrgUnit;
-	 
+	  
 	 
 
 	//other params
@@ -40,7 +42,9 @@ public class CovidIntroSnapshot
 	 private Map<Integer, GenericTypeObj> deMap = new HashMap<>();
 	 private Map<String, GenericDataVO> dataMap = new HashMap<>();
 	 private Set<Integer> nonZeroOrgUnitIds = new HashSet<>();
-	 private String lastUpdated;
+	 private Set<Integer> filterDeIds = new HashSet<>();
+	 
+	private String lastUpdated;
 	 
 	private String dsIdsByComma = "-1";
 	
@@ -256,6 +260,31 @@ public class CovidIntroSnapshot
 	public void setLastUpdated(String lastUpdated) {
 		this.lastUpdated = lastUpdated;
 	}
+	public Set<Integer> getFilterDeIds() {
+		return filterDeIds;
+	}
+
+	public void setFilterDeIds(Set<Integer> filterDeIds) {
+		this.filterDeIds = filterDeIds;
+	}
+
+	public String getShowCovaxFacility() {
+		return showCovaxFacility;
+	}
+
+	public void setShowCovaxFacility(String showCovaxFacility) {
+		this.showCovaxFacility = showCovaxFacility;
+	}
+
+	public String getShowWBSupport() {
+		return showWBSupport;
+	}
+
+	public void setShowWBSupport(String showWBSupport) {
+		this.showWBSupport = showWBSupport;
+	}
+	
+	
 	
 	
 }
