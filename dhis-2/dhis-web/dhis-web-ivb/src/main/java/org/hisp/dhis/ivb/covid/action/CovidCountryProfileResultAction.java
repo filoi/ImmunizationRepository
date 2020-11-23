@@ -80,11 +80,14 @@ public class CovidCountryProfileResultAction implements Action
 		this.orgUnitUID = orgUnitUID;
 	}
    
+	private String showSource;
+	public void setShowSource(String showSource) {
+		this.showSource = showSource;
+	}
+	
     // -------------------------------------------------------------------------
     // Getters
     // -------------------------------------------------------------------------
-
-
 	private String language;
     public String getLanguage(){
         return language;
@@ -133,7 +136,9 @@ public class CovidCountryProfileResultAction implements Action
             adminStatus = "No";
         }
        
-
+        if( showSource != null )
+    		covidIntroSnapshot.setShowSource("ON");
+        
         Lookup lookup = lookupService.getLookupByName( Lookup.REGIONAL_DASHBOARD_REPORT_FLAG_ATTRIBTE_ID );
         Integer flagAttributeId = Integer.parseInt( lookup.getValue() );
         covidIntroSnapshot.setFlagAttributeId( flagAttributeId );

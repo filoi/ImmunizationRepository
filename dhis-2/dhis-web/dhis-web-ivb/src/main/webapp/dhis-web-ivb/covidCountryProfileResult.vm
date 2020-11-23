@@ -194,8 +194,10 @@ jQuery(function() {
 							<tr>								
 								<th width="43%" align="left">Data Element</th>
 								<th width="12%" align="left">Value</th>
-								<th width="24%" align="left">Comment</th>								
-								<th width="15%" align="left">Source</th>								
+								<th width="24%" align="left">Comment</th>
+								#if( $!covidIntroSnapshot.showSource == "ON" )								
+								<th width="15%" align="left">Source</th>
+								#end						
 							</tr>
 							#foreach( $deId in $covidIntroSnapshot.getIt_deIdMap().get( $indType ) )
 								#set( $de = "" )
@@ -208,7 +210,9 @@ jQuery(function() {
 									<td width="43%" align="left" valign="middle" style="vertical-align:middle;">$!de.name</td>                                    
                                     <td id="${de.id}" width="12%" align="left" valign="middle" style="vertical-align: middle;background:$dvObj.getAlertColor();">$!dvObj.value</td>
                                    	<td width="25%" align="left" valign="middle" style="vertical-align:middle;">$!dvObj.comment</td>
+                                   	#if( $!covidIntroSnapshot.showSource == "ON" )
 									<td width="15%" align="left" valign="middle" style="vertical-align:middle;">$!dvObj.storedBy $!dvObj.lastUpdated</td>
+									#end
 								</tr>
 							#end
 						</table>

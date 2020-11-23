@@ -72,6 +72,7 @@
  				
  			<tr>
 			 	<td>
+			 		<input type="checkbox" name="showSource" /> Show Source &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			 		<input type="submit" value="$i18n.getString( 'get_report' )" id="submit" />		 		
 	 			</td>
 	 			<td>&nbsp;</td>

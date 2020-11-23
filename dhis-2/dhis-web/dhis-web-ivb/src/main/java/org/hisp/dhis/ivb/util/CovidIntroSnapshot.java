@@ -24,6 +24,7 @@ public class CovidIntroSnapshot
 	 private String nonZeroCountries="";
 	 private String showCovaxFacility;
 	 private String showWBSupport;
+	 private String showSource;
 	 private OrganisationUnitGroupSet unicefRegionsGroupSet;
 	 private List<OrganisationUnit> selOrgUnits = new ArrayList<>();
 	 private List<String> indTypes = new ArrayList<>();
@@ -283,8 +284,12 @@ public class CovidIntroSnapshot
 	public void setShowWBSupport(String showWBSupport) {
 		this.showWBSupport = showWBSupport;
 	}
-	
-	
-	
-	
+
+	public String getShowSource() {
+		return showSource;
+	}
+
+	public void setShowSource(String showSource) {
+		this.showSource = showSource;
+	}
 }
