@@ -164,12 +164,21 @@ public class CovidCountryProfileResultAction implements Action
         }
         covidIntroSnapshot.setOuIdsByComma( ouIdsByComma );
 
-        lookup = lookupService.getLookupByName( "COVID_INTRO_INDICATOR_TYPE_OPTIONSET_UID" );
-        OptionSet itOptionSet = optionService.getOptionSet( lookup.getValue() );
         String indTypesByComma = "'-1'";
-        for( Option indTypeOption : itOptionSet.getOptions() ){
-        	covidIntroSnapshot.getIndTypes().add( indTypeOption.getCode() );
-        	indTypesByComma += ",'" + indTypeOption.getCode() +"'";
+        lookup = lookupService.getLookupByName( "COVID_INTRO_INDICATOR_TYPE_OPTION_CODES" );
+        if( lookup == null ){
+        	lookup = lookupService.getLookupByName( "COVID_INTRO_INDICATOR_TYPE_OPTIONSET_UID" );
+        	OptionSet itOptionSet = optionService.getOptionSet( lookup.getValue() );
+        	for( Option indTypeOption : itOptionSet.getOptions() ){
+        		covidIntroSnapshot.getIndTypes().add( indTypeOption.getCode() );
+        		indTypesByComma += ",'" + indTypeOption.getCode() +"'";
+        	}        
+        }
+        else{
+        	for( String itOptionCode : lookup.getValue().split(CovidIntroHelper.SUB_WORD_SEPERATOR1) ){
+        		covidIntroSnapshot.getIndTypes().add( itOptionCode );
+        		indTypesByComma += ",'" + itOptionCode +"'";
+        	}        	
         }
         covidIntroSnapshot.setIndTypesByComma( indTypesByComma );
         
