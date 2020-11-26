@@ -779,9 +779,17 @@ public class LoadDataEntryFormAction
         	}
         }
         
+        /*
+        System.out.println("Selected DataSetSectionID = "+ dataSetSectionId );
+        System.out.println("-----------USER DATASET SECTION IDS------------");
+        for(int userDsSectionId : userDSSectionIds )
+        	System.out.print( userDsSectionId +", ");
+        System.out.println("\n-----------USER DATASET SECTION IDS END------------");
+        */
+        
         if ( dataSetSectionId != null )
         {
-        	if( !userDSSectionIds.contains( dataSetSectionId ) ){
+        	if( !userDSSectionIds.contains( Integer.parseInt(dataSetSectionId) ) ){
                 statusMessage = "Sorry, you don't have permission to access this key indicator, please contact admin.";
                 return SUCCESS;
         	}
