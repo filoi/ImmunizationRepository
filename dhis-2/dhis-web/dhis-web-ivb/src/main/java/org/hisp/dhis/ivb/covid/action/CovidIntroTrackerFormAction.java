@@ -14,6 +14,7 @@ import org.hisp.dhis.option.Option;
 import org.hisp.dhis.option.OptionService;
 import org.hisp.dhis.option.OptionSet;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
+import org.hisp.dhis.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.oust.manager.SelectionTreeManager;
 import org.hisp.dhis.ouwt.manager.OrganisationUnitSelectionManager;
 import org.hisp.dhis.user.CurrentUserService;
@@ -30,6 +31,9 @@ public class CovidIntroTrackerFormAction implements Action
 	
 	@Autowired
     private SelectionTreeManager selectionTreeManager;
+	
+	@Autowired
+	private OrganisationUnitService orgUnitService;
 
     private OrganisationUnitSelectionManager selectionManager;
     public void setSelectionManager( OrganisationUnitSelectionManager selectionManager ){
@@ -71,6 +75,11 @@ public class CovidIntroTrackerFormAction implements Action
 	}
 	public int getCovidPage() {
 		return covidPage;
+	}
+
+	private List<OrganisationUnit> regionOus = new ArrayList<>();
+	public List<OrganisationUnit> getRegionOus() {
+		return regionOus;
 	}
 
 	private List<Option> indTypeOptions = new ArrayList<>();
@@ -124,6 +133,9 @@ public class CovidIntroTrackerFormAction implements Action
         Lookup lookup = lookupService.getLookupByName( "COVID_INTRO_INDICATOR_TYPE_OPTIONSET_UID" );
         OptionSet itOptionSet = optionService.getOptionSet( lookup.getValue() );
         indTypeOptions.addAll( itOptionSet.getOptions() );
+        
+        regionOus.addAll( orgUnitService.getOrganisationUnitsAtLevel(2) );
+        
         return SUCCESS;
     }
     

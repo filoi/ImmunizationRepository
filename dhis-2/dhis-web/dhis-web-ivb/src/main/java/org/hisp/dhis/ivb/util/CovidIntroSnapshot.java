@@ -44,6 +44,8 @@ public class CovidIntroSnapshot
 	 private Map<String, GenericDataVO> dataMap = new HashMap<>();
 	 private Set<Integer> nonZeroOrgUnitIds = new HashSet<>();
 	 private Set<Integer> filterDeIds = new HashSet<>();
+	 private List<String> anonymousOuNames = new ArrayList<>();
+	 private Map<String, OrganisationUnit> anonymousOuMap = new HashMap<>();
 	 
 	private String lastUpdated;
 	 
@@ -63,6 +65,22 @@ public class CovidIntroSnapshot
 	
 	public OrganisationUnitGroupSet getUnicefRegionsGroupSet() {
 		return unicefRegionsGroupSet;
+	}
+
+	public List<String> getAnonymousOuNames() {
+		return anonymousOuNames;
+	}
+
+	public void setAnonymousOuNames(List<String> anonymousOuNames) {
+		this.anonymousOuNames = anonymousOuNames;
+	}
+
+	public Map<String, OrganisationUnit> getAnonymousOuMap() {
+		return anonymousOuMap;
+	}
+
+	public void setAnonymousOuMap(Map<String, OrganisationUnit> anonymousOuMap) {
+		this.anonymousOuMap = anonymousOuMap;
 	}
 
 	public OrganisationUnit getSelOrgUnit() {

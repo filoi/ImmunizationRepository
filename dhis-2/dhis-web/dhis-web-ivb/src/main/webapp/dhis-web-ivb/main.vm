@@ -550,6 +550,7 @@
 							<li id="covidIntroTracker" style="display:none;"><a href="covidIntroTrackerForm.action"><b>Covid-19 Global Monitoring Dashboard</b></a></li>
 							<li id="covidVaccineIntroTracker" style="display:none;"><a href="covidIntroTrackerForm.action?covidPage=1"><b>Covid-19 Vaccine Introduction Tracker</b></a></li>
 							<li id="covidCountryReport" style="display:none;"><a href="covidCountryProfileForm.action"><b>Covid-19 Country Report</b></a></li>
+							<li><a href="covidIntroTrackerForm.action?covidPage=4"><b>Covid-19 Global Monitoring Dashboard</b></a></li>
 						</ul>
 					</li>	
 					<li><a href="tabularReportForm.action"><b>$i18n.getString( "tabular_report" )</b></a></li>
