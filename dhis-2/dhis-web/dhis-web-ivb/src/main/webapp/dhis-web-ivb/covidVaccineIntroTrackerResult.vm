@@ -163,7 +163,7 @@ jQuery(function() {
 
 	<table style="width:98%;">
 		<tr>
-			<td align="left"><font size="3"><b>Covid-19 Vaccine Introduction Tracker</b></font></td>
+			<td align="left"><font size="3"><b>Covid-19 Vaccine Introduction Tracker</b> - current as of $!covidIntroSnapshot.curDateStr</font></td>
 			<td align="right" style="vertical-align:middle;">
 				<input type="button" onclick="location.href='covidIntroTrackerForm.action?covidPage=1'" value="Change Selections"/>
 				<input type="submit" value="Download As Excel"/>&nbsp;
@@ -268,7 +268,13 @@ jQuery(function() {
                 <td colspan="5">$i18n.getString( "report_inline_security_warning3" )</td>
             </tr>
         </table>
-    	<br/><br/><br/>
+    	<br/><br/>
+		<table>
+            <tr>
+            	<td colspan="5" align="left"><font size="3"><b>Covid-19 Vaccine Introduction Tracker</b> - current as of $!covidIntroSnapshot.curDateStr</font></td>
+            </tr>
+        </table>
+        <br/>
     	
     	<table align="center" id="regionalDBTable1" border="0" cellspacing="0" cellpadding="0">
            

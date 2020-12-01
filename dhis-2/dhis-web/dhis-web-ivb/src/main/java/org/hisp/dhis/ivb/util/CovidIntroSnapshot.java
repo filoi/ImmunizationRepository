@@ -38,6 +38,7 @@ public class CovidIntroSnapshot
 	 
 
 	//other params
+	 private String curDateStr;
 	 private String deIdsByComma = "-1";
 	 private Map<String, List<Integer>> it_deIdMap = new HashMap<>();
 	 private Map<Integer, GenericTypeObj> deMap = new HashMap<>();
@@ -310,4 +311,14 @@ public class CovidIntroSnapshot
 	public void setShowSource(String showSource) {
 		this.showSource = showSource;
 	}
+
+	public String getCurDateStr() {
+		return curDateStr;
+	}
+
+	public void setCurDateStr(String curDateStr) {
+		this.curDateStr = curDateStr;
+	}
+	
+	
 }
