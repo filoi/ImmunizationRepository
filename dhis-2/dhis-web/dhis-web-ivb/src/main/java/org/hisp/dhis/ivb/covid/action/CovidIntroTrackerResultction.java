@@ -8,7 +8,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
-import org.hisp.dhis.common.comparator.IdentifiableObjectCodeComparator;
+import org.hisp.dhis.common.comparator.IdentifiableObjectNameComparator;
 import org.hisp.dhis.configuration.ConfigurationService;
 import org.hisp.dhis.dataset.DataSetService;
 import org.hisp.dhis.i18n.I18nService;
@@ -275,7 +275,7 @@ public class CovidIntroTrackerResultction implements Action
 	            orgUnitList.retainAll( lastLevelOrgUnit );
 	        }
         }
-        Collections.sort(orgUnitList, new IdentifiableObjectCodeComparator() );
+        Collections.sort(orgUnitList, new IdentifiableObjectNameComparator() );
         covidIntroSnapshot.setSelOrgUnits( orgUnitList );
         String ouIdsByComma = "-1";
         for( OrganisationUnit ou : covidIntroSnapshot.getSelOrgUnits() ) {
