@@ -579,6 +579,7 @@
 					<li><a href="pieReportForm.action"><b>$i18n.getString( "pie_canned_report" )</b></a></li>
 					<li id="progReviewTAReport" style="display:none;"><a href="pieProgReviewTAReportForm.action"><b>$i18n.getString( "prog_review_tech_assistance" )</b></a></li>
 					<li><a href="prowgReportForm.action"><b>$i18n.getString( "prowg_report" )</b></a></li>
+					<li><a href="prowgReportForm2.action"><b>$i18n.getString( "prowg_report" )-V2</b></a></li>
 					<li><a href="regionalReportForm.action"><b>$i18n.getString( "regional_summary_report" )</b></a></li>
                     <li><a href="agendaReportForm.action"><b>$i18n.getString( "agenda_report" )</b></a></li>
                     <li><a href="toolBoxReportForm.action"><b>$i18n.getString( "toolbox_flag_report" )</b></a></li>
