@@ -72,6 +72,16 @@ $(function() {
 		}
 	}
 	
+	function selectAllOrUnselectAll_reg( ){
+		if($("#selectAllOrUnselectAllCB_reg").prop("checked")){
+			$("#regMultiSelectDiv label:visible input[type='checkbox'].dscbs").prop("checked",true);
+			$("#regMultiSelectDiv label:hidden input[type='checkbox'].dscbs").prop("checked",false);
+		}
+		else{
+			$("#regMultiSelectDiv input[type='checkbox'].dscbs").prop("checked",false);
+		}
+	}
+	
     function generateHTMLreport()
     {       
         $('#selectedList option').attr('selected', 'selected');
@@ -169,16 +179,28 @@ $(function() {
 	<div style="font-size:16px; width:93%; margin:auto;" class="ui-widget-header ui-corner-all"><b>Covid-19 Global Monitoring Dashboard</b></div>
 #end
 
+
 <form id="vacIntroReportForm" method="get" action="$resultActionName" onsubmit="return generateHTMLreport()">
     <input type="hidden" name="orgUnitId" id="orgUnitId"/>
+    <input type="hidden" name="covidPage" id="covidPage" value="$covidPage"/>
     <div id="reportFilterDiv" >
         <table style="width:95%;margin:auto;table-layout:fixed;" cellpadding="4" cellspacing="2">
                
              <tr>
-                <td width="55%" colspan="2">                    
-                    <div id="orgUnitTreeContainer"  style="height: 250px; width: 100%;">
-                        #organisationUnitSelectionTree1( false, true, true )
-                    </div>                    
+                <td width="55%" colspan="2">
+                	#if( $covidPage == 4 )
+	                	Select Regions<br/> 					
+						<div class="multiselect" id="regMultiSelectDiv">
+							<label><input type="checkbox" name="selectAllOrUnselectAllCB_reg" title="Select/Deselect All" onclick="selectAllOrUnselectAll_reg()" id="selectAllOrUnselectAllCB_reg"/><b>Select All</b></label>
+							#foreach( $regionOu in $regionOus )
+								<label class="dsname"><input type="checkbox" name="regionOuIds" class="dscbs" value="$regionOu.id" checked="checked" />$regionOu.name</label>
+							#end
+					  	</div>
+                	#else                    
+	                    <div id="orgUnitTreeContainer"  style="height: 250px; width: 100%;">
+	                        #organisationUnitSelectionTree1( false, true, true )
+	                    </div>
+                    #end                    
                     <input type="checkbox" name="showNonZero" /> Show countries with data only
                     #if( $covidPage == 1 )
 	                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -215,10 +237,13 @@ $(function() {
 						 </table>			 
 		 			#end
 		 			
-		 			#if( $covidPage == 0 )
+		 			#if( $covidPage == 0 || $covidPage == 4 )
 		 				<br/>
 		 				<input type="checkbox" name="showIndType" /> Show Indicator Type<br/>
-		 				<input type="checkbox" name="includeComment" /> Include comments in excel export <br/><br/><br/>
+						#if( $covidPage == 0)
+		 				<input type="checkbox" name="includeComment" /> Include comments in excel export <br/>
+						#end
+						<br/><br/>
 		 				<input type="submit" value="$i18n.getString( 'get_report' )" id="submit" />
 		 			#end	 
                  </td>               

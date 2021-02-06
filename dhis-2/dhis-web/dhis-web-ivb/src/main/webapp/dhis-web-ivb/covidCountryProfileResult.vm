@@ -56,7 +56,7 @@ jQuery(function() {
 	<textarea name="htmlCode" id="htmlCode" style="display:none">a</textarea>
 	<table style="width:98%;">
 		<tr>
-			<td align="left"><font size="3"><b>Covid-19 Country Report</b></font></td>
+			<td align="left"><font size="3"><b>Covid-19 Country Report</b> - current as of $!covidIntroSnapshot.curDateStr</font></td>
 			<td align="right" style="vertical-align:middle;">
 				<input type="button" onclick="location.href='covidCountryProfileForm.action'" value="Change Selections"/>
 				<input type="submit" value="Download As Excel"/>&nbsp;
@@ -78,7 +78,13 @@ jQuery(function() {
 				<td colspan="4" style="vertical-align:middle;">$i18n.getString( "report_inline_security_warning3" )</td>
 			</tr>
 		</table>
-		<br/><br/><br/>
+		<br/><br/>
+		<table style="display:none;">
+			<tr>
+				<td align="left" colspan="4"><font size="3"><b>Covid-19 Country Report</b> - current as of $!covidIntroSnapshot.curDateStr</font></td>
+			</tr>	
+		</table>
+		<br/>
         
         <table cellspacing="0" cellpadding="0" border="0" width="100%" bgcolor="#FBEFEF">
             <tr>

@@ -163,9 +163,9 @@ jQuery(function() {
 
 	<table style="width:98%;">
 		<tr>
-			<td align="left"><font size="3"><b>Covid-19 Global Monitoring Dashboard</b></font></td>
+			<td align="left"><font size="3"><b>Covid-19 Global Monitoring Dashboard</b> - current as of $!covidIntroSnapshot.curDateStr</font></td>
 			<td align="right" style="vertical-align:middle;">
-				<input type="button" onclick="location.href='covidIntroTrackerForm.action'" value="Change Selections"/>
+				<input type="button" onclick="location.href='covidIntroTrackerForm.action?covidPage=$covidPage'" value="Change Selections"/>
 				<input type="submit" value="Download As Excel"/>&nbsp;
 				<input type="button" value="Print" onclick="javascript:printDiv('htmlContent')" />
 				<input type="button" value="Share" onclick="javascript: getShareLink()"/>
@@ -182,11 +182,23 @@ jQuery(function() {
 					#end	
 					<th class="freeze_left_column" style="min-width:250px; width:250px">$i18n.getString( "data_element" )</th>					
 					
-					#foreach( $orgUnit in $covidIntroSnapshot.getSelOrgUnits() )
-						#if( $!covidIntroSnapshot.nonZeroCountries == "ON" && $covidIntroSnapshot.getNonZeroOrgUnitIds().contains( $orgUnit.id ) )				
-						<th align="center" style="vertical-align: middle;" title="$!orgUnit.name">$orgUnit.code</th>
-						#elseif( $!covidIntroSnapshot.nonZeroCountries != "ON" )
-						<th align="center" style="vertical-align: middle;" title="$!orgUnit.name">$orgUnit.code</th>
+					#if( $covidPage == 4 )
+						#foreach( $anonymousOuName in $covidIntroSnapshot.getAnonymousOuNames() )
+							#set( $orgUnit = "" )
+							#set( $orgUnit = $covidIntroSnapshot.getAnonymousOuMap().get( $anonymousOuName ) )
+							#if( $!covidIntroSnapshot.nonZeroCountries == "ON" && $covidIntroSnapshot.getNonZeroOrgUnitIds().contains( $orgUnit.id ) )				
+							<th align="center" style="vertical-align: middle;">$anonymousOuName</th>
+							#elseif( $!covidIntroSnapshot.nonZeroCountries != "ON" )
+							<th align="center" style="vertical-align: middle;">$anonymousOuName</th>
+							#end
+						#end
+					#else
+						#foreach( $orgUnit in $covidIntroSnapshot.getSelOrgUnits() )
+							#if( $!covidIntroSnapshot.nonZeroCountries == "ON" && $covidIntroSnapshot.getNonZeroOrgUnitIds().contains( $orgUnit.id ) )				
+							<th align="center" style="vertical-align: middle;" title="$!orgUnit.name">$orgUnit.code</th>
+							#elseif( $!covidIntroSnapshot.nonZeroCountries != "ON" )
+							<th align="center" style="vertical-align: middle;" title="$!orgUnit.name">$orgUnit.code</th>
+							#end
 						#end
 					#end					
                 </tr>
@@ -201,16 +213,33 @@ jQuery(function() {
 							<td class="freeze_left_column">$indType</td>
 							#end	
 							<td class="freeze_left_column" title="$!de.strAttrib2">$!de.name</td>
-							#foreach( $orgUnit in $covidIntroSnapshot.getSelOrgUnits() )
-								#set( $dvObjKey = "" )
-								#set( $dvObjKey = "$orgUnit.id:$de.id" )
-							
-								#set( $dvObj = "" )
-								#set( $dvObj = $!covidIntroSnapshot.getDataMap().get( $dvObjKey ) )	
-								#if( $!covidIntroSnapshot.nonZeroCountries == "ON" && $covidIntroSnapshot.getNonZeroOrgUnitIds().contains( $orgUnit.id ) )
-								<td align="center" style="vertical-align: middle;color:#ffffff;background:$dvObj.getAlertColor();" title="$!dvObj.comment">&nbsp;$!dvObj.value&nbsp;</td>
-								#elseif( $!covidIntroSnapshot.nonZeroCountries != "ON" ) 
-								<td align="center" style="vertical-align: middle;color:#ffffff;background:$dvObj.getAlertColor();" title="$!dvObj.comment">&nbsp;$!dvObj.value&nbsp;</td>
+							#if( $covidPage == 4 )
+								#foreach( $anonymousOuName in $covidIntroSnapshot.getAnonymousOuNames() )
+									#set( $orgUnit = "" )
+									#set( $orgUnit = $covidIntroSnapshot.getAnonymousOuMap().get( $anonymousOuName ) )
+									#set( $dvObjKey = "" )
+									#set( $dvObjKey = "$orgUnit.id:$de.id" )
+								
+									#set( $dvObj = "" )
+									#set( $dvObj = $!covidIntroSnapshot.getDataMap().get( $dvObjKey ) )	
+									#if( $!covidIntroSnapshot.nonZeroCountries == "ON" && $covidIntroSnapshot.getNonZeroOrgUnitIds().contains( $orgUnit.id ) )
+									<td align="center" style="vertical-align: middle;color:#ffffff;background:$dvObj.getAlertColor();" title="$!dvObj.comment">&nbsp;$!dvObj.value&nbsp;</td>
+									#elseif( $!covidIntroSnapshot.nonZeroCountries != "ON" ) 
+									<td align="center" style="vertical-align: middle;color:#ffffff;background:$dvObj.getAlertColor();" title="$!dvObj.comment">&nbsp;$!dvObj.value&nbsp;</td>
+									#end
+								#end
+							#else
+								#foreach( $orgUnit in $covidIntroSnapshot.getSelOrgUnits() )
+									#set( $dvObjKey = "" )
+									#set( $dvObjKey = "$orgUnit.id:$de.id" )
+								
+									#set( $dvObj = "" )
+									#set( $dvObj = $!covidIntroSnapshot.getDataMap().get( $dvObjKey ) )	
+									#if( $!covidIntroSnapshot.nonZeroCountries == "ON" && $covidIntroSnapshot.getNonZeroOrgUnitIds().contains( $orgUnit.id ) )
+									<td align="center" style="vertical-align: middle;color:#ffffff;background:$dvObj.getAlertColor();" title="$!dvObj.comment">&nbsp;$!dvObj.value&nbsp;</td>
+									#elseif( $!covidIntroSnapshot.nonZeroCountries != "ON" ) 
+									<td align="center" style="vertical-align: middle;color:#ffffff;background:$dvObj.getAlertColor();" title="$!dvObj.comment">&nbsp;$!dvObj.value&nbsp;</td>
+									#end
 								#end
 							#end
 						</tr>
@@ -231,9 +260,15 @@ jQuery(function() {
         <table style="margin:auto;display:none;color: #9F6000;background-color: #FEEFB3;border: 1px solid;" width="100%">
             <tr>
                 <td colspan="5">$i18n.getString( "report_inline_security_warning3" )</td>
+            </tr>            
+        </table>
+		<br/><br/>
+		<table>
+            <tr>
+            	<td colspan="5" align="left"><font size="3"><b>Covid-19 Global Monitoring Dashboard</b> - current as of $!covidIntroSnapshot.curDateStr</font></td>
             </tr>
         </table>
-		<br/><br/><br/>		    
+        <br/>	    
     	<table align="center" id="regionalDBTable1" border="0" cellspacing="0" cellpadding="0" class="">           
                 <tr style="border: none;">
 					#if( $!covidIntroSnapshot.showIndType == "ON" )
@@ -243,11 +278,23 @@ jQuery(function() {
 					#if( $!covidIntroSnapshot.includeComment == "ON" )
 						<th style="min-width:100px; width:100px;border: 1px solid #ccc;vertical-align: middle;font-size: 11px;background: #F0F0F0;color:#0a2f76;">Flag Criteria</th>
 					#end
-					#foreach( $orgUnit in $covidIntroSnapshot.getSelOrgUnits() )						
-						#if( $!covidIntroSnapshot.nonZeroCountries == "ON" && $covidIntroSnapshot.getNonZeroOrgUnitIds().contains( $orgUnit.id ) )
-						<th align="center" style="vertical-align: middle;border: 1px solid #ccc;font-size: 11px;background: #F0F0F0;color:#0a2f76;" title="$!orgUnit.name" #if( $!covidIntroSnapshot.includeComment == "ON" ) colspan="2" #end>$orgUnit.code</th>
-						#elseif( $!covidIntroSnapshot.nonZeroCountries != "ON" ) 
-						<th align="center" style="vertical-align: middle;border: 1px solid #ccc;font-size: 11px;background: #F0F0F0;color:#0a2f76;" title="$!orgUnit.name" #if( $!covidIntroSnapshot.includeComment == "ON" ) colspan="2" #end>$orgUnit.code</th>
+					#if( $covidPage == 4 )
+						#foreach( $anonymousOuName in $covidIntroSnapshot.getAnonymousOuNames() )
+							#set( $orgUnit = "" )
+							#set( $orgUnit = $covidIntroSnapshot.getAnonymousOuMap().get( $anonymousOuName ) )
+							#if( $!covidIntroSnapshot.nonZeroCountries == "ON" && $covidIntroSnapshot.getNonZeroOrgUnitIds().contains( $orgUnit.id ) )
+							<th align="center" style="vertical-align: middle;border: 1px solid #ccc;font-size: 11px;background: #F0F0F0;color:#0a2f76;" #if( $!covidIntroSnapshot.includeComment == "ON" ) colspan="2" #end>$anonymousOuName</th>
+							#elseif( $!covidIntroSnapshot.nonZeroCountries != "ON" ) 
+							<th align="center" style="vertical-align: middle;border: 1px solid #ccc;font-size: 11px;background: #F0F0F0;color:#0a2f76;" #if( $!covidIntroSnapshot.includeComment == "ON" ) colspan="2" #end>$anonymousOuName</th>
+							#end
+						#end
+					#else		
+						#foreach( $orgUnit in $covidIntroSnapshot.getSelOrgUnits() )						
+							#if( $!covidIntroSnapshot.nonZeroCountries == "ON" && $covidIntroSnapshot.getNonZeroOrgUnitIds().contains( $orgUnit.id ) )
+							<th align="center" style="vertical-align: middle;border: 1px solid #ccc;font-size: 11px;background: #F0F0F0;color:#0a2f76;" title="$!orgUnit.name" #if( $!covidIntroSnapshot.includeComment == "ON" ) colspan="2" #end>$orgUnit.code</th>
+							#elseif( $!covidIntroSnapshot.nonZeroCountries != "ON" ) 
+							<th align="center" style="vertical-align: middle;border: 1px solid #ccc;font-size: 11px;background: #F0F0F0;color:#0a2f76;" title="$!orgUnit.name" #if( $!covidIntroSnapshot.includeComment == "ON" ) colspan="2" #end>$orgUnit.code</th>
+							#end
 						#end
 					#end					
                 </tr>
@@ -265,21 +312,44 @@ jQuery(function() {
 							#if( $!covidIntroSnapshot.includeComment == "ON" )
 								<td align="left" style="border: 1px solid #ccc;vertical-align: middle;">$!de.strAttrib2</td>
 							#end
-							#foreach( $orgUnit in $covidIntroSnapshot.getSelOrgUnits() )
-								#set( $dvObjKey = "" )
-								#set( $dvObjKey = "$orgUnit.id:$de.id" )
-								
-								#set( $dvObj = "" )
-								#set( $dvObj = $!covidIntroSnapshot.getDataMap().get( $dvObjKey ) )	
-								#if( $!covidIntroSnapshot.nonZeroCountries == "ON" && $covidIntroSnapshot.getNonZeroOrgUnitIds().contains( $orgUnit.id ) )
-									<td align="center" style="vertical-align: middle;background:$dvObj.getAlertColor();border: 1px solid #ccc;color:#ffffff;">$!dvObj.value</td>
-									#if( $!covidIntroSnapshot.includeComment == "ON" )
-										<td align="center" style="vertical-align: middle;background:$dvObj.getAlertColor();border: 1px solid #ccc;color:#ffffff;">$!dvObj.comment</td>
+							#if( $covidPage == 4 )
+								#foreach( $anonymousOuName in $covidIntroSnapshot.getAnonymousOuNames() )
+									#set( $orgUnit = "" )
+									#set( $orgUnit = $covidIntroSnapshot.getAnonymousOuMap().get( $anonymousOuName ) )
+									#set( $dvObjKey = "" )
+									#set( $dvObjKey = "$orgUnit.id:$de.id" )
+									
+									#set( $dvObj = "" )
+									#set( $dvObj = $!covidIntroSnapshot.getDataMap().get( $dvObjKey ) )	
+									#if( $!covidIntroSnapshot.nonZeroCountries == "ON" && $covidIntroSnapshot.getNonZeroOrgUnitIds().contains( $orgUnit.id ) )
+										<td align="center" style="vertical-align: middle;background:$dvObj.getAlertColor();border: 1px solid #ccc;color:#ffffff;">$!dvObj.value</td>
+										#if( $!covidIntroSnapshot.includeComment == "ON" )
+											<td align="center" style="vertical-align: middle;background:$dvObj.getAlertColor();border: 1px solid #ccc;color:#ffffff;">$!dvObj.comment</td>
+										#end
+									#elseif( $!covidIntroSnapshot.nonZeroCountries != "ON" ) 
+										<td align="center" style="vertical-align: middle;background:$dvObj.getAlertColor();border: 1px solid #ccc;color:#ffffff;">$!dvObj.value</td>
+										#if( $!covidIntroSnapshot.includeComment == "ON" )
+											<td align="center" style="vertical-align: middle;background:$dvObj.getAlertColor();border: 1px solid #ccc;color:#ffffff;">$!dvObj.comment</td>
+										#end
 									#end
-								#elseif( $!covidIntroSnapshot.nonZeroCountries != "ON" ) 
-									<td align="center" style="vertical-align: middle;background:$dvObj.getAlertColor();border: 1px solid #ccc;color:#ffffff;">$!dvObj.value</td>
-									#if( $!covidIntroSnapshot.includeComment == "ON" )
-										<td align="center" style="vertical-align: middle;background:$dvObj.getAlertColor();border: 1px solid #ccc;color:#ffffff;">$!dvObj.comment</td>
+								#end	
+							#else														
+								#foreach( $orgUnit in $covidIntroSnapshot.getSelOrgUnits() )
+									#set( $dvObjKey = "" )
+									#set( $dvObjKey = "$orgUnit.id:$de.id" )
+									
+									#set( $dvObj = "" )
+									#set( $dvObj = $!covidIntroSnapshot.getDataMap().get( $dvObjKey ) )	
+									#if( $!covidIntroSnapshot.nonZeroCountries == "ON" && $covidIntroSnapshot.getNonZeroOrgUnitIds().contains( $orgUnit.id ) )
+										<td align="center" style="vertical-align: middle;background:$dvObj.getAlertColor();border: 1px solid #ccc;color:#ffffff;">$!dvObj.value</td>
+										#if( $!covidIntroSnapshot.includeComment == "ON" )
+											<td align="center" style="vertical-align: middle;background:$dvObj.getAlertColor();border: 1px solid #ccc;color:#ffffff;">$!dvObj.comment</td>
+										#end
+									#elseif( $!covidIntroSnapshot.nonZeroCountries != "ON" ) 
+										<td align="center" style="vertical-align: middle;background:$dvObj.getAlertColor();border: 1px solid #ccc;color:#ffffff;">$!dvObj.value</td>
+										#if( $!covidIntroSnapshot.includeComment == "ON" )
+											<td align="center" style="vertical-align: middle;background:$dvObj.getAlertColor();border: 1px solid #ccc;color:#ffffff;">$!dvObj.comment</td>
+										#end
 									#end
 								#end
 							#end

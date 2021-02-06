@@ -1,26 +1,20 @@
 package org.hisp.dhis.ivb.covid.action;
 
-import static org.hisp.dhis.common.IdentifiableObjectUtils.getIdentifiers;
-
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
-import org.hisp.dhis.common.comparator.IdentifiableObjectCodeComparator;
 import org.hisp.dhis.common.comparator.IdentifiableObjectNameComparator;
 import org.hisp.dhis.configuration.ConfigurationService;
-import org.hisp.dhis.dataset.DataSet;
 import org.hisp.dhis.dataset.DataSetService;
-import org.hisp.dhis.datavalue.DataValue;
 import org.hisp.dhis.i18n.I18nService;
 import org.hisp.dhis.ivb.util.CovidIntroHelper;
 import org.hisp.dhis.ivb.util.CovidIntroSnapshot;
 import org.hisp.dhis.ivb.util.IVBUtil;
-import org.hisp.dhis.ivb.util.RegionalDBSnapshot;
-import org.hisp.dhis.ivb.util.RegionalDashboardHelper;
 import org.hisp.dhis.lookup.Lookup;
 import org.hisp.dhis.lookup.LookupService;
 import org.hisp.dhis.message.MessageService;
@@ -81,6 +75,8 @@ public class CovidIntroTrackerResultction implements Action
     // -------------------------------------------------------------------------
     // Setters
     // -------------------------------------------------------------------------
+    private int covidPage = 0;
+    private List<Integer> regionOuIds;
     private List<String> indTypes;
     private String isoCode;
     private String whoRegion;
@@ -93,8 +89,19 @@ public class CovidIntroTrackerResultction implements Action
     private String showCovaxFacility;
 	private String showWBSupport;
     
+	
+	
+    public void setCovidPage(int covidPage) {
+		this.covidPage = covidPage;
+	}
+    public int getCovidPage() {
+		return covidPage;
+	}
     
-    public String getShowCovaxFacility() {
+	public void setRegionOuIds(List<Integer> regionOuIds) {
+		this.regionOuIds = regionOuIds;
+	}
+	public String getShowCovaxFacility() {
 		return showCovaxFacility;
 	}
 	public void setShowCovaxFacility(String showCovaxFacility) {
@@ -137,8 +144,6 @@ public class CovidIntroTrackerResultction implements Action
     // -------------------------------------------------------------------------
     // Getters
     // -------------------------------------------------------------------------
-
-
 
 	private String language;
     public String getLanguage(){
@@ -222,17 +227,53 @@ public class CovidIntroTrackerResultction implements Action
         lookup = lookupService.getLookupByName( "UNICEF_REGIONS_GROUPSET" );
         covidIntroSnapshot.setUnicefRegionsGroupSet(orgUnitGroupService.getOrganisationUnitGroupSet( Integer.parseInt( lookup.getValue() ) ) );
         List<OrganisationUnit> orgUnitList = new ArrayList<OrganisationUnit>();
-        if(selectionTreeManager.getReloadedSelectedOrganisationUnits() != null){ 
-            orgUnitList =  new ArrayList<OrganisationUnit>( selectionTreeManager.getReloadedSelectedOrganisationUnits() ) ;            
-            List<OrganisationUnit> lastLevelOrgUnit = new ArrayList<OrganisationUnit>();
-            List<OrganisationUnit> userOrgUnits = new ArrayList<OrganisationUnit>( currentUserService.getCurrentUser().getDataViewOrganisationUnits() );
-            for( OrganisationUnit orgUnit : userOrgUnits ){
-                if ( orgUnit.getHierarchyLevel() == 3  )
-                    lastLevelOrgUnit.add( orgUnit );
-                else
-                    lastLevelOrgUnit.addAll( orgUnitService.getOrganisationUnitsAtLevel( 3, orgUnit ) );
-            }
-            orgUnitList.retainAll( lastLevelOrgUnit );
+        
+        if( covidPage == 4){
+        	List<String> anonymousOuNames = new ArrayList<>();
+        	for(int regOuId : regionOuIds ){
+        		OrganisationUnit regOu = orgUnitService.getOrganisationUnit( regOuId );
+        		
+        		Set<Integer> randomNumbers = new HashSet<>();
+        		for(OrganisationUnit ou : regOu.getChildren() ){
+        			int randomNum = 1;
+        			while( true ){
+        				randomNum = ThreadLocalRandom.current().nextInt(1, regOu.getChildren().size()+1);
+        				//Random ran = new Random();
+        				//randomNum = ran.nextInt(2) + regOu.getChildren().size()+1;
+        				//System.out.println( ou.getName()+" = " + randomNum + "  and " + randomNumbers.contains( randomNum) );
+        				
+        				if(!randomNumbers.contains( randomNum) ){
+        					randomNumbers.add( randomNum );
+        					break;
+        				}
+        			}
+        			String anonymousOuName = "NoName";
+        			if( randomNum <=9 )
+        				anonymousOuName = regOu.getCode()+"_0"+randomNum;
+        			else
+        				anonymousOuName = regOu.getCode()+"_"+randomNum;
+        			
+        			anonymousOuNames.add( anonymousOuName );
+        			covidIntroSnapshot.getAnonymousOuMap().put(anonymousOuName, ou );
+        			orgUnitList.add( ou );
+        		}
+        	}
+        	Collections.sort( anonymousOuNames );
+        	covidIntroSnapshot.getAnonymousOuNames().addAll( anonymousOuNames );
+        }
+        else{
+	        if(selectionTreeManager.getReloadedSelectedOrganisationUnits() != null){ 
+	            orgUnitList =  new ArrayList<OrganisationUnit>( selectionTreeManager.getReloadedSelectedOrganisationUnits() ) ;            
+	            List<OrganisationUnit> lastLevelOrgUnit = new ArrayList<OrganisationUnit>();
+	            List<OrganisationUnit> userOrgUnits = new ArrayList<OrganisationUnit>( currentUserService.getCurrentUser().getDataViewOrganisationUnits() );
+	            for( OrganisationUnit orgUnit : userOrgUnits ){
+	                if ( orgUnit.getHierarchyLevel() == 3  )
+	                    lastLevelOrgUnit.add( orgUnit );
+	                else
+	                    lastLevelOrgUnit.addAll( orgUnitService.getOrganisationUnitsAtLevel( 3, orgUnit ) );
+	            }
+	            orgUnitList.retainAll( lastLevelOrgUnit );
+	        }
         }
         Collections.sort(orgUnitList, new IdentifiableObjectNameComparator() );
         covidIntroSnapshot.setSelOrgUnits( orgUnitList );

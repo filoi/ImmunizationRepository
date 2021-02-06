@@ -259,6 +259,10 @@ public class CovidIntroHelper
     		e.printStackTrace();
     	}
     	
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date curDate = new Date();
+        covidIntroSnapshot.setCurDateStr( sdf.format( curDate ) );
+        
     	return covidIntroSnapshot;    	
     }//getCovidIntroTrackerSnapshot end
     

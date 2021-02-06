@@ -946,7 +946,22 @@
 			<param name="javascripts">javascript/jquery.freezeheader.js,javascript/ivb-dataentry.js,../dhis-web-commons/javascripts/ext/ext-all.js,javascript/jquery.treeview.js,javascript/TransformGrid.js,javascript/jquerycssmenu.js,../dhis-web-commons/select2/select2.min.js</param>
 			<param name="stylesheets">../dhis-web-commons/javascripts/ext/resources/css/ext-plugin-gray.css,css/ivb-dataentry.css,css/jquery.fancybox.css,css/jquerycssmenu.css,css/jquery.treeview.css,../dhis-web-commons/select2/select2.css</param>
 		</action>
-
+		
+		<!-- PROWG Report Version2 which is seperate version reports for PCV & Rota -->
+		<action name="prowgReportForm2"
+			class="org.hisp.dhis.ivb.report.action.CannedReportFormAction">
+			<result name="success" type="velocity">/dhis-web-ivb/main.vm</result>
+			<param name="page">/dhis-web-ivb/prowgReportForm2.vm</param>
+			<param name="javascripts">../dhis-web-commons/oust/oust.js,javascript/jquerycssmenu.js,javascript/request.js,javascript/jquery.treeview.js</param>
+			<param name="stylesheets">css/ivb-dataentry.css,css/jquerycssmenu.css,css/jquery.treeview.css</param>
+		</action>
+		<action name="prowgReportResult2"
+			class="org.hisp.dhis.ivb.report.action.ProwgReportResult2Action">
+			<result name="success" type="velocity">/dhis-web-ivb/main.vm</result>
+			<param name="page">/dhis-web-ivb/prowgReportResult2.vm</param>
+			<param name="javascripts">javascript/jquery.freezeheader.js,javascript/ivb-dataentry.js,../dhis-web-commons/javascripts/ext/ext-all.js,javascript/jquery.treeview.js,javascript/TransformGrid.js,javascript/jquerycssmenu.js,../dhis-web-commons/select2/select2.min.js</param>
+			<param name="stylesheets">../dhis-web-commons/javascripts/ext/resources/css/ext-plugin-gray.css,css/ivb-dataentry.css,css/jquery.fancybox.css,css/jquerycssmenu.css,css/jquery.treeview.css,../dhis-web-commons/select2/select2.css</param>
+		</action>
 
 		<!-- User Activity Report -->
 		<action name="userActivityReportForm"
