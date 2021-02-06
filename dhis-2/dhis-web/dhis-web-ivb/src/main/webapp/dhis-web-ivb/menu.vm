@@ -244,6 +244,36 @@ function loadDataEntryByDataSetSection( dataSetSectionId )
 	</tr>
 	#end
 	
+	#set( $sections = $dataSetSectionMap.get( 'Ip6Pc6YuFWD' ) )
+	#if( $sections.size() > 1)	
+	<tr #if( $!currentDataSet == '$!section.id' ) style="background-color:#A9D0F5;" #end>
+		<td>
+	       <ul class="tree1" >
+					#foreach( $section in $sections )
+						#if($!currentDataSet == $!section.id)
+							#set( $sectionsId1 = $section.id )
+						#end
+					#end
+					<li #if( $!currentDataSet == ${sectionsId1} || $currentDataSet == 'Ip6Pc6YuFWD') class="open" #else class="closed" #end>
+					<a href="javascript:loadDataEntryByDataSet('Ip6Pc6YuFWD')" id="Ip6Pc6YuFWD" #if( $currentDataSet == 'Ip6Pc6YuFWD') style="background-color:#A9D0F5;" #end>$i18n.getString( "$!sections.get(0).getDataSet().getShortName()" )</a>				
+					#foreach( $section in $sections )
+					<ul >
+						<li><a #if( $!currentDataSet == $!section.id ) style="background-color:#A9D0F5;" #end href="javascript:loadDataEntryByDataSetSection('$!section.id')" id="$!section.id">$i18n.getString( "$!section.name" )</a></li>
+					</ul>
+					#end
+					</li>
+			</ul>
+		</td>
+	</tr>
+	#else
+	<tr #if( $!currentDataSet == 'Ip6Pc6YuFWD' ) style="background-color:#A9D0F5;" #end>
+		<td>
+	        &nbsp;&nbsp;
+	        <a href="javascript:loadDataEntryByDataSet('Ip6Pc6YuFWD')" id="Ip6Pc6YuFWD">$i18n.getString( "$!sections.get(0).getDataSet().getShortName()" )</a><br/>
+		</td>
+	</tr>
+	#end
+	
 		#set( $sections = $dataSetSectionMap.get( 'mGnST9cIzUe' ) )
 	#if( $sections.size() > 1)	
 	<tr #if( $!currentDataSet == '$!section.id' ) style="background-color:#A9D0F5;" #end>

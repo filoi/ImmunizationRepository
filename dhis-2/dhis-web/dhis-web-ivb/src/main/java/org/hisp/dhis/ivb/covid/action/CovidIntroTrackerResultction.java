@@ -234,7 +234,7 @@ public class CovidIntroTrackerResultction implements Action
             }
             orgUnitList.retainAll( lastLevelOrgUnit );
         }
-        Collections.sort(orgUnitList, new IdentifiableObjectCodeComparator() );
+        Collections.sort(orgUnitList, new IdentifiableObjectNameComparator() );
         covidIntroSnapshot.setSelOrgUnits( orgUnitList );
         String ouIdsByComma = "-1";
         for( OrganisationUnit ou : covidIntroSnapshot.getSelOrgUnits() ) {
