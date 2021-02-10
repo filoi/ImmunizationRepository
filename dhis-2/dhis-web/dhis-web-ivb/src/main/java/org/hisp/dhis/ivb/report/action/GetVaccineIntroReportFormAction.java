@@ -215,6 +215,7 @@ public class GetVaccineIntroReportFormAction
         
         List<String> vaccineIntroUids = new ArrayList<String>();
         vaccineIntroUids.add( "UezSPDbJYdG" );
+        vaccineIntroUids.add( "WzWYn2aSKI9" );
         List<DataSet> dataSets = dataSetService.getDataSetsByUid( vaccineIntroUids );
         
         Constant vaccineAttributeConstant = constantService.getConstantByName( "VACCINE_ATTRIBUTE" );
