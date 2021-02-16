@@ -47,13 +47,14 @@ import org.hisp.dhis.dataset.DataSet;
 import org.hisp.dhis.dataset.DataSetService;
 import org.hisp.dhis.dataset.Section;
 import org.hisp.dhis.i18n.I18nService;
+import org.hisp.dhis.lookup.Lookup;
+import org.hisp.dhis.lookup.LookupService;
 import org.hisp.dhis.message.MessageService;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroupService;
 import org.hisp.dhis.organisationunit.OrganisationUnitGroupSet;
 import org.hisp.dhis.oust.manager.SelectionTreeManager;
-import org.hisp.dhis.ouwt.manager.OrganisationUnitSelectionManager;
 import org.hisp.dhis.user.CurrentUserService;
 import org.hisp.dhis.user.UserGroup;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +80,8 @@ public class GetVaccineIntroReportFormAction
     //private final static int ORGUNIT_GROUP_SET = 3;
     
     //private static final String SHOW_ALL_COUNTRIES_ORGUNIT_GROUP = "SHOW_ALL_COUNTRIES_ORGUNIT_GROUP";
+    @Autowired 
+    private LookupService lookupService;
     
     @Autowired
     private SelectionTreeManager selectionTreeManager;
@@ -214,8 +217,12 @@ public class GetVaccineIntroReportFormAction
         Collections.sort( deGroupList, new IdentifiableObjectNameComparator() );
         
         List<String> vaccineIntroUids = new ArrayList<String>();
-        vaccineIntroUids.add( "UezSPDbJYdG" );
-        vaccineIntroUids.add( "WzWYn2aSKI9" );
+        Lookup lookup = lookupService.getLookupByName( "VACCINE_DATASET_UIDS" );
+        for( String dsUid :  lookup.getValue().split(",") )
+        	vaccineIntroUids.add( dsUid );
+        
+        //vaccineIntroUids.add( "UezSPDbJYdG" );
+        //vaccineIntroUids.add( "WzWYn2aSKI9" );
         List<DataSet> dataSets = dataSetService.getDataSetsByUid( vaccineIntroUids );
         
         Constant vaccineAttributeConstant = constantService.getConstantByName( "VACCINE_ATTRIBUTE" );

@@ -202,7 +202,7 @@ function showContent(o) {
 							<td>
 								<select style="width:134px;" #if( $deUpdateStatus == "no" ) disabled #end name="entryfield" id="${dataEntryId}" onchange="javascript: saveValueOption('$dataElement.id','$organisationUnit.id','$optionCombo.id','$count','${dataEntryId}')">
 									<option value="-1">$i18n.getString( "please_select" )</option>
-									#foreach( $option in $dataElement.getOptionSet()..getOptions() )
+									#foreach( $option in $dataElement.getOptionSet().getOptions() )
 									<option #if($!dataValue.get(${getter}) == $option.code ) selected #end>$option.name</option>
 									#end					
 								</select>

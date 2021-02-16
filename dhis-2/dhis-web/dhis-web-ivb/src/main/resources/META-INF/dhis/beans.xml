@@ -776,6 +776,16 @@
 		<property name="keyFlagCalculation" ref="org.hisp.dhis.ivb.util.KeyFlagCalculation" />
 	</bean>
 
+	<!-- Vaccine Switches Report -->
+	<bean id="org.hisp.dhis.ivb.report.action.SwitchesReportFormAction"
+		class="org.hisp.dhis.ivb.report.action.SwitchesReportFormAction"
+		scope="prototype">
+		<property name="currentUserService" ref="org.hisp.dhis.user.CurrentUserService" />
+		<property name="i18nService" ref="org.hisp.dhis.i18n.I18nService" />
+		<property name="messageService" ref="org.hisp.dhis.message.MessageService" />
+		<property name="configurationService" ref="org.hisp.dhis.configuration.ConfigurationService" />
+	</bean>
+	
 	<!-- Vaccine Introduction Report -->
 	<bean id="org.hisp.dhis.ivb.report.action.GetVaccineIntroReportFormAction"
 		class="org.hisp.dhis.ivb.report.action.GetVaccineIntroReportFormAction"

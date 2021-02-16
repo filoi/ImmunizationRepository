@@ -954,12 +954,14 @@ public class ProwgReportResult2Action implements Action
         else
         	lookup = lookupService.getLookupByName( "PROWG_ROTA_DE_IDS" );
         
-        
-        //for ( int i = 0; i < this.selectedDataElementsValidator.size(); i++ )
+        selectedDataElementsValidator = new ArrayList<>();
         for( String deIdStr :  lookup.getValue().split(","))
+        	selectedDataElementsValidator.add( Integer.parseInt(deIdStr) );
+        	
+        for ( int i = 0; i < this.selectedDataElementsValidator.size(); i++ )
         {
-        	DataElement dataElement = dataElementService.getDataElement( Integer.parseInt(deIdStr) );
-            //DataElement dataElement = dataElementService.getDataElement( selectedDataElementsValidator.get( i ) );
+        	//DataElement dataElement = dataElementService.getDataElement( Integer.parseInt(deIdStr) );
+            DataElement dataElement = dataElementService.getDataElement( selectedDataElementsValidator.get( i ) );
             
             Set<AttributeValue> attrValueSet = new HashSet<AttributeValue>( dataElement.getAttributeValues() );
         	
