@@ -35,13 +35,12 @@ $(function() {
 	function generateHTMLreport()
 	{		
 		$('#selectedListVaccine option').attr('selected', 'selected');
-		$('#selectedListDataset option').attr('selected', 'selected');
-		console.log("hello"+$("#orgUnitId").val( orgUnits[0] ));
 		var vaccineListBox = document.getElementById('selectedListVaccine');
-		var dataSetListBox = document.getElementById('selectedListDataset');
+		//var dataSetListBox = document.getElementById('selectedListDataset');
 		
 		var showComment = document.getElementById('showComment');
 		
+		/*
 		var dateFrom = $("#dateFrom").val();
 		var dateTo = $("#dateTo").val();
 		
@@ -53,6 +52,7 @@ $(function() {
             alert("Please select correct date range");
 			return false;
         }
+		*/
 		
 		if( vaccineListBox.options.length <= 0 )
 		{
@@ -71,11 +71,13 @@ $(function() {
 			return false;
 		}
 		*/			
+		/*
 		if( dataSetListBox.options.length <= 0 )
 		{
 			alert("Please select other data");
 			return false;
 		}
+		*/
 		if(showComment.checked)
 		{
 			var form = document.forms["vacIntroReportForm"];
@@ -158,29 +160,29 @@ $(function() {
 <br/>
 
 <div style="font-size:16px; width:93%; margin:auto;" class="ui-widget-header ui-corner-all"><b>Vaccine Switches Report</b></div>
-<form id="vacIntroReportForm" method="get" action="generateVaccineIntroReport.action" onsubmit="return generateHTMLreport()">
+<form id="vacIntroReportForm" method="get" action="switchesReportResult.action" onsubmit="return generateHTMLreport()">
  	<input type="hidden" name="orgUnitId" id="orgUnitId"/>
  	<div id="reportFilterDiv" >
  		<table style="width:95%;margin:auto;table-layout:fixed;" cellpadding="4" cellspacing="2">
- 				<tr style="margin-bottom: 15px;">
- 					<td width="45%">
- 						$i18n.getString( "vaccines" )<br/> 					
-			          	<select id="availableListVaccine" name="availableListVaccine" ondblclick="moveSelectedById( 'availableListVaccine', 'selectedListVaccine' )" multiple="multiple" style="height: 165px; width: 100%;">
-						#foreach($vaccineName in $vaccineNames)
-							<option value="$vaccineName">$vaccineName</option>
-						#end
-			          </select>
-        			</td>
-			        <td style="text-align:center" width="10%">
-			            <input type="button" value="&gt;" title="$i18n.getString( 'move_selected' )" style="width:50px" onclick="moveSelectedById( 'availableListVaccine', 'selectedListVaccine' );"/><br/>
-			            <input type="button" value="&lt;" title="$i18n.getString( 'remove_selected' )" style="width:50px" onclick="moveSelectedById( 'selectedListVaccine', 'availableListVaccine' );"/><br/>
-			            <input type="button" value="&gt;&gt;" title="$i18n.getString('move_all')" style="width:50px" onclick="moveAllById( 'availableListVaccine', 'selectedListVaccine' );"/><br/>
-			            <input type="button" value="&lt;&lt;" title="$i18n.getString('remove_all')" style="width:50px" onclick="moveAllById( 'selectedListVaccine', 'availableListVaccine' );"/>
-			        </td>
-			        <td width="45%">
-			            <select id="selectedListVaccine" name="selVaccineNames" ondblclick="moveSelectedById( 'selectedListVaccine', 'availableListVaccine' )" multiple="multiple" style="height: 165px; width: 100%; margin-top: 22px;"></select>
-			        </td>				 
-			 </tr>
+ 			<tr style="margin-bottom: 15px;">
+ 				<td width="45%">
+ 					$i18n.getString( "vaccines" )<br/> 					
+			       	<select id="availableListVaccine" name="availableListVaccine" ondblclick="moveSelectedById( 'availableListVaccine', 'selectedListVaccine' )" multiple="multiple" style="height: 165px; width: 100%;">
+					#foreach($vaccine in $vaccines)
+						<option value="$vaccine.id">$vaccine.name</option>
+					#end
+			        </select>
+        		</td>
+			    <td style="text-align:center" width="10%">
+			    	<input type="button" value="&gt;" title="$i18n.getString( 'move_selected' )" style="width:50px" onclick="moveSelectedById( 'availableListVaccine', 'selectedListVaccine' );"/><br/>
+			        <input type="button" value="&lt;" title="$i18n.getString( 'remove_selected' )" style="width:50px" onclick="moveSelectedById( 'selectedListVaccine', 'availableListVaccine' );"/><br/>
+			        <input type="button" value="&gt;&gt;" title="$i18n.getString('move_all')" style="width:50px" onclick="moveAllById( 'availableListVaccine', 'selectedListVaccine' );"/><br/>
+			        <input type="button" value="&lt;&lt;" title="$i18n.getString('remove_all')" style="width:50px" onclick="moveAllById( 'selectedListVaccine', 'availableListVaccine' );"/>
+			    </td>
+			    <td width="45%">
+			    	<select id="selectedListVaccine" name="selVaccineIds" ondblclick="moveSelectedById( 'selectedListVaccine', 'availableListVaccine' )" multiple="multiple" style="height: 165px; width: 100%; margin-top: 22px;"></select>
+			    </td>				 
+			</tr>
  			<tr>
  				<td width="55%" colspan="2">
  					<!-- $i18n.getString( "select_country_or_region" )<br/>-->
@@ -188,7 +190,8 @@ $(function() {
  						#organisationUnitSelectionTree1( false, true, true )
  					</div>
 				 </td>
-				 <td width="45%" valign="top">	
+				 <td width="45%" valign="top">
+				 	<br/><br/><br/>
 		 			<input type="checkbox" name="isoCode" /> $i18n.getString( "iso_code" )<br/>
 		 			<input type="checkbox" name="whoRegion" checked /> $i18n.getString( "who_region" )<br/>
 		 			<input type="checkbox" name="unicefRegion" /> $i18n.getString( "unicef_region" )<br/>

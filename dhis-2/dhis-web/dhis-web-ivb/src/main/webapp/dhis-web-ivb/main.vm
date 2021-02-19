@@ -590,7 +590,7 @@
 				   	<!--<li><a href="getuserActivityLoginMonitoring.action"><b>$i18n.getString( "user_activity_login_monitoring" )</b></a></li>-->
 				    <li><a href="GetMMRStatus.action"><b>$i18n.getString( "Status_of_M/MR_SIA_Readiness")</b></a></li>
 					<li><a href="vaccineIntroReport.action"><b>$i18n.getString( "vaccine_introduction_report" )</b></a></li>
-					<!--<li><a href="switchesReport.action"><b>Vaccine Switches Report</b></a></li>-->
+					<li><a href="switchesReportForm.action"><b>Vaccine Switches Report</b></a></li>
 				</ul>
 			</li>
 			

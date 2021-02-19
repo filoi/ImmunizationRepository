@@ -28,35 +28,19 @@ package org.hisp.dhis.ivb.report.action;
  */
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.hisp.dhis.attribute.AttributeValue;
-import org.hisp.dhis.common.comparator.IdentifiableObjectNameComparator;
 import org.hisp.dhis.configuration.ConfigurationService;
-import org.hisp.dhis.constant.Constant;
-import org.hisp.dhis.constant.ConstantService;
-import org.hisp.dhis.dataelement.DataElement;
-import org.hisp.dhis.dataelement.DataElementGroup;
-import org.hisp.dhis.dataelement.DataElementGroupSet;
-import org.hisp.dhis.dataelement.DataElementService;
-import org.hisp.dhis.dataset.DataSet;
-import org.hisp.dhis.dataset.DataSetService;
 import org.hisp.dhis.dataset.Section;
+import org.hisp.dhis.dataset.SectionService;
 import org.hisp.dhis.i18n.I18nService;
-import org.hisp.dhis.ivb.util.GenericTypeObj;
 import org.hisp.dhis.lookup.Lookup;
 import org.hisp.dhis.lookup.LookupService;
 import org.hisp.dhis.message.MessageService;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroup;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroupService;
-import org.hisp.dhis.organisationunit.OrganisationUnitGroupSet;
 import org.hisp.dhis.oust.manager.SelectionTreeManager;
-import org.hisp.dhis.ouwt.manager.OrganisationUnitSelectionManager;
 import org.hisp.dhis.user.CurrentUserService;
 import org.hisp.dhis.user.UserGroup;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,6 +57,9 @@ public class SwitchesReportFormAction implements Action
     // -------------------------------------------------------------------------
     @Autowired
     private SelectionTreeManager selectionTreeManager;
+    
+    @Autowired
+    private SectionService dsSectionService;
     
     private CurrentUserService currentUserService;
     public void setCurrentUserService( CurrentUserService currentUserService ){
@@ -100,12 +87,12 @@ public class SwitchesReportFormAction implements Action
     // -------------------------------------------------------------------------
     // Getters & Setters
     // -------------------------------------------------------------------------
-    private List<String> vaccineNames = new ArrayList<>();
-    public List<String> getVaccineNames() {
-		return vaccineNames;
+    private List<Section> vaccines = new ArrayList<>();
+    public List<Section> getVaccines() {
+		return vaccines;
 	}
-    
-    private String language;
+
+	private String language;
     public String getLanguage(){
         return language;
     }
@@ -147,10 +134,11 @@ public class SwitchesReportFormAction implements Action
         else
             adminStatus = "No";
         
-        Lookup lookup = lookupService.getLookupByName( "CAMPAIGN_COLUMNS_INFO" );
+        Lookup lookup = lookupService.getLookupByName( "SWITCH_VACCINE_DEIDS" );
         String reportColInfo = lookup.getValue();
         for( String colInfo : reportColInfo.split("@!@") ) {
-        	vaccineNames.add( colInfo.split("@-@")[1] );
+        	int sectionId = Integer.parseInt( colInfo.split("@-@")[0] );
+        	vaccines.add( dsSectionService.getSection(sectionId) );
         }
         
         return SUCCESS;
