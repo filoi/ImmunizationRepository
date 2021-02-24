@@ -419,6 +419,7 @@ public class PieProgReviewTAReportResultAction implements Action
                     }
                     
                 }
+                /* Commenting this after got mail from Hemanthi on 24thFeb2021
                 else if( (selReview.split( ":" )[0].trim().equalsIgnoreCase( "EPI" ) || selReview.split( ":" )[0].trim().equalsIgnoreCase( "Surveillance" )) && dv != null )
                 {
                     if( dv.getValue() != null )
@@ -441,6 +442,7 @@ public class PieProgReviewTAReportResultAction implements Action
                         reviewList.add( " " );
                     }                    
                 }
+                */
                 else
                 {
                     reviewList.add( " " );
