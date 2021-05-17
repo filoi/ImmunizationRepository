@@ -198,7 +198,7 @@ public class CampaignHelper
                      " INNER JOIN datavalue dv ON dv.sourceid=asd1.sourceid " +
                      " AND dv.dataelementid=asd1.dataelementid " +
                      " AND dv.periodid=asd1.periodid " +
-                     " WHERE dv.value IS NOT NULL AND dv.value <> ''";
+                     " WHERE dv.value IS NOT NULL AND dv.value <> '' AND dv.value <> 'NA' ";
             
             //System.out.println("getLatestDataValuesForCampaignReport query = "+ query);
 
