@@ -121,15 +121,7 @@
 			if(jQuery.trim(auth.countryEPI) == "Yes")
 				document.getElementById("countryEPI").style.display = 'block';				
 
-			if(jQuery.trim(auth.activity) == "Yes")
-				document.getElementById("userActivity").style.display = 'block';
-
-			if(jQuery.trim(auth.userActivityLogin) == "Yes")
-				document.getElementById("userActivityLogin").style.display = 'block';
-
-			if(jQuery.trim(auth.userActivityLoginMonitoring) == "Yes")
-				document.getElementById("userActivityLoginMonitoring").style.display = 'block';
-
+			
 			if(jQuery.trim(auth.dashboard) == "Yes")
 				document.getElementById("userDashboard").style.display = 'block';
 
@@ -139,8 +131,10 @@
 			if(jQuery.trim(auth.lookup) == "Yes")
 				document.getElementById("lookup").style.visibility = 'visible';
 
-			if(jQuery.trim(auth.maintenanceModules) == "Yes")
+			if(jQuery.trim(auth.maintenanceModules) == "Yes"){
 				document.getElementById("menu_maintenance").style.visibility = 'visible';
+				document.getElementById("menu_admin_reports").style.visibility = 'visible';
+			}
 
 			if(jQuery.trim(auth.progReviewTAReportAuthority) == "Yes")
 				document.getElementById("progReviewTAReport").style.display = 'block';
@@ -148,8 +142,7 @@
 			if(jQuery.trim(auth.cmypDevTrackingReportAuthority) == "Yes")
 				document.getElementById("cmypDevTrackingReport").style.display = 'block';
 
-			if(jQuery.trim(auth.alertReportAuthority) == "Yes")
-				document.getElementById("alertReport").style.display = 'block';				
+						
 
 			var flag = 0;
 			if(jQuery.trim(auth.covidIntroTracker) == "Yes"){
@@ -167,6 +160,18 @@
 				document.getElementById("covidCountryReport").style.display = 'block';				
 			}
 			
+			if(jQuery.trim(auth.alertReportAuthority) == "Yes")
+				document.getElementById("alertReport").style.display = 'block';	
+			if(jQuery.trim(auth.activity) == "Yes")
+				document.getElementById("userActivity").style.display = 'block';
+
+			if(jQuery.trim(auth.userActivityLogin) == "Yes")
+				document.getElementById("userActivityLogin").style.display = 'block';
+
+			if(jQuery.trim(auth.userActivityLoginMonitoring) == "Yes")
+				document.getElementById("userActivityLoginMonitoring").style.display = 'block';
+
+
 			//if( flag == 0)
 			//	document.getElementById("covidIntroReportMenu").style.display = 'none';				
 			
@@ -536,7 +541,7 @@
 			<!-- <li id="action_point"><a href="#"><b>$i18n.getString( "menu_action_point" )</b></a></li> -->
 			<li id="report"><a href="#"><b>$i18n.getString( "menu_global_reports" )</b></a>
 				<ul>										
-					<li id="alertReport" style="display:none;"><a href="alertReportForm.action"><b>$i18n.getString( "alerts" )</b></a></li>
+					<!--<li id="alertReport" style="display:none;"><a href="alertReportForm.action"><b>$i18n.getString( "alerts" )</b></a></li>-->
 					<li><a href="#"><b>Campaign Delay Tracker (due to Covid-19)</b></a>
 						<ul>
 							<li><a href="campaignTrackerForm.action"><b>Campaign Tracker</b></a></li>
@@ -578,14 +583,14 @@
 					
 					<li><a href="pieReportForm.action"><b>$i18n.getString( "pie_canned_report" )</b></a></li>
 					<li id="progReviewTAReport" style="display:none;"><a href="pieProgReviewTAReportForm.action"><b>$i18n.getString( "prog_review_tech_assistance" )</b></a></li>
-					<li><a href="prowgReportForm.action"><b>$i18n.getString( "prowg_report" )</b></a></li>
-					<li><a href="prowgReportForm2.action"><b>$i18n.getString( "prowg_report" )-V2</b></a></li>
+					<!--<li><a href="prowgReportForm.action"><b>$i18n.getString( "prowg_report" )</b></a></li>-->
+					<li><a href="prowgReportForm2.action"><b>$i18n.getString( "prowg_report" )</b></a></li>
 					<li><a href="regionalReportForm.action"><b>$i18n.getString( "regional_summary_report" )</b></a></li>
                     <li><a href="agendaReportForm.action"><b>$i18n.getString( "agenda_report" )</b></a></li>
                     <li><a href="toolBoxReportForm.action"><b>$i18n.getString( "toolbox_flag_report" )</b></a></li>
-                    <li id="userActivity" style="display:none;"><a href="userActivityReportForm.action"><b>$i18n.getString( "user_activity_report" )</b></a></li>
-                    <li id="userActivityLogin" style="display:none;"><a href="userActivityLoginReport.action"><b>$i18n.getString( "user_activity_login_report" )</b></a></li>                   
-					<li id="userActivityLoginMonitoring" style="display:none;"><a href="getuserActivityLoginMonitoring.action"><b>$i18n.getString( "user_activity_login_monitoring" )</b></a></li>
+                    <!--<li id="userActivity" style="display:none;"><a href="userActivityReportForm.action"><b>$i18n.getString( "user_activity_report" )</b></a></li> -->
+                    <!--<li id="userActivityLogin" style="display:none;"><a href="userActivityLoginReport.action"><b>$i18n.getString( "user_activity_login_report" )</b></a></li>     -->
+		    <!--<li id="userActivityLoginMonitoring" style="display:none;"><a href="getuserActivityLoginMonitoring.action"><b>$i18n.getString( "user_activity_login_monitoring" )</b></a></li> -->
 					
 				   	<!--<li><a href="getuserActivityLoginMonitoring.action"><b>$i18n.getString( "user_activity_login_monitoring" )</b></a></li>-->
 				    <li><a href="GetMMRStatus.action"><b>$i18n.getString( "Status_of_M/MR_SIA_Readiness")</b></a></li>
@@ -625,7 +630,15 @@
 					<li><a href="iscTrackingReportForm.action"><b>$i18n.getString( "isc_tracking_report" )</b></a></li>			
 				</ul>
 			</li>
-			
+			 <li id="menu_admin_reports" style="visibility: hidden;"><a href="#"><b>Admin Reports</b></a>
+				<ul>
+				    <li id="alertReport1" ><a href="alertReportForm.action"><b>$i18n.getString( "alerts" )</b></a></li>
+				    <li id="userActivity1" ><a href="userActivityReportForm.action"><b>$i18n.getString( "user_activity_report" )</b></a></li>
+	                    	    <li id="userActivityLogin1" ><a href="userActivityLoginReport.action"><b>$i18n.getString( "user_activity_login_report" )</b></a></li>                   
+				    <li id="userActivityLoginMonitoring1" ><a href="getuserActivityLoginMonitoring.action"><b>$i18n.getString( "user_activity_login_monitoring" )</b></a></li>
+				</ul>
+			</li>
+
 			<li id="map_chart"><a href="#"><b>$i18n.getString( "Maps_and_Charts" )</b></a>
 				<ul>
 					#if( $auth.hasAccess( "dhis-web-ivb", "DEmapping") )
