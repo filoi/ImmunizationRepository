@@ -3001,7 +3001,7 @@ public class IVBUtil
                              " AND dv.dataelementid=asd1.dataelementid " +
                              " AND dv.periodid=asd1.periodid";
             
-            System.out.println( query );
+            //System.out.println( query );
             
             /*
             String query = "SELECT dv.sourceid, dv.dataelementid, dv.periodid, dv.value, dv.comment, dv.storedby, dv.lastupdated FROM datavalue dv " +
@@ -3048,6 +3048,8 @@ public class IVBUtil
                 dv.setStoredBy( storedBy );
                 dv.setLastUpdated( lastUpdated );
                 
+				//if( ouId == 40 && deId == 98)
+				//	System.out.println("Inside getLatestDataValuesForTabularReport method, datavalue for ouId 40 and deId 98 is "+ dv.getValue() );
                 latestDataValues.put( ouId+":"+deId, dv );
                 
                

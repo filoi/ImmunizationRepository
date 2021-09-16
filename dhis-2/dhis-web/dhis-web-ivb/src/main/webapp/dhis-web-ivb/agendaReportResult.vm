@@ -183,7 +183,7 @@ jQuery(function() {
                 #set( $sectionResultMap = $orgUnitResultMap.get( $orgUnit ) )
 		        #set( $valueResultMap = "" )
                 #set( $valueResultMap = $sectionResultMap.get( $dataSetSection.name ) )
-                $introYearDEGroup.id - $valueResultMap.get( $introYearDEGroup.id )
+                
 				#if($valueResultMap.get( $introYearDEGroup.id ) && $valueResultMap.get( $introYearDEGroup.id ) != " ") 
 					
 					

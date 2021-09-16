@@ -689,10 +689,20 @@ public class GenerateAgendaReportAction
         {
             dataElementIdsByComma = getCommaDelimitedString( dataElementIds );
         }
-        System.out.println("E. " + dataElementIdsByComma + "----" + orgUnitIdsByComma1 );
+        //System.out.println("E. " + dataElementIdsByComma + "----" + orgUnitIdsByComma1 );
         Map<String, DataValue> dataValueMap = new HashMap<String, DataValue>();
         
         dataValueMap = ivbUtil.getLatestDataValuesForTabularReport( dataElementIdsByComma, orgUnitIdsByComma1 );
+		
+		/*
+		if( dataValueMap.get("40:98") == null )
+			System.out.println( "No datavalue object for ouId 40 and deId 98" );
+		else if( dataValueMap.get("40:98").getValue() == null )
+			System.out.println( "No datavalue for ouId 40 and deId 98" );
+		else
+			System.out.println( dataValueMap.get("40:98").getValue() );
+		*/
+
 
         // Filter2: Getting orgunit list whose intro year is between the
         // selected start year and end year
@@ -712,11 +722,13 @@ public class GenerateAgendaReportAction
             int flag = 0;
             for ( DataElement dataElement : introYearDEs )
             {
-                System.out.println("A. "+ dataElement.getName() );
+				//if( dataElement.getId() == 98 )
+				//	System.out.println("A. "+ dataElement.getName() + " and deId = " + dataElement.getId() + " and ouId = "+ orgUnit.getId() );
                 Set<AttributeValue> dataElementAttributeValues = dataElement.getAttributeValues();
                 if ( dataElementAttributeValues != null && dataElementAttributeValues.size() > 0 )
                 {
-                    System.out.println("B. Inside DEattribute If");
+					//if( dataElement.getId() == 98 )
+					//	System.out.println("B. Inside DEattribute If");
                     for ( AttributeValue deAttributeValue : dataElementAttributeValues )
                     {
                         if ( deAttributeValue.getAttribute().getId() == vaccineAttributeConstant.getValue()
@@ -724,29 +736,32 @@ public class GenerateAgendaReportAction
                             && sectionNames.contains( deAttributeValue.getValue().trim() ) )
                         {
                             //DataValue dv = dataValueService.getLatestDataValue( dataElement, optionCombo, orgUnit );
-                            System.out.println("C. DEAttribute Match"  );
+                            //if( dataElement.getId() == 98 )
+							//	System.out.println("C. DEAttribute Match"  );
                             DataValue dv = dataValueMap.get( orgUnit.getId()+":"+dataElement.getId() );
-                            if ( dv != null && dv.getValue() != null && dv.getValue().trim().equals(""))
+                            if ( dv != null && dv.getValue() != null && !dv.getValue().trim().equals("") )
                             {
-                                System.out.println("D. DV Exist" );
+								//if( dataElement.getId() == 98 )
+								//	System.out.println("D. DV Exist" );
                                 String value = dv.getValue();
                                 String comment = dv.getComment();
-                                Map<Integer, String> valueResultMap = sectionResultMap.get( deAttributeValue.getValue()
-                                    .trim() );
+                                Map<Integer, String> valueResultMap = sectionResultMap.get( deAttributeValue.getValue().trim() );
                                 if ( valueResultMap == null || valueResultMap.size() <= 0 )
                                 {
                                     valueResultMap = new HashMap<Integer, String>();
                                 }
+								//if( orgUnit.getId() == 70 )
+								//	System.out.println( "Value = " + value ); 
                                 //Date valueDate = getStartDateByString( value );
 								Date valueDate = getEndDateByString ( value );
-								System.out.println("1. " + valueDate + "----" + sDate + "----" + eDate);
+								//System.out.println("1. " + valueDate + "----" + sDate + "----" + eDate);
                                 if ( valueDate != null && sDate.getTime() <= valueDate.getTime()
                                     && valueDate.getTime() <= eDate.getTime() )
                                 {
                                     valueResultMap.put( introYearDEGroup.getId(), value + ":" + comment );
                                     sectionResultMap.put( deAttributeValue.getValue().trim(), valueResultMap );
                                     orgUnitResultMap.put( orgUnit, sectionResultMap );
-                                    System.out.println("2. " + valueDate + "----" + sDate + "----" + eDate);
+                                    //System.out.println("2. " + valueDate + "----" + sDate + "----" + eDate);
                                     if ( valueDate.equals( sDate ) || valueDate.equals( eDate )
                                         || (valueDate.after( sDate ) && valueDate.before( eDate )) )
                                     {
@@ -1260,7 +1275,8 @@ public class GenerateAgendaReportAction
             startDate = startDateParts[0] + "-" + startDateParts[1] + "-01";
         }
 
-        Date sDate = format.parseDate( startDate );
+        Date sDate = null;
+		try{ sDate = format.parseDate( startDate ); }catch(Exception e){}
 
         return sDate;
     }
@@ -1299,19 +1315,17 @@ public class GenerateAgendaReportAction
         }
         else
         {
-            if ( Integer.parseInt( endDateParts[0] ) % 400 == 0 )
-            {
-                endDate = endDateParts[0] + "-" + endDateParts[1] + "-"
-                    + (monthDays[Integer.parseInt( endDateParts[1] )] + 1);
+			try{
+				if( Integer.parseInt( endDateParts[0] ) % 400 == 0 )
+					endDate = endDateParts[0] + "-" + endDateParts[1] + "-" + (monthDays[Integer.parseInt( endDateParts[1] )] + 1);            
+				else
+					endDate = endDateParts[0] + "-" + endDateParts[1] + "-" + (monthDays[Integer.parseInt( endDateParts[1] )]);
             }
-            else
-            {
-                endDate = endDateParts[0] + "-" + endDateParts[1] + "-"
-                    + (monthDays[Integer.parseInt( endDateParts[1] )]);
-            }
+			catch(Exception e){ endDate = null; }
         }
 
-        Date eDate = format.parseDate( endDate );
+        Date eDate = null;
+		try{ eDate = format.parseDate( endDate ); }catch(Exception e){}
 
         return eDate;
     }
