@@ -131,7 +131,7 @@ $(function() {
                     #if( $incomeLevel == "ON" )   <th onclick="sorting()" align="left" style="vertical-align: middle;">$i18n.getString( "income_level" )</th>#end 
                   	#if( $gaviEligibleStatus == "ON" )  <th onclick="sorting()" align="left" style="vertical-align: middle;">$i18n.getString( "gavi_eligibility_status" )</th>#end 
                     
-                    <th onclick="sorting()" align="left">$i18n.getString( "vaccines" ) <img src="images/asc.gif" class="asc" style="display:none;float:right;"/><img src="images/desc.gif" class="desc" style="display:none;float:right;"/></th>
+                    <th onclick="sorting()" align="left">$i18n.getString( "Vaccine" ) <img src="images/asc.gif" class="asc" style="display:none;float:right;"/><img src="images/desc.gif" class="desc" style="display:none;float:right;"/></th>
 
                     #foreach( $colObj in $colList )
                         <th onclick="sorting()" align="left">$!colObj.name</th>

@@ -174,7 +174,7 @@ jQuery(function() {
             </tbody>
         </table>
 
-        <h3>Vaccine Introductions & Campaigns & Demos</h4>
+        <h3>Vaccine Introductions & Campaigns & Demos</h3>
         #set( $tableCount = 1 )
         #foreach( $dataSetSection in $dataSetSections )
             #set( $count = 1 )
@@ -183,9 +183,12 @@ jQuery(function() {
                 #set( $sectionResultMap = $orgUnitResultMap.get( $orgUnit ) )
 		        #set( $valueResultMap = "" )
                 #set( $valueResultMap = $sectionResultMap.get( $dataSetSection.name ) )
-                #if($valueResultMap.get( $introYearDEGroup.id ) && $valueResultMap.get( $introYearDEGroup.id ) != " ") 
+                $introYearDEGroup.id - $valueResultMap.get( $introYearDEGroup.id )
+				#if($valueResultMap.get( $introYearDEGroup.id ) && $valueResultMap.get( $introYearDEGroup.id ) != " ") 
 					
-                    #if( $count == 1 )						
+					
+                    #if( $count == 1 )	
+						
 						#set( $tableCount = $tableCount + 1 )
                         <h4>$dataSetSection.displayName</h4>
                         <table class="tablesorter" id="vicd_table$tableCount" cellspacing="0" cellpadding="3" style="width:100%;">        

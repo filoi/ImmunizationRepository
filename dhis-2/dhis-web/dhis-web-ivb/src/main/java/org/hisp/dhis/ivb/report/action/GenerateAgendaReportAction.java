@@ -689,8 +689,9 @@ public class GenerateAgendaReportAction
         {
             dataElementIdsByComma = getCommaDelimitedString( dataElementIds );
         }
-        
+        System.out.println("E. " + dataElementIdsByComma + "----" + orgUnitIdsByComma1 );
         Map<String, DataValue> dataValueMap = new HashMap<String, DataValue>();
+        
         dataValueMap = ivbUtil.getLatestDataValuesForTabularReport( dataElementIdsByComma, orgUnitIdsByComma1 );
 
         // Filter2: Getting orgunit list whose intro year is between the
@@ -711,9 +712,11 @@ public class GenerateAgendaReportAction
             int flag = 0;
             for ( DataElement dataElement : introYearDEs )
             {
+                System.out.println("A. "+ dataElement.getName() );
                 Set<AttributeValue> dataElementAttributeValues = dataElement.getAttributeValues();
                 if ( dataElementAttributeValues != null && dataElementAttributeValues.size() > 0 )
                 {
+                    System.out.println("B. Inside DEattribute If");
                     for ( AttributeValue deAttributeValue : dataElementAttributeValues )
                     {
                         if ( deAttributeValue.getAttribute().getId() == vaccineAttributeConstant.getValue()
@@ -721,9 +724,11 @@ public class GenerateAgendaReportAction
                             && sectionNames.contains( deAttributeValue.getValue().trim() ) )
                         {
                             //DataValue dv = dataValueService.getLatestDataValue( dataElement, optionCombo, orgUnit );
+                            System.out.println("C. DEAttribute Match"  );
                             DataValue dv = dataValueMap.get( orgUnit.getId()+":"+dataElement.getId() );
-                            if ( dv != null && dv.getValue() != null )
+                            if ( dv != null && dv.getValue() != null && dv.getValue().trim().equals(""))
                             {
+                                System.out.println("D. DV Exist" );
                                 String value = dv.getValue();
                                 String comment = dv.getComment();
                                 Map<Integer, String> valueResultMap = sectionResultMap.get( deAttributeValue.getValue()
@@ -732,13 +737,16 @@ public class GenerateAgendaReportAction
                                 {
                                     valueResultMap = new HashMap<Integer, String>();
                                 }
-                                Date valueDate = getStartDateByString( value );
+                                //Date valueDate = getStartDateByString( value );
+								Date valueDate = getEndDateByString ( value );
+								System.out.println("1. " + valueDate + "----" + sDate + "----" + eDate);
                                 if ( valueDate != null && sDate.getTime() <= valueDate.getTime()
                                     && valueDate.getTime() <= eDate.getTime() )
                                 {
                                     valueResultMap.put( introYearDEGroup.getId(), value + ":" + comment );
                                     sectionResultMap.put( deAttributeValue.getValue().trim(), valueResultMap );
                                     orgUnitResultMap.put( orgUnit, sectionResultMap );
+                                    System.out.println("2. " + valueDate + "----" + sDate + "----" + eDate);
                                     if ( valueDate.equals( sDate ) || valueDate.equals( eDate )
                                         || (valueDate.after( sDate ) && valueDate.before( eDate )) )
                                     {
@@ -865,8 +873,9 @@ public class GenerateAgendaReportAction
                                 {
                                     valueResultMap = new HashMap<Integer, String>();
                                 }
-                                Date valueDate = getStartDateByString( value );
-
+                                //Date valueDate = getStartDateByString( value );
+								Date valueDate = getEndDateByString ( value );
+								
                                 if ( valueDate != null && sDate.getTime() <= valueDate.getTime()
                                     && valueDate.getTime() <= eDate.getTime() )
                                 {

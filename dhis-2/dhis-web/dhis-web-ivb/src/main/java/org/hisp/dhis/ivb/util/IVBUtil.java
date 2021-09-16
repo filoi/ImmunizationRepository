@@ -3001,7 +3001,7 @@ public class IVBUtil
                              " AND dv.dataelementid=asd1.dataelementid " +
                              " AND dv.periodid=asd1.periodid";
             
-            //System.out.println( query );
+            System.out.println( query );
             
             /*
             String query = "SELECT dv.sourceid, dv.dataelementid, dv.periodid, dv.value, dv.comment, dv.storedby, dv.lastupdated FROM datavalue dv " +
