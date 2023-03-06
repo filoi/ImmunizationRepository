@@ -549,7 +549,7 @@ public class GenerateVaccineIntroReportAction
                                 }
                                 //System.out.println("6");
                                 Date valueDate = getStartDateByString( value );
-                                if( valueDate != null && (sDate == null || eDate == null) )
+                                if( value.equalsIgnoreCase("NA") || value.equalsIgnoreCase("TBD") || ( valueDate != null && (sDate == null || eDate == null)) )
                                 {
                                     valueResultMap.put( introYearDEGroup.getId(), value );
                                     sectionResultMap.put( deAttributeValue.getValue().trim(), valueResultMap );

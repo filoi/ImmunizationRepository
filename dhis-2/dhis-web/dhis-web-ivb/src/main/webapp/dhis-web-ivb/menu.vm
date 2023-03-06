@@ -852,6 +852,36 @@ function loadDataEntryByDataSetSection( dataSetSectionId )
 		</td>
 	</tr>
 	#end
+
+	#set( $sections = $dataSetSectionMap.get( 'BP5gNrJC6VA' ) )
+	#if( $sections.size() > 1)	
+	<tr #if( $!currentDataSet == '$!section.id' ) style="background-color:#A9D0F5;" #end>
+		<td>
+	       <ul class="tree1" >
+					#foreach( $section in $sections )
+						#if($!currentDataSet == $!section.id)
+							#set( $sectionsId1 = $section.id )
+						#end
+					#end
+					<li #if( $!currentDataSet == ${sectionsId1} || $currentDataSet == 'BP5gNrJC6VA') class="open" #else class="closed" #end>
+					<a href="javascript:loadDataEntryByDataSet('BP5gNrJC6VA')" id="BP5gNrJC6VA" #if( $currentDataSet == 'BP5gNrJC6VA') style="background-color:#A9D0F5;" #end>$i18n.getString( "$!sections.get(0).getDataSet().getShortName()" )</a>				
+					#foreach( $section in $sections )
+					<ul >
+						<li><a #if( $!currentDataSet == $!section.id ) style="background-color:#A9D0F5;" #end href="javascript:loadDataEntryByDataSetSection('$!section.id')" id="$!section.id">$i18n.getString( "$!section.name" )</a></li>
+					</ul>
+					#end
+					</li>
+			</ul>
+		</td>
+	</tr>
+	#else
+	<tr #if( $!currentDataSet == 'BP5gNrJC6VA' ) style="background-color:#A9D0F5;" #end>
+		<td>
+	        &nbsp;&nbsp;
+	        <a href="javascript:loadDataEntryByDataSet('BP5gNrJC6VA')" id="BP5gNrJC6VA">$i18n.getString( "$!sections.get(0).getDataSet().getShortName()" )</a><br/>
+		</td>
+	</tr>
+	#end
 	
 <!--	<tr height="30">
 		<td width="18%" style="background-color:#E0ECF8;"><strong>Country iSC</strong></td>

@@ -3548,14 +3548,14 @@ public class IVBUtil
             					" value = 'true'";
             
 
-            //System.out.println("query--- "+query);
+            System.out.println("query--- "+query);
             
             SqlRowSet rs = jdbcTemplate.queryForRowSet( query );
 
             while ( rs.next() )
             {
                 Integer deId = rs.getInt( 1 );
-                //System.out.println("de id 1 --- "+deId);
+                System.out.println("de id 1 --- "+deId);
                 DataElement de = dataElementService.getDataElement( deId );
                 //System.out.println("de id 2 --- "+de.getId());
                 

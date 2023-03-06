@@ -157,6 +157,10 @@ $(function() {
                             <option value="$vaccine.id">$vaccine.displayName</option>                            
                         #end
                         <option value="11">CCOP</option>
+                        <option value="1540873">TCA</option>
+                        <option value="1540876">EAF</option>
+                        <option value="1540874">HSS</option>
+                        <option value="1540875">MICs</option>
                       </select>
                     </td>
                     <td style="text-align:center" width="10%">
