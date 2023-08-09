@@ -161,6 +161,7 @@ $(function() {
                         <option value="1540876">EAF</option>
                         <option value="1540874">HSS</option>
                         <option value="1540875">MICs</option>
+                        <option value="1541697">FPP</option>
                       </select>
                     </td>
                     <td style="text-align:center" width="10%">
