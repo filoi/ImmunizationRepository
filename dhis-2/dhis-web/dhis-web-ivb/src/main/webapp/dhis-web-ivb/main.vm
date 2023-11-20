@@ -541,7 +541,7 @@
 			<!-- <li id="action_point"><a href="#"><b>$i18n.getString( "menu_action_point" )</b></a></li> -->
 			<li id="report"><a href="#"><b>$i18n.getString( "menu_global_reports" )</b></a>
 				<ul>										
-					<!--<li id="alertReport" style="display:none;"><a href="alertReportForm.action"><b>$i18n.getString( "alerts" )</b></a></li>-->
+					<!--<li id="alertReport" style="display:none;"><a href="alertReportForm.action"><b>$i18n.getString( "alerts" )</b></a></li>
 					<li><a href="#"><b>Campaign Delay Tracker (due to Covid-19)</b></a>
 						<ul>
 							<li><a href="campaignTrackerForm.action"><b>Campaign Tracker</b></a></li>
@@ -549,37 +549,37 @@
 							<li><a href="campaignDashboard.action"><b>Campaign Overview</b></a></li>
 							<li><a href="campaignTrackerForm.action?resultPage=1"><b>Measles Dashboard</b></a></li>
 						</ul>
-					</li>
-					<li id="covidIntroReportMenu"><a href="#"><b>Covid-19 Introduction Report</b></a>
+					</li>-->
+					<!--<li id="covidIntroReportMenu"><a href="#"><b>Covid-19 Introduction Report</b></a>
 						<ul>
 							<li id="covidIntroTracker" style="display:none;"><a href="covidIntroTrackerForm.action"><b>Covid-19 Global Monitoring Dashboard</b></a></li>
 							<li id="covidVaccineIntroTracker" style="display:none;"><a href="covidIntroTrackerForm.action?covidPage=1"><b>Covid-19 Vaccine Introduction Tracker</b></a></li>
 							<li id="covidCountryReport" style="display:none;"><a href="covidCountryProfileForm.action"><b>Covid-19 Country Report</b></a></li>
 							<li><a href="covidIntroTrackerForm.action?covidPage=4"><b>Covid-19 Dashboard (coded)</b></a></li>
 						</ul>
-					</li>	
+					</li>	-->
 					<li><a href="tabularReportForm.action"><b>$i18n.getString( "tabular_report" )</b></a></li>
 					<li id="cmypDevTrackingReport" style="display:none;"><a href="cmypDevTrackingReportForm.action"><b>$i18n.getString( "cmyp_development_tracking" )</b></a></li>
 					
 					<li><a href="dataElementHistoryReportForm.action"><b>$i18n.getString( "menu_dataelement_hisotry_report" )</b></a></li>
 					<li><a href="gaviReportForm.action"><b>$i18n.getString( "gavi_applications_report" )</b></a></li>
-					<li><a href="loadHPVDemoReportScreen.action"><b>$i18n.getString( "menu_hpv_demo_report" )</b></a></li>
+					<!--<li><a href="loadHPVDemoReportScreen.action"><b>$i18n.getString( "menu_hpv_demo_report" )</b></a></li>-->
 
-                    <li><a href="#"><b>$i18n.getString( "ipv_report" )</b></a>
+                   <!-- <li><a href="#"><b>$i18n.getString( "ipv_report" )</b></a>
                         <ul>
                              <li><a href="ipvCountryReportForm.action"><b>$i18n.getString( "ipv_country_report" )</b></a></li>
                              <li><a href="ipvImplementationReportForm.action"><b>$i18n.getString( "ipv_implementation_report" )</b></a></li>
                              <li><a href="imgCallDashboard.action"><b>$i18n.getString( "img_call_dashboard" )</b></a></li>
                         </ul>
-                    </li>
+                    </li>-->
 							
 					<li><a href="keyFlagReport.action"><b>$i18n.getString( "key_flag_report" )</b></a></li>
 					
-					<li><a href="#"><b>$i18n.getString( "mcv2" )</b></a>
+					<!--<li><a href="#"><b>$i18n.getString( "mcv2" )</b></a>
                         <ul>
                              <li><a href="mcv2IntroAndPieForm.action"><b>$i18n.getString( "mcv2_intro_and_pie" )</b></a></li>
                         </ul>
-                    </li>
+                    </li> -->
 					
 					<li><a href="pieReportForm.action"><b>$i18n.getString( "pie_canned_report" )</b></a></li>
 					<li id="progReviewTAReport" style="display:none;"><a href="pieProgReviewTAReportForm.action"><b>$i18n.getString( "prog_review_tech_assistance" )</b></a></li>
@@ -593,7 +593,7 @@
 		    <!--<li id="userActivityLoginMonitoring" style="display:none;"><a href="getuserActivityLoginMonitoring.action"><b>$i18n.getString( "user_activity_login_monitoring" )</b></a></li> -->
 					
 				   	<!--<li><a href="getuserActivityLoginMonitoring.action"><b>$i18n.getString( "user_activity_login_monitoring" )</b></a></li>-->
-				    <li><a href="GetMMRStatus.action"><b>$i18n.getString( "Status_of_M/MR_SIA_Readiness")</b></a></li>
+				   <!-- <li><a href="GetMMRStatus.action"><b>$i18n.getString( "Status_of_M/MR_SIA_Readiness")</b></a></li>-->
 					<li><a href="vaccineIntroReport.action"><b>$i18n.getString( "vaccine_introduction_report" )</b></a></li>
 					<li><a href="switchesReportForm.action"><b>Vaccine Switches Report</b></a></li>
 				</ul>
@@ -622,6 +622,51 @@
 					<li><a href="countryActivitiesDashboardForm.action"><b>$i18n.getString( "country_activities_dashboard" )</b></a></li>					
 				</ul>
 			</li>
+			<li id="country_reports"><a href="#"><b>Archived Reports</b></a>
+				<ul>
+					<li><a href="loadHPVDemoReportScreen.action"><b>$i18n.getString( "menu_hpv_demo_report" )</b></a></li>			
+
+					<li><a href="#"><b>$i18n.getString( "mcv2" )</b></a>
+                        <ul>
+                             <li><a href="mcv2IntroAndPieForm.action"><b>$i18n.getString( "mcv2_intro_and_pie" )</b></a></li>
+                        </ul>
+                    </li>
+					<li><a href="#"><b>Campaign Delay Tracker (due to Covid-19)</b></a>
+						<ul>
+							<li><a href="campaignTrackerForm.action"><b>Campaign Tracker</b></a></li>
+							<li><a href="campaignCalendarForm.action?resultPage=0"><b>Campaign Calendar</b></a></li>
+							<li><a href="campaignDashboard.action"><b>Campaign Overview</b></a></li>
+							<li><a href="campaignTrackerForm.action?resultPage=1"><b>Measles Dashboard</b></a></li>
+						</ul>
+					</li>
+
+					 <li><a href="#"><b>$i18n.getString( "ipv_report" )</b></a>
+                        <ul>
+                             <li><a href="ipvCountryReportForm.action"><b>$i18n.getString( "ipv_country_report" )</b></a></li>
+                             <li><a href="ipvImplementationReportForm.action"><b>$i18n.getString( "ipv_implementation_report" )</b></a></li>
+                             <li><a href="imgCallDashboard.action"><b>$i18n.getString( "img_call_dashboard" )</b></a></li>
+                        </ul>
+                    </li>
+					<li id="covidIntroReportMenu"><a href="#"><b>Covid-19 Introduction Report</b></a>
+						<ul>
+							<li id="covidIntroTracker" style="display:none;"><a href="covidIntroTrackerForm.action"><b>Covid-19 Global Monitoring Dashboard</b></a></li>
+							<li id="covidVaccineIntroTracker" style="display:none;"><a href="covidIntroTrackerForm.action?covidPage=1"><b>Covid-19 Vaccine Introduction Tracker</b></a></li>
+							<li id="covidCountryReport" style="display:none;"><a href="covidCountryProfileForm.action"><b>Covid-19 Country Report</b></a></li>
+							<li><a href="covidIntroTrackerForm.action?covidPage=4"><b>Covid-19 Dashboard (coded)</b></a></li>
+						</ul>
+					</li>
+					<li><a href="GetMMRStatus.action"><b>$i18n.getString( "Status_of_M/MR_SIA_Readiness")</b></a></li>	
+
+					<li id="map_chart"><a href="#"><b>$i18n.getString( "Maps_and_Charts" )</b></a>
+						<ul>
+								#if( $auth.hasAccess( "dhis-web-ivb", "DEmapping") )
+									<li><a href="DEmapping.action"><b>$i18n.getString( "de_mapping" )</b></a></li>
+								#end
+							<li><a href="MapsAndChartsIntro.action"><b>$i18n.getString( "Vaccine_Introduction_Maps" )</b></a></li>
+						</ul>
+			</li>
+				</ul>
+			</li>
 
 			<li id="menu_isc_reports" style="display:none;"><a href="#"><b>$i18n.getString( "isc_reports" )</b></a>
 				<ul>
@@ -639,14 +684,14 @@
 				</ul>
 			</li>
 
-			<li id="map_chart"><a href="#"><b>$i18n.getString( "Maps_and_Charts" )</b></a>
+			<!--<li id="map_chart"><a href="#"><b>$i18n.getString( "Maps_and_Charts" )</b></a>
 				<ul>
 					#if( $auth.hasAccess( "dhis-web-ivb", "DEmapping") )
 						<li><a href="DEmapping.action"><b>$i18n.getString( "de_mapping" )</b></a></li>
 					#end
 					<li><a href="MapsAndChartsIntro.action"><b>$i18n.getString( "Vaccine_Introduction_Maps" )</b></a></li>
 				</ul>
-			</li>
+			</li>-->
 			<li id="menu_help"><a href="#"><b>$i18n.getString( "menu_help" )</b></a>
                 <ul>
                     <li><a href="help.action"><b>$i18n.getString( "help_centre" )</b></a></li>

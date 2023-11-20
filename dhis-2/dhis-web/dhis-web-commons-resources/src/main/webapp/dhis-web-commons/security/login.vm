@@ -76,7 +76,7 @@
                     </tr>
                     <tr style="">
                          <td colspan="2">
-                            <img src="login_or.png"/>
+                           <!-- <img src="login_or.png"/>-->
                          </td>
                     </tr>                                       
                 </table>
@@ -85,20 +85,20 @@
         </tr>
         <tr>
         <td colspan="2">
-        #if( $keyOpenIdProvider )
+       <!-- #if( $keyOpenIdProvider )
                <form id="openIdLoginForm" name="openIdLoginForm" action="../../dhis-web-commons-security/openid.action" method="post">
                    <input name="openid_identifier" type="hidden" value="$keyOpenIdProvider"/>
                    <center>                         
                             <a href="../../dhis-web-commons-security/openid.action?openid_identifier=$keyOpenIdProvider" ><img src="who.png" style="width:50px;"/></a>
                     </center>
                </form>
-         #end
+         #end-->
          </td>
          </tr>
         <tr align="center">
             <td>
-                <font color="#0099CC" face="Arial, Helvetica, sans-serif">
-                    <strong>WHO Staff:</strong></font> <font color="#000000" face="Arial, Helvetica, sans-serif">You can use your current account credentials.</font> <br />
+                <!--<font color="#0099CC" face="Arial, Helvetica, sans-serif">
+                    <strong>WHO Staff:</strong></font> <font color="#000000" face="Arial, Helvetica, sans-serif">You can use your current account credentials.</font> <br />-->
             </td>
         </tr>
         <tr style="display:none" align="center">

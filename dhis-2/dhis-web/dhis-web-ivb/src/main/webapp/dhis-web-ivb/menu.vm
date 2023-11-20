@@ -214,7 +214,7 @@ function loadDataEntryByDataSetSection( dataSetSectionId )
 	</tr>
 	#end
 		
-	#set( $sections = $dataSetSectionMap.get( 'oqsyGrC54cc' ) )
+	<!--#set( $sections = $dataSetSectionMap.get( 'oqsyGrC54cc' ) )
 	#if( $sections.size() > 1)	
 	<tr #if( $!currentDataSet == '$!section.id' ) style="background-color:#A9D0F5;" #end>
 		<td>
@@ -242,39 +242,10 @@ function loadDataEntryByDataSetSection( dataSetSectionId )
 	        <a href="javascript:loadDataEntryByDataSet('oqsyGrC54cc')" id="oqsyGrC54cc">$i18n.getString( "$!sections.get(0).getDataSet().getShortName()" )</a><br/>
 		</td>
 	</tr>
-	#end
+	#end-->
 	
-	#set( $sections = $dataSetSectionMap.get( 'Ip6Pc6YuFWD' ) )
-	#if( $sections.size() > 1)	
-	<tr #if( $!currentDataSet == '$!section.id' ) style="background-color:#A9D0F5;" #end>
-		<td>
-	       <ul class="tree1" >
-					#foreach( $section in $sections )
-						#if($!currentDataSet == $!section.id)
-							#set( $sectionsId1 = $section.id )
-						#end
-					#end
-					<li #if( $!currentDataSet == ${sectionsId1} || $currentDataSet == 'Ip6Pc6YuFWD') class="open" #else class="closed" #end>
-					<a href="javascript:loadDataEntryByDataSet('Ip6Pc6YuFWD')" id="Ip6Pc6YuFWD" #if( $currentDataSet == 'Ip6Pc6YuFWD') style="background-color:#A9D0F5;" #end>$i18n.getString( "$!sections.get(0).getDataSet().getShortName()" )</a>				
-					#foreach( $section in $sections )
-					<ul >
-						<li><a #if( $!currentDataSet == $!section.id ) style="background-color:#A9D0F5;" #end href="javascript:loadDataEntryByDataSetSection('$!section.id')" id="$!section.id">$i18n.getString( "$!section.name" )</a></li>
-					</ul>
-					#end
-					</li>
-			</ul>
-		</td>
-	</tr>
-	#else
-	<tr #if( $!currentDataSet == 'Ip6Pc6YuFWD' ) style="background-color:#A9D0F5;" #end>
-		<td>
-	        &nbsp;&nbsp;
-	        <a href="javascript:loadDataEntryByDataSet('Ip6Pc6YuFWD')" id="Ip6Pc6YuFWD">$i18n.getString( "$!sections.get(0).getDataSet().getShortName()" )</a><br/>
-		</td>
-	</tr>
-	#end
 	
-		#set( $sections = $dataSetSectionMap.get( 'mGnST9cIzUe' ) )
+	<!--#set( $sections = $dataSetSectionMap.get( 'mGnST9cIzUe' ) )
 	#if( $sections.size() > 1)	
 	<tr #if( $!currentDataSet == '$!section.id' ) style="background-color:#A9D0F5;" #end>
 		<td>
@@ -302,7 +273,7 @@ function loadDataEntryByDataSetSection( dataSetSectionId )
 	        <a href="javascript:loadDataEntryByDataSet('mGnST9cIzUe')" id="mGnST9cIzUe">$i18n.getString( "$!sections.get(0).getDataSet().getShortName()" )</a><br/>
 		</td>
 	</tr>
-	#end
+	#end-->
 	
 	#set( $sections = $dataSetSectionMap.get( 'NZkvBApNhQK' ) )
 	#if( $sections.size() > 1)	
@@ -362,7 +333,7 @@ function loadDataEntryByDataSetSection( dataSetSectionId )
 		</td>
 	</tr>
 	#end
-		#set( $sections = $dataSetSectionMap.get( 'pnBInaJB4W0' ) )
+	<!--#set( $sections = $dataSetSectionMap.get( 'pnBInaJB4W0' ) )
 	#if( $sections.size() > 1)	
 	<tr #if( $!currentDataSet == '$!section.id' ) style="background-color:#A9D0F5;" #end>
 		<td>
@@ -390,7 +361,7 @@ function loadDataEntryByDataSetSection( dataSetSectionId )
 	        <a href="javascript:loadDataEntryByDataSet('pnBInaJB4W0')" id="pnBInaJB4W0">$i18n.getString( "$!sections.get(0).getDataSet().getShortName()" )</a><br/>
 		</td>
 	</tr>
-	#end
+	#end -->
 	
 	<tr height="30">
         <td width="18%" style="background-color:#E0ECF8;"><strong>$i18n.getString( "ds_vaccine_delivery" )</strong></td>
@@ -545,7 +516,7 @@ function loadDataEntryByDataSetSection( dataSetSectionId )
 		</td>
 	</tr>
 	#end
-	-->
+	
 	#set( $sections = $dataSetSectionMap.get( 'L1NDfeV5lq9' ) )
 	#if( $sections.size() > 1)	
 	<tr #if( $!currentDataSet == '$!section.id' ) style="background-color:#A9D0F5;" #end>
@@ -574,7 +545,7 @@ function loadDataEntryByDataSetSection( dataSetSectionId )
 	        <a href="javascript:loadDataEntryByDataSet('L1NDfeV5lq9')" id="L1NDfeV5lq9">$i18n.getString( "$!sections.get(0).getDataSet().getShortName()" )</a><br/>
 		</td>
 	</tr>
-	#end
+	#end-->
 	
 	<!--#set( $sections = $dataSetSectionMap.get( 'zv11w3mO0WV' ) )
 	#if( $sections.size() > 1)	
@@ -882,6 +853,193 @@ function loadDataEntryByDataSetSection( dataSetSectionId )
 		</td>
 	</tr>
 	#end
+
+	<tr height="30">
+        <td width="18%" style="background-color:#E0ECF8;"><strong>ARCHIVES</strong></td>
+    </tr>
+
+
+	#set( $sections = $dataSetSectionMap.get( 'oqsyGrC54cc' ) )
+	#if( $sections.size() > 1)	
+	<tr #if( $!currentDataSet == '$!section.id' ) style="background-color:#A9D0F5;" #end>
+		<td>
+	       <ul class="tree1" >
+					#foreach( $section in $sections )
+						#if($!currentDataSet == $!section.id)
+							#set( $sectionsId1 = $section.id )
+						#end
+					#end
+					<li #if( $!currentDataSet == ${sectionsId1} || $currentDataSet == 'oqsyGrC54cc') class="open" #else class="closed" #end>
+					<a href="javascript:loadDataEntryByDataSet('oqsyGrC54cc')" id="oqsyGrC54cc" #if( $currentDataSet == 'oqsyGrC54cc') style="background-color:#A9D0F5;" #end>$i18n.getString( "$!sections.get(0).getDataSet().getShortName()" )</a>				
+					#foreach( $section in $sections )
+					<ul >
+						<li><a #if( $!currentDataSet == $!section.id ) style="background-color:#A9D0F5;" #end href="javascript:loadDataEntryByDataSetSection('$!section.id')" id="$!section.id">$i18n.getString( "$!section.name" )</a></li>
+					</ul>
+					#end
+					</li>
+			</ul>
+		</td>
+	</tr>
+	#else
+	<tr #if( $!currentDataSet == 'oqsyGrC54cc' ) style="background-color:#A9D0F5;" #end>
+		<td>
+	        &nbsp;&nbsp;
+	        <a href="javascript:loadDataEntryByDataSet('oqsyGrC54cc')" id="oqsyGrC54cc">$i18n.getString( "$!sections.get(0).getDataSet().getShortName()" )</a><br/>
+		</td>
+	</tr>
+	#end
+	
+	#set( $sections = $dataSetSectionMap.get( 'pnBInaJB4W0' ) )
+	#if( $sections.size() > 1)	
+	<tr #if( $!currentDataSet == '$!section.id' ) style="background-color:#A9D0F5;" #end>
+		<td>
+	       <ul class="tree1" >
+					#foreach( $section in $sections )
+						#if($!currentDataSet == $!section.id)
+							#set( $sectionsId1 = $section.id )
+						#end
+					#end
+					<li #if( $!currentDataSet == ${sectionsId1} || $currentDataSet == 'pnBInaJB4W0') class="open" #else class="closed" #end>
+					<a href="javascript:loadDataEntryByDataSet('pnBInaJB4W0')" id="pnBInaJB4W0" #if( $currentDataSet == 'pnBInaJB4W0') style="background-color:#A9D0F5;" #end>$i18n.getString( "$!sections.get(0).getDataSet().getShortName()" )</a>				
+					#foreach( $section in $sections )
+					<ul >
+						<li><a #if( $!currentDataSet == $!section.id ) style="background-color:#A9D0F5;" #end href="javascript:loadDataEntryByDataSetSection('$!section.id')" id="$!section.id">$i18n.getString( "$!section.name" )</a></li>
+					</ul>
+					#end
+					</li>
+			</ul>
+		</td>
+	</tr>
+	#else
+	<tr #if( $!currentDataSet == 'pnBInaJB4W0' ) style="background-color:#A9D0F5;" #end>
+		<td>
+	        &nbsp;&nbsp;
+	        <a href="javascript:loadDataEntryByDataSet('pnBInaJB4W0')" id="pnBInaJB4W0">$i18n.getString( "$!sections.get(0).getDataSet().getShortName()" )</a><br/>
+		</td>
+	</tr>
+	#end
+	
+	#set( $sections = $dataSetSectionMap.get( 'B7NPTWSbYlK' ) )
+	#if( $sections.size() > 1)	
+	<tr #if( $!currentDataSet == '$!section.id' ) style="background-color:#A9D0F5;" #end>
+		<td>
+	       <ul class="tree1" >
+					#foreach( $section in $sections )
+						#if($!currentDataSet == $!section.id)
+							#set( $sectionsId1 = $section.id )
+						#end
+					#end
+					<li #if( $!currentDataSet == ${sectionsId1} || $currentDataSet == 'B7NPTWSbYlK') class="open" #else class="closed" #end>
+					<a href="javascript:loadDataEntryByDataSet('B7NPTWSbYlK')" id="B7NPTWSbYlK" #if( $currentDataSet == 'B7NPTWSbYlK') style="background-color:#A9D0F5;" #end>$i18n.getString( "$!sections.get(0).getDataSet().getShortName()" )</a>				
+					#foreach( $section in $sections )
+					<ul >
+						<li><a #if( $!currentDataSet == $!section.id ) style="background-color:#A9D0F5;" #end href="javascript:loadDataEntryByDataSetSection('$!section.id')" id="$!section.id">$i18n.getString( "$!section.name" )</a></li>
+					</ul>
+					#end
+					</li>
+			</ul>
+		</td>
+	</tr>
+	#else
+	<tr #if( $!currentDataSet == 'B7NPTWSbYlK' ) style="background-color:#A9D0F5;" #end>
+		<td>
+	        &nbsp;&nbsp;
+	        <a href="javascript:loadDataEntryByDataSet('B7NPTWSbYlK')" id="B7NPTWSbYlK">$i18n.getString( "$!sections.get(0).getDataSet().getShortName()" )</a><br/>
+		</td>
+	</tr>
+	#end
+
+	#set( $sections = $dataSetSectionMap.get( 'mGnST9cIzUe' ) )
+	#if( $sections.size() > 1)	
+	<tr #if( $!currentDataSet == '$!section.id' ) style="background-color:#A9D0F5;" #end>
+		<td>
+	       <ul class="tree1" >
+					#foreach( $section in $sections )
+						#if($!currentDataSet == $!section.id)
+							#set( $sectionsId1 = $section.id )
+						#end
+					#end
+					<li #if( $!currentDataSet == ${sectionsId1} || $currentDataSet == 'mGnST9cIzUe') class="open" #else class="closed" #end>
+					<a href="javascript:loadDataEntryByDataSet('mGnST9cIzUe')" id="mGnST9cIzUe" #if( $currentDataSet == 'mGnST9cIzUe') style="background-color:#A9D0F5;" #end>$i18n.getString( "$!sections.get(0).getDataSet().getShortName()" )</a>				
+					#foreach( $section in $sections )
+					<ul >
+						<li><a #if( $!currentDataSet == $!section.id ) style="background-color:#A9D0F5;" #end href="javascript:loadDataEntryByDataSetSection('$!section.id')" id="$!section.id">$i18n.getString( "$!section.name" )</a></li>
+					</ul>
+					#end
+					</li>
+			</ul>
+		</td>
+	</tr>
+	#else
+	<tr #if( $!currentDataSet == 'mGnST9cIzUe' ) style="background-color:#A9D0F5;" #end>
+		<td>
+	        &nbsp;&nbsp;
+	        <a href="javascript:loadDataEntryByDataSet('mGnST9cIzUe')" id="mGnST9cIzUe">$i18n.getString( "$!sections.get(0).getDataSet().getShortName()" )</a><br/>
+		</td>
+	</tr>
+	#end
+	
+	
+	#set( $sections = $dataSetSectionMap.get( 'L1NDfeV5lq9' ) )
+	#if( $sections.size() > 1)	
+	<tr #if( $!currentDataSet == '$!section.id' ) style="background-color:#A9D0F5;" #end>
+		<td>
+	       <ul class="tree1" >
+					#foreach( $section in $sections )
+						#if($!currentDataSet == $!section.id)
+							#set( $sectionsId1 = $section.id )
+						#end
+					#end
+					<li #if( $!currentDataSet == ${sectionsId1} || $currentDataSet == 'L1NDfeV5lq9') class="open" #else class="closed" #end>
+					<a href="javascript:loadDataEntryByDataSet('L1NDfeV5lq9')" id="L1NDfeV5lq9" #if( $currentDataSet == 'L1NDfeV5lq9') style="background-color:#A9D0F5;" #end>$i18n.getString( "$!sections.get(0).getDataSet().getShortName()" )</a>				
+					#foreach( $section in $sections )
+					<ul >
+						<li><a #if( $!currentDataSet == $!section.id ) style="background-color:#A9D0F5;" #end href="javascript:loadDataEntryByDataSetSection('$!section.id')" id="$!section.id">$i18n.getString( "$!section.name" )</a></li>
+					</ul>
+					#end
+					</li>
+			</ul>
+		</td>
+	</tr>
+	#else
+	<tr #if( $!currentDataSet == 'L1NDfeV5lq9' ) style="background-color:#A9D0F5;" #end>
+		<td>
+	        &nbsp;&nbsp;
+	        <a href="javascript:loadDataEntryByDataSet('L1NDfeV5lq9')" id="L1NDfeV5lq9">$i18n.getString( "$!sections.get(0).getDataSet().getShortName()" )</a><br/>
+		</td>
+	</tr>
+	#end
+	
+	#set( $sections = $dataSetSectionMap.get( 'mLbxhGUiqmz' ) )
+	#if( $sections.size() > 1)	
+	<tr #if( $!currentDataSet == '$!section.id' ) style="background-color:#A9D0F5;" #end>
+		<td>
+	       <ul class="tree1" >
+					#foreach( $section in $sections )
+						#if($!currentDataSet == $!section.id)
+							#set( $sectionsId1 = $section.id )
+						#end
+					#end
+					<li #if( $!currentDataSet == ${sectionsId1} || $currentDataSet == 'mLbxhGUiqmz') class="open" #else class="closed" #end>
+					<a href="javascript:loadDataEntryByDataSet('mLbxhGUiqmz')" id="mLbxhGUiqmz" #if( $currentDataSet == 'mLbxhGUiqmz') style="background-color:#A9D0F5;" #end>$i18n.getString( "$!sections.get(0).getDataSet().getShortName()" )</a>				
+					#foreach( $section in $sections )
+					<ul >
+						<li><a #if( $!currentDataSet == $!section.id ) style="background-color:#A9D0F5;" #end href="javascript:loadDataEntryByDataSetSection('$!section.id')" id="$!section.id">$i18n.getString( "$!section.name" )</a></li>
+					</ul>
+					#end
+					</li>
+			</ul>
+		</td>
+	</tr>
+	#else
+	<tr #if( $!currentDataSet == 'mLbxhGUiqmz' ) style="background-color:#A9D0F5;" #end>
+		<td>
+	        &nbsp;&nbsp;
+	        <a href="javascript:loadDataEntryByDataSet('mLbxhGUiqmz')" id="mLbxhGUiqmz">$i18n.getString( "$!sections.get(0).getDataSet().getShortName()" )</a><br/>
+		</td>
+	</tr>
+	#end
+	
 	
 <!--	<tr height="30">
 		<td width="18%" style="background-color:#E0ECF8;"><strong>Country iSC</strong></td>

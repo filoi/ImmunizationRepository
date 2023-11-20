@@ -142,6 +142,22 @@ $(function() {
 <form id="vacIntroReportForm" method="get" action="$!resultActionName" onsubmit="return generateHTMLreport()">
     <input type="hidden" name="orgUnitId" id="orgUnitId"/>
     <div id="reportFilterDiv" >
+		<table>
+		<tr>
+			<td width="100%"> <font size="+1">To find information on measles-rubella campaigns, please scroll down on this page 
+			<a href = "https://immunizationdata.who.int/listing.html?topic=&location=" target="_blank"> https://immunizationdata.who.int/listing </a>
+			 to "Summary of Measles-Rubella SIAs"</font></td>
+		</tr>
+		
+		</table>
+		<table>
+		<tr>
+			<td width="100%"> <font size="+1"> To find information on Integrated Campaigns, please see here:
+			<a href = "https://campaigneffectiveness.org/campaign-calendar/?utm_medium=email&_hsmi=276662664&_hsenc=p2ANqtz--uiuMxnX3MMS5Foys4EL1MHJAMYr3Dx4EwhSo4CPI6nF6Xn4rpPnE3fWPoxcnRsQBR2Q0hGQApvQ6KPrcAxvqmihi9tQ&utm_content=276662664&utm_source=hs_email" target="_blank">
+			https://campaigneffectiveness.org/campaign-calendar </a>
+			</font></td>
+		</tr>
+		</table>
         <table style="width:95%;margin:auto;table-layout:fixed;" cellpadding="4" cellspacing="2">
                
              <tr>
