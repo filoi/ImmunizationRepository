@@ -35,12 +35,21 @@
     <div id="reportFilterDiv" >
         <table style="width:90%;margin:auto;" cellpadding="4" cellspacing="2">
             <tr>
-                <td width="60%">
+                <td width="55%">
                     <div id="orgUnitTreeContainer" style="height: 250px; width: 450px;">
 						#organisationUnitSelectionTree1( false, true, true )
 					</div>
+                 </td>                 
+                 <td width="45%">
+                    <br/><br/><br/><br/>		 			
+		 			<br/><br/>
+		 			<input type="checkbox" name="isoCode" /> $i18n.getString( "iso_code" )<br/>
+		 			<input type="checkbox" name="whoRegion" checked /> $i18n.getString( "who_region" )<br/>
+		 			<input type="checkbox" name="unicefRegion" /> $i18n.getString( "unicef_region" )<br/>
+		 			<input type="checkbox" name="incomeLevel" /> $i18n.getString( "income_level" )<br/>
+		 			<input type="checkbox" name="gaviEligibleStatus" /> $i18n.getString( "gavi_eligibility_status" )<br/>
+		 			<!-- <input type="checkbox" name="showComment" /> Include comments<br/> -->
                  </td>
-                 <td width="40%">&nbsp;</td>
             </tr>           
             <tr>
                 <td>

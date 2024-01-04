@@ -12,6 +12,8 @@ import java.util.Map;
 
 import org.hisp.dhis.common.comparator.IdentifiableObjectNameComparator;
 import org.hisp.dhis.configuration.ConfigurationService;
+import org.hisp.dhis.constant.Constant;
+import org.hisp.dhis.constant.ConstantService;
 import org.hisp.dhis.dataelement.DataElement;
 import org.hisp.dhis.dataelement.DataElementService;
 import org.hisp.dhis.dataset.DataSet;
@@ -22,6 +24,8 @@ import org.hisp.dhis.lookup.Lookup;
 import org.hisp.dhis.lookup.LookupService;
 import org.hisp.dhis.message.MessageService;
 import org.hisp.dhis.organisationunit.OrganisationUnit;
+import org.hisp.dhis.organisationunit.OrganisationUnitGroupService;
+import org.hisp.dhis.organisationunit.OrganisationUnitGroupSet;
 import org.hisp.dhis.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.oust.manager.SelectionTreeManager;
 import org.hisp.dhis.user.CurrentUserService;
@@ -65,6 +69,13 @@ public class IPV2TrackResultAction implements Action
 
     @Autowired
     private DataElementService dataElementService;
+
+    @Autowired
+    private ConstantService constantService;
+
+    @Autowired
+    private OrganisationUnitGroupService organisationUnitGroupService;
+
     // -------------------------------------------------------------------------
     // Getters / Setters
     // -------------------------------------------------------------------------
@@ -125,13 +136,85 @@ public class IPV2TrackResultAction implements Action
         return deDatasets;
     }
 
+
+    private String isoCode;
+    public String getIsoCode() {
+		return isoCode;
+	}
+	public void setIsoCode(String isoCode){
+		this.isoCode = isoCode;
+	}
+
+    private String whoRegion;
+    public String getWhoRegion(){
+		return whoRegion;
+	}
+	public void setWhoRegion(String whoRegion){
+		this.whoRegion = whoRegion;
+	}
+
+    private String unicefRegion;
+    public String getUnicefRegion(){
+		return unicefRegion;
+	}
+	public void setUnicefRegion(String unicefRegion){
+		this.unicefRegion = unicefRegion;
+	}
+
+    private String incomeLevel;
+    public String getIncomeLevel(){
+		return incomeLevel;
+	}
+	public void setIncomeLevel(String incomeLevel){
+		this.incomeLevel = incomeLevel;
+	}
+
+    private String gaviEligibleStatus;
+    public String getGaviEligibleStatus(){
+		return gaviEligibleStatus;
+	}
+	public void setGaviEligibleStatus(String gaviEligibleStatus){
+		this.gaviEligibleStatus = gaviEligibleStatus;
+	}
+
+    private String showComment;
+    public String getShowComment() {
+		return showComment;
+	}
+	public void setShowComment(String showComment) {
+		this.showComment = showComment;
+	}
+
+    private OrganisationUnitGroupSet unicefRegionsGroupSet;
+    public OrganisationUnitGroupSet getUnicefRegionsGroupSet()
+    {
+        return unicefRegionsGroupSet;
+    }
+
+    private Map<String, DataValue> headerDataValueMap = new HashMap<String, DataValue>();
+    public Map<String, DataValue> getHeaderDataValueMap(){
+        return headerDataValueMap;
+    }
+
     // -------------------------------------------------------------------------
     // Action Implementation
     // -------------------------------------------------------------------------
     @Override
     public String execute() throws Exception
     {
+        //Selected addl columns for orgunit info
+    	if( isoCode != null )
+    	    isoCode = "ON";
+        if( whoRegion != null )
+            whoRegion = "ON";
+        if( unicefRegion != null )
+            unicefRegion = "ON";
+        if( incomeLevel != null )
+            incomeLevel = "ON";
+        if( gaviEligibleStatus != null )
+            gaviEligibleStatus = "ON";
         
+
         userName = currentUserService.getCurrentUser().getUsername();
 
         if ( i18nService.getCurrentLocale() == null )
@@ -210,6 +293,19 @@ public class IPV2TrackResultAction implements Action
         dataValueMap = ivbUtil.getLatestDataValuesForTabularReport( dataElementIdsByComma, orgUnitIdsByComma );
         Collections.sort( orgUnitList, new IdentifiableObjectNameComparator() );
         
+        lookup = lookupService.getLookupByName( "UNICEF_REGIONS_GROUPSET" );
+        unicefRegionsGroupSet = organisationUnitGroupService.getOrganisationUnitGroupSet( Integer.parseInt( lookup.getValue() ) );
+
+        Constant tabularDataElementGroupId = constantService.getConstantByName( "TABULAR_REPORT_DATAELEMENTGROUP_ID" );        
+        List<DataElement> dataElements = new ArrayList<DataElement>( dataElementService.getDataElementsByGroupId( (int) tabularDataElementGroupId.getValue() ) );
+        List<Integer >headerDataElementIds = new ArrayList<Integer>( getIdentifiers( dataElements ) );
+        String headerDataElementIdsByComma = "-1";
+        if ( headerDataElementIds.size() > 0 )
+            headerDataElementIdsByComma = getCommaDelimitedString( headerDataElementIds );
+
+        headerDataValueMap = ivbUtil.getLatestDataValuesForTabularReport( headerDataElementIdsByComma, orgUnitIdsByComma );
+
+
         return SUCCESS;
     }
 }

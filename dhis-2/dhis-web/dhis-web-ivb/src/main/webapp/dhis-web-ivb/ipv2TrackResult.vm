@@ -141,6 +141,12 @@ table.tablesorter tr.odd td:hover {
         	<thead>
             	<tr>
 					<th align="left" style="vertical-align: middle;">$i18n.getString( "country" )</th>
+                    #if( $isoCode == "ON" )   <th align="left" style="vertical-align: middle;">$i18n.getString( "iso_code" )</th>#end 
+                  	#if( $whoRegion == "ON" )  <th align="left" style="vertical-align: middle;">$i18n.getString( "who_region" )</th>#end 
+                  	#if( $unicefRegion == "ON" )  <th align="left" style="vertical-align: middle;">$i18n.getString( "unicef_region" )</th>#end 
+                    #if( $incomeLevel == "ON" )   <th align="left" style="vertical-align: middle;">$i18n.getString( "income_level" )</th>#end 
+                  	#if( $gaviEligibleStatus == "ON" )  <th align="left" style="vertical-align: middle;">$i18n.getString( "gavi_eligibility_status" )</th>#end 
+
 					#foreach( $de in $deList )
 						<th align="left" style="vertical-align: middle;">$!de.shortName</th>
 						<th align="left" style="display:none;vertical-align: middle;">$!de.shortName Comment</th>
@@ -159,6 +165,30 @@ table.tablesorter tr.odd td:hover {
 					<tr>
 						<!-- Country -->
 						<td align="left" style="vertical-align: middle;">$orgUnit.name</td>
+                       	#if( $isoCode == "ON" ) <td style="vertical-align: middle;">$orgUnit.code</td> #end
+                       	#if( $whoRegion == "ON" ) <td align="left" style="vertical-align: middle;">$!orgUnit.getParent().shortName</td> #end
+                       	#if( $unicefRegion == "ON" ) <td style="vertical-align: middle;">$orgUnit.getGroupInGroupSet( $unicefRegionsGroupSet ).getShortName()</td> #end
+
+                        #set( $headergetter = "" )
+                        #set( $headergetter = "$orgUnit.id:3" )
+                        #if( $incomeLevel == "ON" )
+                           	#if('$!headerDataValueMap.get($headergetter)' != 'null' )
+                               	<td style="vertical-align: middle;">$!headerDataValueMap.get($headergetter).value</td>
+                           	#else   
+                               	<td style="vertical-align: middle;">&nbsp;</td>
+                           	#end
+                        #end
+
+                        #set( $headergetter = "" )
+                        #set( $headergetter = "$orgUnit.id:4" )   
+                        #if( $gaviEligibleStatus == "ON" )                         
+                           	#if('$!headerDataValueMap.get($headergetter)' != 'null' )
+                               	<td style="vertical-align: middle;">$!headerDataValueMap.get($headergetter).value</td>   
+                           	#else
+                               	<td style="vertical-align: middle;">&nbsp;</td>
+                           	#end
+                        #end
+
 						#foreach( $de in $deList )
 						
 							#set( $getter = "$orgUnit.id:$de.id" )
