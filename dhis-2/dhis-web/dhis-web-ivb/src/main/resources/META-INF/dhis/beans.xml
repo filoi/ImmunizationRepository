@@ -140,6 +140,12 @@
 		<property name="ivbUtil" ref="org.hisp.dhis.ivb.util.IVBUtil" />
 	</bean>
 
+	<!-- Get DataElement Groups -->
+    <bean id="org.hisp.dhis.ivb.action.GetDataElementGroupsAction" class="org.hisp.dhis.ivb.action.GetDataElementGroupsAction"
+        scope="prototype">
+        <property name="dataElementService" ref="org.hisp.dhis.dataelement.DataElementService" />
+    </bean>
+	
 	<!-- Alert wise DataEntry -->
 	<bean
 		id="org.hisp.dhis.ivb.dataentry.alert.action.LoadAlertDataEntryFormAction"
@@ -1806,6 +1812,16 @@
 	<bean
 		id="org.hisp.dhis.ivb.report.action.MCV2IntroAndPieResultAction"
 		class="org.hisp.dhis.ivb.report.action.MCV2IntroAndPieResultAction"
+		scope="prototype">
+	</bean>
+	
+		<!-- IPV2 Tracking Report -->
+	<bean
+		id="org.hisp.dhis.ivb.report.action.IPV2TrackFormAction" class="org.hisp.dhis.ivb.report.action.IPV2TrackFormAction" 
+		scope="prototype">
+	</bean>
+	<bean
+		id="org.hisp.dhis.ivb.report.action.IPV2TrackResultAction" class="org.hisp.dhis.ivb.report.action.IPV2TrackResultAction"
 		scope="prototype">
 	</bean>
 

@@ -264,6 +264,12 @@
 			<param name="onExceptionReturn">plainTextError</param>
 		</action>
 
+		<!-- Get DataElementGroups -->
+        <action name="getDeGroups" class="org.hisp.dhis.ivb.action.GetDataElementGroupsAction">
+            <result name="success" type="velocity-json">/dhis-web-ivb/jsonDataElementGroups.vm</result>
+            <param name="onExceptionReturn">plainTextError</param>
+        </action>
+		
 		<!-- Close and Open Discussion -->
 
 		<action name="closeDiscussion"
@@ -1364,6 +1370,23 @@
 			class="org.hisp.dhis.ivb.report.action.MCV2IntroAndPieResultAction">
 			<result name="success" type="velocity">/dhis-web-ivb/main.vm</result>
 			<param name="page">/dhis-web-ivb/mcv2IntroAndPieResult.vm</param>
+			<param name="javascripts">javascript/jquery.treeview.js,javascript/ivb-dataentry.js,javascript/jquery.fancybox.js,javascript/jquerycssmenu.js,javascript/request.js,javascript/jquery.treeview.js,../dhis-web-commons/select2/select2.min.js</param>
+			<param name="stylesheets">css/ivb-dataentry.css,css/jquery.fancybox.css,css/jquerycssmenu.css,css/jquery.treeview.css,../dhis-web-commons/select2/select2.css</param>
+		</action>
+		
+				<!-- IPV2 Tracking Report -->
+		<action name="ipv2TrackForm"
+			class="org.hisp.dhis.ivb.report.action.IPV2TrackFormAction">
+			<result name="success" type="velocity">/dhis-web-ivb/main.vm</result>
+			<param name="page">/dhis-web-ivb/ipv2TrackForm.vm</param>
+			<param name="javascripts">../dhis-web-commons/oust/oust.js,javascript/jquerycssmenu.js,javascript/request.js,javascript/jquery.treeview.js</param>
+			<param name="stylesheets">css/ivb-dataentry.css,css/jquerycssmenu.css,css/jquery.treeview.css</param>
+		</action>
+
+		<action name="ipv2TrackResult"
+			class="org.hisp.dhis.ivb.report.action.IPV2TrackResultAction">
+			<result name="success" type="velocity">/dhis-web-ivb/main.vm</result>
+			<param name="page">/dhis-web-ivb/ipv2TrackResult.vm</param>
 			<param name="javascripts">javascript/jquery.treeview.js,javascript/ivb-dataentry.js,javascript/jquery.fancybox.js,javascript/jquerycssmenu.js,javascript/request.js,javascript/jquery.treeview.js,../dhis-web-commons/select2/select2.min.js</param>
 			<param name="stylesheets">css/ivb-dataentry.css,css/jquery.fancybox.css,css/jquerycssmenu.css,css/jquery.treeview.css,../dhis-web-commons/select2/select2.css</param>
 		</action>
