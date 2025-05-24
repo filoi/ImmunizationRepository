@@ -133,66 +133,52 @@ public class SaveCommentAction
     }
 
     // -------------------------------------------------------------------------
-    // Input
+    // Input & Output
     // -------------------------------------------------------------------------
-
+    private String resetdata;
+	public String getResetdata() {
+		return resetdata;
+	}
+	public void setResetdata(String resetdata) {
+		this.resetdata = resetdata;
+	}
+	
     private String value;
-
-    public void setValue( String value )
-    {
+    public void setValue( String value ){
         this.value = value;
     }
-
     private String comment;
-
-    public void setComment( String comment )
-    {
+    public void setComment( String comment ){
         this.comment = comment;
     }
 
     private String dataElementId;
-
-    public void setDataElementId( String dataElementId )
-    {
+    public void setDataElementId( String dataElementId ){
         this.dataElementId = dataElementId;
     }
-
+    
     private int organisationUnitId;
-
-    public void setOrganisationUnitId( int organisationUnitId )
-    {
+    public void setOrganisationUnitId( int organisationUnitId ){
         this.organisationUnitId = organisationUnitId;
     }
 
     private String optionComboId;
-
-    public void setOptionComboId( String optionComboId )
-    {
+    public void setOptionComboId( String optionComboId ){
         this.optionComboId = optionComboId;
     }
 
     private String periodId;
-
-    public void setPeriodId( String periodId )
-    {
+    public void setPeriodId( String periodId ){
         this.periodId = periodId;
     }
 
     private String conflict;
-
-    public void setConflict( String conflict )
-    {
+    public void setConflict( String conflict ){
         this.conflict = conflict;
     }
 
-    // -------------------------------------------------------------------------
-    // Output
-    // -------------------------------------------------------------------------
-
     private int statusCode = 0;
-
-    public int getStatusCode()
-    {
+    public int getStatusCode(){
         return statusCode;
     }
 
@@ -205,69 +191,56 @@ public class SaveCommentAction
         Period period = PeriodType.getPeriodFromIsoString( periodId );
         // period.setId(Integer.parseInt(periodId));
 
-        if ( period == null )
-        {
+        if( period == null )
             return logError( "Illegal period identifier: " + periodId );
-        }
-
+        
         OrganisationUnit organisationUnit = organisationUnitService.getOrganisationUnit( organisationUnitId );
-
         if ( organisationUnit == null )
-        {
             return logError( "Invalid organisation unit identifier: " + organisationUnitId );
-        }
 
         DataElement dataElement = dataElementService.getDataElement( Integer.parseInt( dataElementId ) );
-
         if ( dataElement == null )
-        {
             return logError( "Invalid data element identifier: " + dataElementId );
-        }
 
-        DataElementCategoryOptionCombo optionCombo = categoryService.getDataElementCategoryOptionCombo( Integer
-            .parseInt( optionComboId ) );
-
+        DataElementCategoryOptionCombo optionCombo = categoryService.getDataElementCategoryOptionCombo( Integer.parseInt( optionComboId ) );
         if ( optionCombo == null )
-        {
             return logError( "Invalid category option combo identifier: " + optionComboId );
-        }
-
-        String storedBy = currentUserService.getCurrentUsername();
 
         Date now = new Date();
 
-        if ( storedBy == null )
-        {
+        String storedBy = currentUserService.getCurrentUsername();
+        if( storedBy == null )
             storedBy = "[unknown]";
-        }
 
-        if ( value != null && value.trim().length() == 0 )
-        {
+        if( value != null && value.trim().length() == 0 )
             value = null;
-        }
 
-        if ( value != null )
-        {
+        if( value != null )
             value = value.trim();
-        }
 
         // ---------------------------------------------------------------------
         // Check locked status
         // ---------------------------------------------------------------------
-
-        if ( dataSetService.isLocked( dataElement, period, organisationUnit, null ) )
-        {
-            return logError( "Entry locked for combination: " + dataElement + ", " + period + ", " + organisationUnit,
-                2 );
-        }
+        if( dataSetService.isLocked( dataElement, period, organisationUnit, null ) )
+            return logError( "Entry locked for combination: " + dataElement + ", " + period + ", " + organisationUnit, 2 );
 
         // ---------------------------------------------------------------------
         // Update data
         // ---------------------------------------------------------------------
+        //DataValue dataValue = dataValueService.getDataValue( dataElement, period, organisationUnit, optionCombo );
+        DataValue dataValue = dataValueService.getLatestDataValue( dataElement, optionCombo, organisationUnit );
+        
+        if( dataValue != null && resetdata != null && ((value == null || value.trim().equals("") ) && (comment == null || comment.trim().equals(""))) )
+    	{
+        	List<DataValue> allDatavalues = dataValueService.getDataValues( organisationUnit, dataElement );
+        	for (DataValue DataValue : allDatavalues) {
+				DataElementCategoryOptionCombo optionCombo1 = DataValue.getOptionCombo();
 
-        DataValue dataValue = dataValueService.getDataValue( dataElement, period, organisationUnit, optionCombo );
-
-        if ( dataValue == null )
+				if (optionCombo1 == optionCombo)
+					dataValueService.deleteDataValue(DataValue);
+			}
+    	} 
+        else if ( dataValue == null )
         {
             if ( comment != null && !comment.trim().equals( "" ) )
             {

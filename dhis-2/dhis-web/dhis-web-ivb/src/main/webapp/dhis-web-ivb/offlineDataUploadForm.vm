@@ -112,7 +112,7 @@ input[type=checkbox].css-checkbox:checked + label.css-label {
 		#if($conflictAuthority == "Yes")
 		<tr>
             <td class="NormalB">
-			  <input id="conflict" name="conflict" type="checkbox" class="css-checkbox" />
+			  <input id="conflict" name="conflict" type="checkbox" class="css-checkbox" checked />
 			  <label for="conflict" class="css-label mac-style">$i18n.getString( "skip_conflict" )</label>
 			</td>
         </tr>

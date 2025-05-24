@@ -221,13 +221,22 @@ function saveRegionValue(existingComment, existingvalue, dataelement ,source ,  
         {
             conflict = "null";
         }
+        if(document.getElementById("resetdata").checked)
+        {
+            resetdata = "checked";
+        }
+        else
+        {
+            resetdata = "null";
+        }
         var dataValue = {
             'dataElementId' : dataelement,
             'optionComboId' : option,
             'organisationUnitId' : source,
             'periodId' : period,
             'value' : value1,
-            'conflict': conflict
+            'conflict': conflict,
+            'resetdata': resetdata
         };
         jQuery.ajax( {
             url: 'saveValue.action',
@@ -398,6 +407,15 @@ function saveComment(existingDeValue, existingCommentValue, dataelement ,source 
     {
         conflict = "null";
     }
+    if(document.getElementById("resetdata").checked)
+    {
+            resetdata = "checked";
+    }
+    else
+    {
+      resetdata = "null";
+    }
+        
     var fieldId = '#'+comment;
 
     if(defaultValue != comment1){
@@ -408,7 +426,8 @@ function saveComment(existingDeValue, existingCommentValue, dataelement ,source 
             'periodId' : period,
             'value' : value1,
             'comment': comment1,
-            'conflict': conflict
+            'conflict': conflict,
+            'resetdata': resetdata
         };
         jQuery.ajax( {
             url: 'saveComment.action',

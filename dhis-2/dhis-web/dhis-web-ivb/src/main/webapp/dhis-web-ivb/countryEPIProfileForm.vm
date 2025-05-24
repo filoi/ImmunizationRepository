@@ -313,7 +313,7 @@ function numFormat1(n) {
 					1001313,1001314,1001315,1001316,1001317,1001318,1001319,1001339,1005944,1005945,725,520,763,114,
 					63,1066999,1067001,1067002,1067003,1067004,1067005,1058903,857,1053816,1053812,1064716,1064717,
 					1064718, 1064719,1064720,1064721,1064722,1064723,1064724,1064725,1064839,1064840,1064841,1064842,
-					1064843,1067004,1067005,1067001,1067424,1058902,1185657" />
+					1064843,1067004,1067005,1067001,1067424,1058902,1185657,1774864,1774865" />
 			 		<input type="button" onclick="downloadEPIData()" value="$i18n.getString( 'get_report' )" id="submit" />		 		
 	 			</td>
 	 			<td>&nbsp;</td>
@@ -470,6 +470,7 @@ jQuery(document).ready(function() {
 			var fixedService_s1c2 = ""; try{ fixedService_s1c2 = EPIObj.epiDataMap["1000298"].strVal2;}catch(err){}
 			var outReach_s1c2 = ""; try{ outReach_s1c2 = EPIObj.epiDataMap["1000299"].strVal2;}catch(err){}
 			var specialStrategies_s1c2 = ""; try{ specialStrategies_s1c2 = EPIObj.epiDataMap["1000300"].strVal2;}catch(err){}
+			console.log(specialStrategies_s1c2 + "specialStrategies_s1c2");
 			var activitiesToRI_s1c2 = ""; try{ activitiesToRI_s1c2 = EPIObj.epiDataMap["1000301"].strVal2;}catch(err){}
 			var commentsIS_s1c2 = ""; try{ commentsIS_s1c2 = EPIObj.epiDataMap["1000368"].strVal2;}catch(err){}
 			 
@@ -483,8 +484,10 @@ jQuery(document).ready(function() {
 			var measlesRubella_s1c3 = ""; try{ measlesRubella_s1c3 = EPIObj.epiDataMap["1067424"].strVal2;}catch(err){}
 			var tt_s1c3 = ""; try{ tt_s1c3 = EPIObj.epiDataMap["1000308"].strVal2;}catch(err){}
 			var rotaVirus_s1c3 = ""; try{ rotaVirus_s1c3 = EPIObj.epiDataMap["1000309"].strVal2;}catch(err){}
+			var yf_s1c3 = "";  try{ yf_s1c3 = EPIObj.epiDataMap["1774864"].strVal2;}catch(err){}
+			var hpv_s1c3 = "";  try{ hpv_s1c3 = EPIObj.epiDataMap["1000310"].strVal2;}catch(err){}
+			var malaria_s1c3 = ""; try{ malaria_s1c3 = EPIObj.epiDataMap["1774865"].strVal2;}catch(err){}
 			var commentsVS_s1c3 = ""; try{ commentsVS_s1c3 = EPIObj.epiDataMap["1000312"].strVal2;}catch(err){}
-			//var yf_s1c3 = ""; 
 			 
 			//cell 4 - Health System Planning & Finance 
 			var nhpspsDates_s1c4 = "-"; try{ nhpspsDates_s1c4 = EPIObj.epiDataMap["1000313"].strVal2;}catch(err){}
@@ -769,7 +772,7 @@ jQuery(document).ready(function() {
 			** ******************************************************************************************************** */	
 			var colW = slideWidth/3;
 			var tableStyle = { x:0.15, y:0.2, w:'100%', colW:[1.7,1.75,2.1,0.85,0.85,1.65,1.8,1.7,1.75], rowH:[defRowHeight,3.4, defRowHeight,3.4,defRowHeight], fill:defFillColor, 
-								color:defFontColor, font_face:defFontFace, font_size:defFontSize,marginPt:0, valign:'t', align:'l'};
+								color:defFontColor, font_face:defFontFace, fit: true, wrap: true, font_size:defFontSize,marginPt:0, valign:'t', align:'l'};
 			var titleCellStyle = {fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true};
 			var flagCellStyle = {fill:defHeadFillColor, font_size:defTitleFontSize, color:defHeadFontColor, bold:true, align:'r'};
 			var textTitleCellStyle = {font_size:defFontSize, color:defTitleFontColor, bold:true};
@@ -803,29 +806,29 @@ jQuery(document).ready(function() {
 						text: [
 								{text:'Fixed Service: ', options: textTitleCellStyle}, 
 								{text:fixedService_s1c2, options: {breakLine: true, color: resultFontColor }},
-								{text:' ', options: {breakLine: true}},
+								//{text:' ', options: {breakLine: true}},
 								{text:'Outreach: ', options: textTitleCellStyle},
 								{text:outReach_s1c2, options: {breakLine: true, color: resultFontColor }},
-								{text:' ', options: {breakLine: true}},
+								//{text:' ', options: {breakLine: true}},
 								{text:'Special strategies: ', options: textTitleCellStyle},
-								{text:specialStrategies_s1c2, options: {breakLine: true, color: resultFontColor }},
-								{text:' ', options: {breakLine: true}},
+								{text:specialStrategies_s1c2, options: {breakLine: true, fit: true, wrap: true, color: resultFontColor }},
+								//{text:' ', options: {breakLine: true}},
 								{text:tempLabel, options: textTitleCellStyle},
 								{text:activitiesToRI_s1c2, options: {breakLine: true, color: resultFontColor }},
-								{text:' ', options: {breakLine: true}}
+								//{text:' ', options: {breakLine: true}}
 							], opts: {colspan: 3} 
 					},
 					//Cell 03 ===============================================================================
 					{ 
 						text: [
 								{text:'Vaccine', options: textTitleCellStyle}, 
-								{text:'\nBCG\nDTPHibHB\nOPV\nPCV\nRotavirus\nIPV\nMeasles\nMeasles-Rubella\nTT\n\n'}
+								{text:'\nBCG\nDTPHibHB\nOPV\nPCV\nRotavirus\nIPV\nMeasles\nMeasles-Rubella\nYellow fever\nTT\nHPV\nMalaria\n\n'}
 							], opts: { border: [defBorder, defNoBorder, defBorder, defBorder], colW: '15%' }
 					},
 					{ 
 						text: [
 								{text:'Age', options: textTitleCellStyle},
-								{text: "\n"+ bcg_s1c3 +"\n"+ dtphib_s1c3 +"\n"+ opv_s1c3 +"\n"+ pcv_s1c3 +"\n"+ rotaVirus_s1c3 +"\n"+ ipv_s1c3 +"\n"+ measles_s1c3 +"\n"+ measlesRubella_s1c3 +"\n"+ tt_s1c3 },
+								{text: "\n"+ bcg_s1c3 +"\n"+ dtphib_s1c3 +"\n"+ opv_s1c3 +"\n"+ pcv_s1c3 +"\n"+ rotaVirus_s1c3 +"\n"+ ipv_s1c3 +"\n"+ measles_s1c3 +"\n"+ measlesRubella_s1c3 +"\n"+ yf_s1c3 +"\n"+ tt_s1c3 +"\n"+ hpv_s1c3 +"\n"+ malaria_s1c3 },
 								//{text: commentsVS_s1c3}
 							], opts: { colW: '9%', color: '42b55f' }
 					},
@@ -884,12 +887,12 @@ jQuery(document).ready(function() {
 					//Cell 06 ===============================================================================
 					{ 
 						text: [
-								{text:'NITAG established:\nAEFI Review Committee:\nFunctional ICC:\n\nEPI Review (Year):\nSurv Review (Year):\nLast DQA/DQS:\nNext Coverage Survey:\nDQIP dates validity:\n\nPolio Eradication:\nMNT Elimination:\nMR Elimination:\nHB Elimination:\n\n'}
+								{text:'NITAG established:\nAEFI Review Committee:\nFunctional ICC:\n\nEPI Review (Year):\nSurv Review (Year):\nNext Coverage Survey:\n\nPolio Eradication:\nMNT Elimination:\nMR Elimination:\nHB Elimination:\n\n'}
 							], opts: { border: [defBorder, defNoBorder, defBorder, defBorder], colW: '25%' }
 					},
 					{ 
 						text: [
-								{text: (evmNitagEstab_s1c7||"No data").substring(0,20) + "\n" + (evmAefiComitee_s1c7||"No data").substring(0,20)  + "\n" + (evmFunctionalICC_s1c7||"No data").substring(0,20)  + "\n\n" + (evmEpiReview_s1c7||"No data").substring(0,20)  + "\n" + (evmSurveyReview_s1c7||"No data").substring(0,20) + "\n" + (evmDQS_s1c7||"No data").substring(0,20) + "\n" + (evmNextSurvey_s1c7||"No data").substring(0,20)+ "\n" + (evmDqipDates_s1c7||"No data").substring(0,20)  + "\n\n" + (evmPolioErad_s1c7||"No data").substring(0,20)  + "\n" + (evmMNTElimination_s1c7||"No data").substring(0,20)  + "\n" + (evmMRElimination_s1c7||"No data").substring(0,20)  + "\n" + (evmHBElimination_s1c7||"No data").substring(0,20) }
+								{text: (evmNitagEstab_s1c7||"No data").substring(0,20) + "\n" + (evmAefiComitee_s1c7||"No data").substring(0,20)  + "\n" + (evmFunctionalICC_s1c7||"No data").substring(0,20)  + "\n\n" + (evmEpiReview_s1c7||"No data").substring(0,20)  + "\n" + (evmSurveyReview_s1c7||"No data").substring(0,20) + "\n" + (evmNextSurvey_s1c7||"No data").substring(0,20)+ "\n\n" + (evmPolioErad_s1c7||"No data").substring(0,20)  + "\n" + (evmMNTElimination_s1c7||"No data").substring(0,20)  + "\n" + (evmMRElimination_s1c7||"No data").substring(0,20)  + "\n" + (evmHBElimination_s1c7||"No data").substring(0,20) }
 							], opts: { colW: '12%', color: resultFontColor}
 					},
 				]
@@ -1030,11 +1033,11 @@ jQuery(document).ready(function() {
 					},
 					{ 
 						text: [
-								{text: 'DHS (Year): ', options: {bold:true, breakLine: false}},								
-								{text: DHSYear_s2c2, options: { breakLine: false,color: resultFontColor}},
-								{text: ''},
-								{text: 'MICS: ', options: {bold:true, breakLine: false}},								
-								{text: MICSYear_s2c2, options: { breakLine: false,color: resultFontColor}},
+								//{text: 'DHS (Year): ', options: {bold:true, breakLine: false}},								
+								//{text: DHSYear_s2c2, options: { breakLine: false,color: resultFontColor}},
+								//{text: ''},
+								//{text: 'MICS: ', options: {bold:true, breakLine: false}},								
+								//{text: MICSYear_s2c2, options: { breakLine: false,color: resultFontColor}},
 								{text: '\n\n'},
 								{text:'Comment: ', options: commentCellStyle},								
 								{text: commentOnDQ_s2c2, options: { breakLine: false,color: resultFontColor }},								
@@ -1704,7 +1707,7 @@ jQuery(document).ready(function() {
 				[
 					{ text: 'All vaccines: coverage trends', opts: titleCellStyle},
 					{ text: 'DTP3 coverage; Admin, WUENIC, DQ s', opts: titleCellStyle},
-					{ text: 'DTP3 subnational data – 2015', opts: titleCellStyle},
+					{ text: 'DTP3 subnational data ï¿½ 2015', opts: titleCellStyle},
 					{ text: 'Measles vaccine coverage & surveillance ', opts: titleCellStyle}
 				],
 				[

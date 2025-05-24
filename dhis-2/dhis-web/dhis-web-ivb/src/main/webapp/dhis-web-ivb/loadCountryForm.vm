@@ -318,13 +318,13 @@
 
         #set( $count = 0 )
 		#set( $lengthDEs = {} )
-		#set( $dummy = $lengthDEs.put("1000296", 400))
-		#set( $dummy = $lengthDEs.put("1000297", 400))
-		#set( $dummy = $lengthDEs.put("1000298", 120))
-		#set( $dummy = $lengthDEs.put("1000299", 120))
-		#set( $dummy = $lengthDEs.put("1000300", 120))
-		#set( $dummy = $lengthDEs.put("1000301", 120))
-		#set( $dummy = $lengthDEs.put("1000368", 220))
+		#set( $dummy = $lengthDEs.put("1000296", 700))
+		#set( $dummy = $lengthDEs.put("1000297", 700))
+		#set( $dummy = $lengthDEs.put("1000298", 400))
+		#set( $dummy = $lengthDEs.put("1000299", 400))
+		#set( $dummy = $lengthDEs.put("1000300", 400))
+		#set( $dummy = $lengthDEs.put("1000301", 400))
+		#set( $dummy = $lengthDEs.put("1000368", 400))
 		#set( $dummy = $lengthDEs.put("1000312", 220))
 		#set( $dummy = $lengthDEs.put("1000329", 150))
 		#set( $dummy = $lengthDEs.put("1000327", 150))
@@ -399,6 +399,10 @@
                         <label for="conflict" class="css-label mac-style">Skip Conflict</label>
                     </td>
                 #end
+                <td >
+                	<input id="resetdata" name="resetdata" type="checkbox" class="css-checkbox" />
+                    <label for="resetdata" class="css-label mac-style">Reset Data</label>
+                </td>
                 <td style="float:right;color:black;">$i18n.getString( "period" ) : $selectedPeriod</td>
             </tr>
 

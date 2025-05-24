@@ -133,84 +133,63 @@ public class SaveValueAction
     }
 
     // -------------------------------------------------------------------------
-    // Input
+    // Input & Output
     // -------------------------------------------------------------------------
-
+    private String resetdata;
+	public String getResetdata() {
+		return resetdata;
+	}
+	public void setResetdata(String resetdata) {
+		this.resetdata = resetdata;
+	}
+	
     private String value;
-
-    public void setValue( String value )
-    {
+    public void setValue( String value ){
         this.value = value;
     }
-
-    public String getValue()
-    {
+    public String getValue(){
         return value;
     }
 
     private String dataElementId;
-
-    public void setDataElementId( String dataElementId )
-    {
+    public void setDataElementId( String dataElementId ){
         this.dataElementId = dataElementId;
     }
-
-    public String getDataElementId()
-    {
+    public String getDataElementId(){
         return dataElementId;
     }
 
-    public String getOptionComboId()
-    {
-        return optionComboId;
-    }
-
     private int organisationUnitId;
-
-    public void setOrganisationUnitId( int organisationUnitId )
-    {
+    public void setOrganisationUnitId( int organisationUnitId ){
         this.organisationUnitId = organisationUnitId;
     }
-
-    public int getOrganisationUnitId()
-    {
+    public int getOrganisationUnitId(){
         return organisationUnitId;
     }
 
     private String optionComboId;
-
-    public void setOptionComboId( String optionComboId )
-    {
+    public void setOptionComboId( String optionComboId ){
         this.optionComboId = optionComboId;
+    }
+    public String getOptionComboId(){
+        return optionComboId;
     }
 
     private String conflict;
-
-    public void setConflict( String conflict )
-    {
+    public void setConflict( String conflict ){
         this.conflict = conflict;
     }
 
     private String periodId;
-
-    public void setPeriodId( String periodId )
-    {
+    public void setPeriodId( String periodId ){
         this.periodId = periodId;
     }
-
-    public String getPeriodId()
-    {
+    public String getPeriodId(){
         return periodId;
     }
 
-    // -------------------------------------------------------------------------
-    // Output
-    // -------------------------------------------------------------------------
-
     private int statusCode = 0;
-
-    public int getStatusCode()
-    {
+    public int getStatusCode(){
         return statusCode;
     }
 
@@ -274,9 +253,21 @@ public class SaveValueAction
         
         System.out.println( conflict + "=========" );
         
-        DataValue dataValue = dataValueService.getDataValue( dataElement, period, organisationUnit, optionCombo );
+       // DataValue dataValue = dataValueService.getDataValue( dataElement, period, organisationUnit, optionCombo );
+       DataValue dataValue = dataValueService.getLatestDataValue( dataElement, optionCombo, organisationUnit );
+        System.out.println( dataValue + "=========" + resetdata + "=========" + value);
 
-        if ( dataValue == null )
+        if( dataValue != null && resetdata != null && ((value == null || value.trim().equals("") ) && (dataValue.getComment() == null || dataValue.getComment().trim().equals(""))) )
+    	{
+        	List<DataValue> allDatavalues = dataValueService.getDataValues( organisationUnit, dataElement );
+        	for (DataValue DataValue : allDatavalues) {
+				DataElementCategoryOptionCombo optionCombo1 = DataValue.getOptionCombo();
+
+				if (optionCombo1 == optionCombo)
+					dataValueService.deleteDataValue(DataValue);
+			}
+    	}        
+        else if ( dataValue == null )
         {
             if ( value != null && (!value.trim().equals( "" ) || !value.equalsIgnoreCase( "-1" )) )
             {

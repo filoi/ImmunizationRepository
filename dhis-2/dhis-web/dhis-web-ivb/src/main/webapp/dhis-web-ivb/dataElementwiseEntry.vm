@@ -401,6 +401,10 @@
 <div style="width:95%;margin:auto;">
     <input id="conflict" name="conflict" type="checkbox" class="css-checkbox" #if($conflictAuthority != "Yes") style="display:none" #end />
     <label for="conflict" class="css-label mac-style" #if($conflictAuthority != "Yes") style="display:none" #end>Skip Conflict</label>
+    
+    &nbsp;&nbsp;<input id="resetdata" name="resetdata" type="checkbox" class="css-checkbox" #if($conflictAuthority != "Yes") style="display:none" #end />
+    <label for="resetdata" class="css-label mac-style" #if($conflictAuthority != "Yes") style="display:none" #end>Reset Data</label>
+                
     #if(($favorite && $favorite.showAll == 2) || $favorite.storedBy == $userName )
         <input type="button" id="delete-bookmark" value="Delete Bookmark" style="float:right;" />
         <input type="button" id="create-bookmark" value="Edit Bookmark" style="float:right;" />

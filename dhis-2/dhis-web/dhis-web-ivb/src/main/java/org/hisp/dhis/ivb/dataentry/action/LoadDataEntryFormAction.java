@@ -625,6 +625,9 @@ public class LoadDataEntryFormAction
 
         User curUser = currentUserService.getCurrentUser();
 
+
+        String storedBy = currentUserService.getCurrentUsername();
+        System.out.println("Current User = " + storedBy);
         messageCount = (int) messageService.getUnreadMessageConversationCount();
         List<UserGroup> userGrps = new ArrayList<UserGroup>( currentUserService.getCurrentUser().getGroups() );
         if ( userGrps.contains( configurationService.getConfiguration().getFeedbackRecipients() ) )
@@ -891,6 +894,10 @@ public class LoadDataEntryFormAction
 
         i18n( i18nService, dataElementList );
 
+        List<User> allUsers = new ArrayList<>( userService.getAllUsers());
+
+       // System.out.println("AllUser" + allUsers.size());
+
         for ( DataElement de : dataElementList )
         {
 
@@ -1030,7 +1037,28 @@ public class LoadDataEntryFormAction
                     conflictMap.put( orgUnit.get( 0 ).getUid() + "-" + de.getUid(), "No" );
                 }
                 String constantValue = "";
-                UserCredentials userCredentials = userService.getUserCredentialsByUsername( dv.getStoredBy() );
+
+               // List<User> allUsers = new ArrayList<>( userService.getAllUsers());
+        
+                for(User user : allUsers ) {
+                   // System.out.println("UserName - " + user.getUsername() + "----" + dv.getStoredBy());
+                    if(user.getUsername().equals(dv.getStoredBy())) {
+                        Set<AttributeValue> attrValueSet = new HashSet<AttributeValue>( user.getAttributeValues() );
+                        for ( AttributeValue attValue : attrValueSet )
+                        {
+                            if ( attValue.getAttribute().getId() == sourecs.getValue() )
+                            {
+                                constantValue = attValue.getValue();
+                            }
+                        }
+                        userInfo = "Full Name: " + user.getName() + "<br />Organisation: " + constantValue
+                            + "<br />Period: " + dvPeriod;
+                           // System.out.println("The UserName and Country:" + user.getName() + "-----" + dv.getStoredBy());
+                        break;
+                    }
+                }
+
+                /*UserCredentials userCredentials = userService.getUserCredentialsByUsername( dv.getStoredBy() );
                 if ( userCredentials != null )
                 {
                     User user = userService.getUserCredentialsByUsername( dv.getStoredBy() ).getUser();
@@ -1046,12 +1074,13 @@ public class LoadDataEntryFormAction
                         }
                         userInfo = "Full Name: " + user.getName() + "<br />Organisation: " + constantValue
                             + "<br />Period: " + dvPeriod;
+                            System.out.println("The UserName and Country:" + user.getName() + "-----" + dv.getStoredBy());
                     }
                 }
                 else
                 {
                     userInfo = "Full Name: " + dv.getStoredBy() + " (REMOVED)<br />Period: " + dvPeriod;
-                }
+                }*/
 
                 userInfoMap.put( orgUnit.get( 0 ).getUid() + "-" + de.getUid(), userInfo );
                 dataValuePeriodMap.put( orgUnit.get( 0 ).getUid() + "-" + de.getUid(), dvPeriod );

@@ -430,6 +430,7 @@ public class PieReportResultAction implements Action
                     }                    
                 }
                 else if( (selReview.split( ":" )[0].trim().equalsIgnoreCase( "EPI" ) || selReview.split( ":" )[0].trim().equalsIgnoreCase( "Surveillance" )) && dv != null )
+                //else if( selReview.split( ":" )[0].trim().equalsIgnoreCase( "Surveillance" ) && dv != null )
                 {
                     if( dv.getValue() != null )
                     {

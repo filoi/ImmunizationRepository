@@ -454,12 +454,12 @@ public class LoadDataValueConflictAction implements Action
         
         SimpleDateFormat standardDateFormat = new SimpleDateFormat( "yyyy-MM-dd" );
         
-        //System.out.println("Period: " + period.getId() );
-        //System.out.println( "dataElementIdsByComma : " + dataElementIdsByComma );
-        //System.out.println( "orgUnitIdsByComma : "+ orgUnitIdsByComma );
+        System.out.println("Period: " + period.getId() );
+        System.out.println( "dataElementIdsByComma : " + dataElementIdsByComma );
+        System.out.println( "orgUnitIdsByComma : "+ orgUnitIdsByComma );
         
         List<DataValue> conflictDataValueList = new ArrayList<DataValue>( ivbUtil.getConflictDataValueList( dataElementIdsByComma, orgUnitIdsByComma, period ) );
-
+        System.out.println( "conflictDataValueList : "+ conflictDataValueList.size() );
         List<DataElement> deList = new ArrayList<DataElement>();
         List<OrganisationUnit> ouList = new ArrayList<OrganisationUnit>();
         for(  DataValue dv : conflictDataValueList )

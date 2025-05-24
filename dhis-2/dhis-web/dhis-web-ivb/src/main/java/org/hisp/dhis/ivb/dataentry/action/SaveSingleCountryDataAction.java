@@ -250,58 +250,48 @@ public class SaveSingleCountryDataAction
     }
 
     private String dataElements;
-
-    public void setDataElements( String dataElements )
-    {
+    public void setDataElements( String dataElements ){
         this.dataElements = dataElements;
     }
 
     private String conflict;
-
-    public void setConflict( String conflict )
-    {
+    public void setConflict( String conflict ){
         this.conflict = conflict;
     }
 
-	
+    private String resetdata;
+	public String getResetdata() {
+		return resetdata;
+	}
+	public void setResetdata(String resetdata) {
+		this.resetdata = resetdata;
+	}
+
 	public static String  orgid;
-    // -------------------------------------------------------------------------
-    // Action implementation
-    // -------------------------------------------------------------------------
-
     public static String getOrgid() {
-	return orgid;
-}
+    	return orgid;
+    }
+    public static void setOrgid(String orgid) {
+    	SaveSingleCountryDataAction.orgid = orgid;
+    }
 
-public static void setOrgid(String orgid) {
-	SaveSingleCountryDataAction.orgid = orgid;
-}
-
-
-
-public static String  datasetid;
-
+    public static String  datasetid;
 	public static String getDatasetid() {
-	return datasetid;
-}
+		return datasetid;
+	}
 
-public static void setDatasetid(String datasetid) {
-	SaveSingleCountryDataAction.datasetid = datasetid;
-}
-    // -------------------------------------------------------------------------
+	public static void setDatasetid(String datasetid) {
+		SaveSingleCountryDataAction.datasetid = datasetid;
+	}
+ 
+	// -------------------------------------------------------------------------
     // Action implementation
     // -------------------------------------------------------------------------
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.opensymphony.xwork2.Action#execute()
-     */
     public String execute()
     {
         // System.out.println( " Inside Save Single CountryData Action" ) ;
-	    orgid=orgUnitUid;
-    	datasetid=dataSetUId;
+	    orgid = orgUnitUid;
+    	datasetid = dataSetUId;
         Period period = PeriodType.getPeriodFromIsoString( selectedPeriodId );
         if ( period == null )
         {
@@ -332,7 +322,7 @@ public static void setDatasetid(String datasetid) {
             if ( deID != "" )
             {
                 String[] dataElementId = deID.split( "-" );
-                if ( !dataElementId[0].equals( "" ) && !dataElementId[0].equalsIgnoreCase( "conflict" ) )
+                if ( !dataElementId[0].equals( "" ) && !dataElementId[0].equalsIgnoreCase( "conflict" ) && !dataElementId[0].equalsIgnoreCase( "resetdata" ))
                 {
                     DataElement dataElement = dataElementService.getDataElement( Integer.parseInt( dataElementId[0] ) );
                     if ( !changeddataElementList.contains( dataElement ) )
@@ -406,64 +396,33 @@ public static void setDatasetid(String datasetid) {
         HttpServletRequest request = ServletActionContext.getRequest();
         
         //AuditType auditType = new AuditType();
-
+        System.out.println("Reset Checkbox: "+ resetdata );
         for ( DataElement dataElement : dataElementList ){
             String value = request.getParameter( dataElement.getId() + "-" + selOrgUnit.getId() + "-" + optionCombo.getId() + "-val" );
             if( !dataElement.getValueType().isText() ) {
             	value = value.replace( ",", "" );
             	value = value.replace( "%", "" );
             }
-
-            // System.out.println(dataElement.getOptionSet().getOptions());
-            // String l1= dataElement.getOptionSet().getName();
-            // System.out.println(l1);
-
-            /*
-             * System.err.println("value after applying regEx "+ value);
-             * if(value.equalsIgnoreCase("na")){ value = ""; }
-             */
-
-            String comment = request.getParameter(
-                dataElement.getId() + "-" + selOrgUnit.getId() + "-" + optionCombo.getId() + "-comment" );
-
-            if ( dataElement.getOptionSet() != null && dataElement.getOptionSet().getOptions().size() > 0 )
-            {
-                if ( value != null && value.trim().equals( "-1" ) )
-                {
+            if( dataElement.getOptionSet() != null && dataElement.getOptionSet().getOptions().size() > 0 ){
+                if( value != null && value.trim().equals( "-1" ) )
                     value = null;
-                }
             }
+
+            String comment = request.getParameter( dataElement.getId() + "-" + selOrgUnit.getId() + "-" + optionCombo.getId() + "-comment" );
+            
+        	if( resetdata != null && ((value == null || value.trim().equals("") ) && (comment == null || comment.trim().equals(""))) )
+        	{
+            	List<DataValue> allDatavalues = dataValueService.getDataValues( selOrgUnit, dataElement );
+            	for (DataValue DataValue : allDatavalues) {
+    				DataElementCategoryOptionCombo optionCombo1 = DataValue.getOptionCombo();
+
+    				if (optionCombo1 == optionCombo)
+    					dataValueService.deleteDataValue(DataValue);
+    			}
+            	continue;
+        	}            	
+
             DataValue dataValue = dataValueService.getDataValue( dataElement, period, selOrgUnit, optionCombo, optionCombo);
-
-          /*  demapping = demappingService.getDeMapping( dataElement.getUid() );
-            Period period1=  periodService.getPeriod( 1008 );
-            DataElement dataElement1 = dataElementService.getDataElement( demapping.getMappeddeid() );
-            DataValue dataValue2 = dataValueService.getDataValue( dataElement1, period, selOrgUnit, optionCombo );
-            System.out.println( "dataValue2" + dataValue2 );
-            if ( dataValue2 == null )
-            {
-                dataValue2 = new DataValue( dataElement1, period1, selOrgUnit, optionCombo, optionCombo, value1,
-                    storedBy, now, comment );
-                dataValue2.setStatus( 1 );
-           
-                dataValueService.addDataValue( dataValue2 );
-            }
-            else
-            {
-                dataValue2.setDataElement( dataElement1 );
-                dataValue2.setPeriod( period1 );
-                dataValue2.setSource( selOrgUnit );
-                dataValue2.setCategoryOptionCombo( optionCombo );
-                dataValue2.setAttributeOptionCombo( optionCombo );
-                dataValue2.setValue( value1 );
-                dataValue2.setStoredBy( storedBy );
-                dataValue2.setCreated( now );
-                dataValue2.setComment( comment );
-                dataValue2.setStatus( 1 );
-
-                dataValueService.addDataValue( dataValue2 );
-            }
-*/
             if ( dataValue == null )
             {
             	System.out.println( " inside datavalue  null"  );
@@ -471,16 +430,11 @@ public static void setDatasetid(String datasetid) {
                 if ( (value != null && !value.trim().equals( "" ))
                     || (comment != null && !comment.trim().equals( "" )) )
                 {
-                    dataValue = new DataValue( dataElement, period, selOrgUnit, optionCombo, optionCombo, value,
-                        storedBy, now, comment );
+                    dataValue = new DataValue( dataElement, period, selOrgUnit, optionCombo, optionCombo, value, storedBy, now, comment );
                     dataValue.setStatus( 1 );
                     dataValueService.addDataValue( dataValue );
 
-                    DataValue dataValue1 = dataValueService.getDataValue( dataElement, period, selOrgUnit,
-                        optionCombo, optionCombo );
-               /*     DataValueAudit dataValueAudit = new DataValueAudit( dataValue1, dataValue1.getValue(),
-                        dataValue1.getStoredBy(), dataValue1.getLastUpdated(), dataValue1.getComment(),
-                        DataValueAudit.DVA_CT_HISOTRY, DataValueAudit.DVA_STATUS_ACTIVE );*/
+                    DataValue dataValue1 = dataValueService.getDataValue( dataElement, period, selOrgUnit, optionCombo, optionCombo );
                     
                     DataValueAudit dataValueAudit = new DataValueAudit();
                     dataValueAudit.setOrganisationUnit( dataValue1.getSource() );
@@ -498,14 +452,14 @@ public static void setDatasetid(String datasetid) {
                     dataValueAudit.setTimestamp( now );
                     dataValueAudit.setAuditType(AuditType.UPDATE);
                     
-                    
                     dataValueAuditService.addDataValueAudit( dataValueAudit );
                 }
             }
             else
             {
             	System.out.println( " inside datavalue not null 1"  );
-
+            	
+            	
                 if ( conflict == null && (dataValue.getComment() != null && dataValue.getValue() != null)
                     && !(dataValue.getStoredBy().equalsIgnoreCase( storedBy ))
                     && (!(dataValue.getValue().trim().equalsIgnoreCase( value.trim() ))
@@ -582,16 +536,12 @@ public static void setDatasetid(String datasetid) {
 
         // System.out.println( " Data Set Id " + selDataSet.getId() + "--
         // OrgUnit : " + selOrgUnit.getId() );
-System.out.println("lookup-----"+Lookup.KEYFLAG_INDICATOR_ATTRIBUTE_ID);
-        
+        //System.out.println("lookup-----"+Lookup.KEYFLAG_INDICATOR_ATTRIBUTE_ID);
         Lookup keyFlagIndicatorAttributeLookup = lookupService.getLookupByName( Lookup.KEYFLAG_INDICATOR_ATTRIBUTE_ID );
-
-        System.out.println( " lookup value " + keyFlagIndicatorAttributeLookup.getValue() );
-        
+        //System.out.println( " lookup value " + keyFlagIndicatorAttributeLookup.getValue() );
         
         List<Indicator> indicators = new ArrayList<Indicator>();
-        indicators = new ArrayList<Indicator>(
-            reportScheduler.getKeyFlagIndicatorList( Integer.parseInt( keyFlagIndicatorAttributeLookup.getValue() ) ) );
+        indicators = new ArrayList<Indicator>( reportScheduler.getKeyFlagIndicatorList( Integer.parseInt( keyFlagIndicatorAttributeLookup.getValue() ) ) );
 
         // Saving in Key Flag Analytic
         if ( selDataSet != null )

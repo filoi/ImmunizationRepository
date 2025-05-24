@@ -292,7 +292,8 @@ public class CountryEPIPrfilePPTAction  implements Action
         }
         
         
-        JSONObject jsonResp = new JSONObject();
+        System.out.println( epiProfileSnapshot.getEpiDataMap().get(1000300).getStrVal2() );
+		JSONObject jsonResp = new JSONObject();
 		ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 		dataJSON = ow.writeValueAsString(epiProfileSnapshot);
 		//System.out.println(dataJSON);
