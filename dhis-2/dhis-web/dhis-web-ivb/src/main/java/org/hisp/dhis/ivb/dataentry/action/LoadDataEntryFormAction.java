@@ -1039,10 +1039,11 @@ public class LoadDataEntryFormAction
                 String constantValue = "";
 
                // List<User> allUsers = new ArrayList<>( userService.getAllUsers());
+               
         
                 for(User user : allUsers ) {
-                   // System.out.println("UserName - " + user.getUsername() + "----" + dv.getStoredBy());
-                    if(user.getUsername().equals(dv.getStoredBy())) {
+                    //System.out.println("UserName - " + user.getUsername() + "----" + dv.getStoredBy() + "------" + dv.getDataElement().getId());
+                    if(user != null && user.getUsername() != null && user.getUsername().equals(dv.getStoredBy())) {
                         Set<AttributeValue> attrValueSet = new HashSet<AttributeValue>( user.getAttributeValues() );
                         for ( AttributeValue attValue : attrValueSet )
                         {
